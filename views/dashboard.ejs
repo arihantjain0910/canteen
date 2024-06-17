@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body>
+    <div class="container mt-5">
+        <div class="row">
+            <div class="col-md-12 text-center">
+                <h3>Add Orders</h3>
+                <!-- Button trigger modal for Add Guest -->
+                <button type="button" class="btn btn-primary m-2" data-toggle="modal" data-target="#addGuestModal">Add Guest</button>
+                <!-- Button trigger modal for Add Employee -->
+                <button type="button" class="btn btn-secondary m-2" data-toggle="modal" data-target="#addEmployeeModal">Add Employee</button>
+            </div>
+        </div>
+
+  <!-- Table to display entered data -->
+<div >
+    <div>
+        <div >
+            <div >
+                <h3>Employee Entries</h3>
+                <table class="table table-bordered">
+                    <thead>
+                        <tr>
+                            <th>SN No.</th> <!-- Line number column -->
+                            <th> Employee Name</th>
+                            <th>Person to Add</th>
+                            <th>Date From</th>
+                            <th>Date To</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <% let employeeLineNumber = 1; %>
+                        <% employees.forEach(employee => { %>
+                            <tr>
+                                <td><%= employeeLineNumber %></td>
+                                <td><%= employee.name %></td>
+                                <td><%= employee.person_to_add %></td>
+                                <td><%= new Date(employee.date_from).toLocaleDateString('en-GB') %></td>
+                                <td><%= new Date(employee.date_to).toLocaleDateString('en-GB') %></td>
+                            </tr>
+                            <% employeeLineNumber++; %>
+                        <% }); %>
+                    </tbody>
+                </table>
+            </div>
+            <div >
+                <h3>Guest Entries</h3>
+                <table class="table table-bordered">
+                    <thead>
+                        <tr>
+                            <th>SN No.</th> <!-- Line number column -->
+                            <th> Employee Name</th>
+                            <th>Guest Name</th>
+                            <th>Company</th>
+                            <th>Date From</th>
+                            <th>Date To</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <% let guestLineNumber = 1; %>
+                        <% guests.forEach(guest => { %>
+                            <tr>
+                                <td><%= guestLineNumber %></td>
+                                <td><%= guest.name %></td>
+                                <td><%= guest.person_to_add %></td>
+                                <td><%= guest.company %></td>
+                                <td><%= new Date(guest.date_from).toLocaleDateString('en-GB') %></td>
+                                <td><%= new Date(guest.date_to).toLocaleDateString('en-GB') %></td>
+                            </tr>
+                            <% guestLineNumber++; %>
+                        <% }); %>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+    <!-- Modal for Add Guest -->
+    <div class="modal fade" id="addGuestModal" tabindex="-1" role="dialog" aria-labelledby="addGuestModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="addGuestModalLabel">Add Guest</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <form id="addGuestForm" action="/add-guest" method="POST">
+                        <div class="form-group">
+                            <label for="guestName">Guest Name</label>
+                            <input type="text" class="form-control" id="guestName" name="guestName" placeholder="Enter guest name" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="personToAddGuest">Person to Add</label>
+                            <input type="text" class="form-control" id="personToAddGuest" name="personToAddGuest" placeholder="Enter person to add" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="guestCompany">Guest Company</label>
+                            <input type="text" class="form-control" id="guestCompany" name="guestCompany" placeholder="Enter guest company" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="dateFromGuest">Date From</label>
+                            <input type="date" class="form-control" id="dateFromGuest" name="dateFromGuest" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="dateToGuest">Date To</label>
+                            <input type="date" class="form-control" id="dateToGuest" name="dateToGuest" required>
+                        </div>
+                        <button type="submit" class="btn btn-primary">Submit</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal for Add Employee -->
+    <div class="modal fade" id="addEmployeeModal" tabindex="-1" role="dialog" aria-labelledby="addEmployeeModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="addEmployeeModalLabel">Add Employee</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <form id="addEmployeeForm" action="/add-employee" method="POST">
+                        <div class="form-group">
+                            <label for="employeeName">Employee Name</label>
+                            <input type="text" class="form-control" id="employeeName" name="employeeName" placeholder="Enter employee name" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="personToAddEmployee">Person to Add</label>
+                            <input type="text" class="form-control" id="personToAddEmployee" name="personToAddEmployee" placeholder="Enter person to add" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="dateFromEmployee">Date From</label>
+                            <input type="date" class="form-control" id="dateFromEmployee" name="dateFromEmployee" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="dateToEmployee">Date To</label>
+                            <input type="date" class="form-control" id="dateToEmployee" name="dateToEmployee" required>
+                        </div>
+                        <button type="submit" class="btn btn-primary">Submit</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bootstrap JS and dependencies (Popper.js and jQuery) -->
+    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.11.0/umd/popper.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
+</body>
+</html>
