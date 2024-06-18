@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body>
+    <nav class="navbar navbar-expand-lg navbar-light bg-light fixed-top" style="height: 100px; font-size: 1.5rem;">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="#">
+                <img src="https://media.licdn.com/dms/image/C4D0BAQFEhO_RAbTovQ/company-logo_200_200/0/1630499738773?e=2147483647&v=beta&t=0RA-JcGeh_o3Jd2P0ZxUEhiE875FBTbtwVHVk9i2kLs" alt="Logo" width="60" height="60" class="d-inline-block align-text-top">
+                Sangam India Limited
+            </a>
+            <a href="/logout" class="btn btn-danger">Logout</a>
+        </div>
+    </nav>
+    <div class="container mt-5">
+        <div class="row">
+            <div class="col-md-12 text-center">
+                <h1 class="mt-5">Admin Dashboard</h1>
+                <h3>All Entries</h3>
+            </div>
+        </div>
+
+        <!-- Table to display all employee entries -->
+        <div>
+            <div>
+                <h3>Employee Entries</h3>
+                <table class="table table-bordered">
+                    
+<thead id="employeeTableHead">
+                        <tr>
+                            <th>SN No.</th>
+                            <th>Employee Name</th>
+                            <th>Person to Add</th>
+                            <th>Date From</th>
+                            <th>Date To</th>
+                        </tr>
+                    </thead>
+                    <tbody id="employeeTableBody">
+                        <% let employeeLineNumber = 1; %>
+                        <% employees.forEach(employee => { %>
+                            <tr>
+                                <td><%= employeeLineNumber %></td>
+                                <td><%= employee.name %></td>
+                                <td><%= employee.person_to_add %></td>
+                                <td><%= new Date(employee.date_from).toLocaleDateString('en-GB') %></td>
+                                <td><%= new Date(employee.date_to).toLocaleDateString('en-GB') %></td>
+                            </tr>
+                            <% employeeLineNumber++; %>
+                        <% }); %>
+                    </tbody>
+                </table>
+            </div>
+            <div>
+                <h3>Guest Entries</h3>
+                <table class="table table-bordered">
+                    <thead id="guestTableHead">
+                        <tr>
+                            <th>SN No.</th>
+                            <th>Employee Name</th>
+                            <th>Guest Name</th>
+                            <th>Guest Company</th>
+                            <th>Date From</th>
+                            <th>Date To</th>
+                        </tr>
+                    </thead>
+                    <tbody id="guestTableBody">
+                        <% let guestLineNumber = 1; %>
+                        <% guests.forEach(guest => { %>
+                            <tr>
+                                <td><%= guestLineNumber %></td>
+                                <td><%= guest.name %></td>
+                                <td><%= guest.person_to_add %></td>
+                                <td><%= guest.company %></td>
+                                <td><%= new Date(guest.date_from).toLocaleDateString('en-GB') %></td>
+                                <td><%= new Date(guest.date_to).toLocaleDateString('en-GB') %></td>
+                            </tr>
+                            <% guestLineNumber++; %>
+                        <% }); %>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+    <script>
+        $(document).ready(function() {
+            // Initialize DataTable for Employee table
+            $('#employeeTable').DataTable({
+                "paging": true,
+                "order": [[0, 'asc']], // Optional: Sort by first column ascending
+                "columnDefs": [
+                    { "targets": 0, "orderable": false } // Disable sorting on SN No. column
+                ]
+            });
+    
+            // Initialize DataTable for Guest table
+            $('#guestTable').DataTable({
+                "paging": true,
+                "order": [[0, 'asc']], // Optional: Sort by first column ascending
+                "columnDefs": [
+                    { "targets": 0, "orderable": false } // Disable sorting on SN No. column
+                ]
+            });
+        });
+    </script>
+    
+    <!-- Bootstrap JS and dependencies (Popper.js and jQuery) -->
+    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.11.0/umd/popper.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
+    <!-- DataTables CSS -->
+<link href="https://cdn.datatables.net/1.11.4/css/jquery.dataTables.min.css" rel="stylesheet">
+
+<!-- jQuery -->
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+
+<!-- DataTables JavaScript -->
+<script src="https://cdn.datatables.net/1.11.4/js/jquery.dataTables.min.js"></script>
+
+</body>
+</html>
