@@ -217,18 +217,18 @@ app.get('/logout', (req, res) => {
 });
 
 app.post('/add-guest', (req, res) => {
-    const { guestName, personToAddGuest, guestCompany, dateFromGuest, dateToGuest } = req.body;
-    const sql = 'INSERT INTO guests (name, person_to_add, company, date_from, date_to, user_id) VALUES (?, ?, ?, ?, ?, ?)';
-    db.query(sql, [guestName, personToAddGuest, guestCompany, dateFromGuest, dateToGuest, req.user.id], (err, result) => {
+    const { guestName,guestCompany, guestdesignation, remarks, dateFromGuest, dateToGuest } = req.body;
+    const sql = 'INSERT INTO guests (guestName,guestCompany, guestdesignation, remarks, date_from, date_to, user_id) VALUES (?, ?, ?, ?, ?, ?, ?)';
+    db.query(sql, [guestName,guestCompany, guestdesignation, remarks, dateFromGuest, dateToGuest, req.user.id], (err, result) => {
         if (err) throw err;
         res.redirect('/dashboard');
     });
 });
 
 app.post('/add-employee', (req, res) => {
-    const { employeeName, personToAddEmployee, dateFromEmployee, dateToEmployee } = req.body;
-    const sql = 'INSERT INTO employees (name, person_to_add, date_from, date_to, user_id) VALUES (?, ?, ?, ?, ?)';
-    db.query(sql, [employeeName, personToAddEmployee, dateFromEmployee, dateToEmployee, req.user.id], (err, result) => {
+    const { employeeName, employeeCode, department, designation , dateFromEmployee, dateToEmployee } = req.body;
+    const sql = 'INSERT INTO employees (name, employeeCode, department, designation, date_from, date_to, user_id) VALUES (?, ?, ?, ?, ?, ?, ?)';
+    db.query(sql, [employeeName, employeeCode, department, designation, dateFromEmployee, dateToEmployee, req.user.id], (err, result) => {
         if (err) throw err;
         res.redirect('/dashboard');
     });

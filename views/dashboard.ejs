@@ -34,9 +34,9 @@
             <div class="col-md-12 text-center">
                 <h3 class="mt-5" style="color: red;">Add Orders</h3>
                 <!-- Button trigger modal for Add Guest -->
-                <button type="button" class="btn btn-primary m-2" data-toggle="modal" data-target="#addGuestModal">Add Guest</button>
+                <button type="button" class="btn btn-primary m-2" data-toggle="modal" data-target="#addGuestModal">Add for guest</button>
                 <!-- Button trigger modal for Add Employee -->
-                <button type="button" class="btn btn-secondary m-2" data-toggle="modal" data-target="#addEmployeeModal">Add Employee</button>
+                <button type="button" class="btn btn-secondary m-2" data-toggle="modal" data-target="#addEmployeeModal">Add for Self</button>
             </div>
         </div>
 
@@ -51,7 +51,9 @@
                         <tr style="background-color: rgb(236, 208, 171);">
                             <th>SN No.</th> <!-- Line number column -->
                             <th> Employee Name</th>
-                            <th>Person to Add</th>
+                            <th>Employee Code</th>
+                            <th>Department</th>
+                            <th>Designation</th>
                             <th>Date From</th>
                             <th>Date To</th>
                         </tr>
@@ -62,7 +64,9 @@
                             <tr class="even-row">
                                 <td><%= employeeLineNumber %></td>
                                 <td><%= employee.name %></td>
-                                <td><%= employee.person_to_add %></td>
+                                <td><%= employee.employeeCode %></td>
+                                <td><%= employee.department %></td>
+                                <td><%= employee.designation %></td>
                                 <td><%= new Date(employee.date_from).toLocaleDateString('en-GB') %></td>
                                 <td><%= new Date(employee.date_to).toLocaleDateString('en-GB') %></td>
                             </tr>
@@ -77,9 +81,10 @@
                     <thead id="guestTableHead">
                         <tr style="background-color: rgb(236, 208, 171);" >
                             <th>SN No.</th> <!-- Line number column -->
-                            <th> Employee Name</th>
                             <th>Guest Name</th>
                             <th>Guest Company</th>
+                            <th>Guest Designation</th>
+                            <th>Remarks</th>
                             <th>Date From</th>
                             <th>Date To</th>
                         </tr>
@@ -90,9 +95,10 @@
                         <% guests.forEach(guest => { %>
                             <tr class="odd-row">
                                 <td><%= guestLineNumber %></td>
-                                <td><%= guest.name %></td>
-                                <td><%= guest.person_to_add %></td>
-                                <td><%= guest.company %></td>
+                                <td><%= guest.guestName %></td>                                
+                                <td><%= guest.guestCompany %></td>
+                                <td><%= guest.guestdesignation %></td>
+                                <td><%= guest.remarks %></td>
                                 <td><%= new Date(guest.date_from).toLocaleDateString('en-GB') %></td>
                                 <td><%= new Date(guest.date_to).toLocaleDateString('en-GB') %></td>
                             </tr>
@@ -123,12 +129,16 @@
                             <input type="text" class="form-control" id="guestName" name="guestName" placeholder="Enter guest name" required>
                         </div>
                         <div class="form-group">
-                            <label for="personToAddGuest">Person to Add</label>
-                            <input type="text" class="form-control" id="personToAddGuest" name="personToAddGuest" placeholder="Enter person to add" required>
-                        </div>
-                        <div class="form-group">
                             <label for="guestCompany">Guest Company</label>
                             <input type="text" class="form-control" id="guestCompany" name="guestCompany" placeholder="Enter guest company" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="guestdesignation">Guest Designation</label>
+                            <input type="text" class="form-control" id="guestdesignation" name="guestdesignation" placeholder="Enter guest designation" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="remarks">Remarks</label>
+                            <input type="text" class="form-control" id="remarks" name="remarks" placeholder="Enter remarks" required>
                         </div>
                         <div class="form-group">
                             <label for="dateFromGuest">Date From</label>
@@ -150,7 +160,7 @@
         <div class="modal-dialog" role="document">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title" id="addEmployeeModalLabel">Add Employee</h5>
+                    <h5 class="modal-title" id="addEmployeeModalLabel">Add Yourself</h5>
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                         <span aria-hidden="true">&times;</span>
                     </button>
@@ -162,8 +172,16 @@
                             <input type="text" class="form-control" id="employeeName" name="employeeName" placeholder="Enter employee name" required>
                         </div>
                         <div class="form-group">
-                            <label for="personToAddEmployee">Person to Add</label>
-                            <input type="text" class="form-control" id="personToAddEmployee" name="personToAddEmployee" placeholder="Enter person to add" required>
+                            <label for="employeeCode">Employee Code</label>
+                            <input type="text" class="form-control" id="employeeCode" name="employeeCode" placeholder="Enter Employee Code" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="department">Department</label>
+                            <input type="text" class="form-control" id="department" name="department" placeholder="Enter Department" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="designation">Designation</label>
+                            <input type="text" class="form-control" id="designation" name="designation" placeholder="Enter Designation" required>
                         </div>
                         <div class="form-group">
                             <label for="dateFromEmployee">Date From</label>
