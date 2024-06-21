@@ -8,6 +8,7 @@ const passport = require('passport');
 const LocalStrategy = require('passport-local').Strategy;
 const bcrypt = require('bcryptjs');
 const flash = require('connect-flash');
+const methodOverride = require('method-override');
 
 // Database connection
 const db = mysql.createConnection({
@@ -25,6 +26,8 @@ db.connect((err) => {
 // Middleware
 app.use(bodyParser.urlencoded({ extended: true }));
 app.set('view engine', 'ejs');
+app.use(methodOverride('_method'));
+app.use(express.urlencoded({extended:true}));
 app.use(session({
     secret: 'secret',
     resave: true,
@@ -116,12 +119,12 @@ app.post('/admin-login', passport.authenticate('admin', {
 }));
 
 app.post('/register', (req, res) => {
-    const { employee_code, employee_name, email, password, isAdmin } = req.body;
+    const { employee_code, employee_name,department,designation, email, password, isAdmin } = req.body;
     const hashedPassword = bcrypt.hashSync(password, 10);
     const isAdminFlag = isAdmin === 'on' ? true : false;
 
-    db.query('INSERT INTO users (employee_code, employee_name, email, password, is_admin) VALUES (?, ?, ?, ?, ?)', 
-        [employee_code, employee_name, email, hashedPassword, isAdminFlag], (err, result) => {
+    db.query('INSERT INTO users (employee_code, employee_name,department,designation, email, password, is_admin) VALUES (?, ?, ?, ?, ?, ?, ?)', 
+        [employee_code, employee_name,department,designation, email, hashedPassword, isAdminFlag], (err, result) => {
         if (err) throw err;
         res.redirect('/login');
     });
@@ -133,6 +136,64 @@ app.get('/admin-register', (req, res) => {
     } else {
         res.redirect('/login');
     }
+});
+
+app.get('/rate-list', (req, res) => {
+   res.render("rate-list.ejs");
+});
+app.get("/edit-item-form",(req,res)=>{
+    const {id} = req.body;
+    res.render("edit-item-form.ejs", {id})
+})
+
+// edit route
+app.get("/edit-item-form/:id",(req,res)=>{
+    let {id} = req.params;
+    let q = `SELECT * FROM RateList WHERE id='${id}'`;
+    try{
+        db.query(q,(err,result)=>{
+            if(err) throw err;
+            let user = result[0]
+            res.render("edit-item-form.ejs" ,{user});
+        });
+    } catch(err){
+        console.log(err);
+        res.send("some error in db");
+    }
+    
+})
+
+//update route
+app.put("/view-rate-list/:id",(req,res)=>{
+    res.send("updated");
+})
+
+app.get('/view-rate-list', (req, res) => {
+    const sql = 'SELECT * FROM RateList';
+
+    db.query(sql, (err, results) => {
+        if (err) {
+            console.error('Error retrieving data from database:', err);
+            return res.status(500).send('Internal Server Error');
+        }
+        // Render the view-rate-list.ejs template with rateList data
+        res.render('view-rate-list', { rateList: results });
+    });
+}); 
+
+app.post('/submit-rate-list', (req, res) => {
+    const { item, rate, date_from, date_to } = req.body;
+    const sql = 'INSERT INTO RateList (item, rate, date_from, date_to) VALUES (?, ?, ?, ?)';
+    const values = [item, rate, date_from, date_to];
+
+    db.query(sql, values, (err, result) => {
+        if (err) {
+            console.error('Error inserting data into database:', err);
+            return res.status(500).send('Internal Server Error');
+        }
+       // console.log('Data inserted successfully:', result);
+        res.redirect('/admin-dashboard');
+    });
 });
 
 app.post('/admin-register', (req, res) => {
@@ -155,6 +216,24 @@ app.post('/login', passport.authenticate('local', {
     failureRedirect: '/login',
     failureFlash: true
 }));
+
+// API endpoint to fetch employee details
+app.get('/api/employee-details', (req, res) => {
+    const userId = req.user.id;
+    
+    db.query('SELECT employee_code, employee_name, department, designation FROM users WHERE id = ?', [userId], (err, results) => {
+        if (err) {
+            console.error('Error fetching employee details: ', err);
+            return res.status(500).send('Internal server error');
+        }
+        
+        if (results.length > 0) {
+            res.json(results[0]);
+        } else {
+            res.status(404).send('Employee not found');
+        }
+    });
+});
 
 app.get('/dashboard', (req, res) => {
     if (req.isAuthenticated()) {
@@ -216,23 +295,117 @@ app.get('/logout', (req, res) => {
     });
 });
 
+
 app.post('/add-guest', (req, res) => {
-    const { guestName,guestCompany, guestdesignation, remarks, dateFromGuest, dateToGuest } = req.body;
-    const sql = 'INSERT INTO guests (guestName,guestCompany, guestdesignation, remarks, date_from, date_to, user_id) VALUES (?, ?, ?, ?, ?, ?, ?)';
-    db.query(sql, [guestName,guestCompany, guestdesignation, remarks, dateFromGuest, dateToGuest, req.user.id], (err, result) => {
-        if (err) throw err;
-        res.redirect('/dashboard');
+    const { orders, employee_name, guestName, guestCompany, guestdesignation, remarks, dateFromGuest, dateToGuest } = req.body;
+    const userId = req.user.id; // Assuming req.user.id contains the user's ID
+
+    const startDate = new Date(dateFromGuest);
+    const endDate = new Date(dateToGuest);
+
+    let currentDate = startDate;
+    const entries = [];
+
+    while (currentDate <= endDate) {
+        const entry = [
+            orders,
+            employee_name,
+            guestName,
+            guestCompany,
+            guestdesignation,
+            remarks,
+            currentDate.toISOString().split('T')[0], // date_from
+            currentDate.toISOString().split('T')[0], // date_to
+            userId
+        ];
+        entries.push(entry);
+
+        // Increment the date by one day
+        currentDate.setDate(currentDate.getDate() + 1);
+    }
+
+    const checkSql = `SELECT * FROM guests WHERE 
+                      orders = ? AND employee_name = ? AND guestName = ? AND guestCompany = ? AND guestdesignation = ? AND 
+                      (date_from BETWEEN ? AND ? OR date_to BETWEEN ? AND ?)`;
+
+    db.query(checkSql, [orders, employee_name, guestName, guestCompany, guestdesignation, dateFromGuest, dateToGuest, dateFromGuest, dateToGuest], (err, results) => {
+        if (err) {
+            console.error('Error checking for duplicates:', err);
+            return res.status(500).json({ error: 'An error occurred while checking for duplicates.' });
+        }
+
+        if (results.length > 0) {
+            // Duplicate entries found
+            return res.status(400).json({ error: 'A similar entry already exists in the database. Please check your input.' });
+        }
+
+        const insertSql = 'INSERT INTO guests (orders, employee_name, guestName, guestCompany, guestdesignation, remarks, date_from, date_to, user_id) VALUES ?';
+
+        db.query(insertSql, [entries], (err, result) => {
+            if (err) {
+                console.error('Error inserting entries:', err);
+                return res.status(500).json({ error: 'An error occurred while creating entries.' });
+            }
+           res.redirect("/dashboard");
+        });
     });
 });
 
+
 app.post('/add-employee', (req, res) => {
-    const { employeeName, employeeCode, department, designation , dateFromEmployee, dateToEmployee } = req.body;
-    const sql = 'INSERT INTO employees (name, employeeCode, department, designation, date_from, date_to, user_id) VALUES (?, ?, ?, ?, ?, ?, ?)';
-    db.query(sql, [employeeName, employeeCode, department, designation, dateFromEmployee, dateToEmployee, req.user.id], (err, result) => {
-        if (err) throw err;
-        res.redirect('/dashboard');
+    const { employeeName, employeeCode, department, designation, orders, dateFromEmployee, dateToEmployee } = req.body;
+    const userId = req.user.id; // Assuming req.user.id contains the user's ID
+
+    const startDate = new Date(dateFromEmployee);
+    const endDate = new Date(dateToEmployee);
+
+    let currentDate = startDate;
+    const entries = [];
+
+    while (currentDate <= endDate) {
+        const entry = [
+            employeeName,
+            employeeCode,
+            department,
+            designation,
+            orders,
+            currentDate.toISOString().split('T')[0], // date_from
+            currentDate.toISOString().split('T')[0], // date_to
+            userId
+        ];
+        entries.push(entry);
+
+        // Increment the date by one day
+        currentDate.setDate(currentDate.getDate() + 1);
+    }
+
+    const checkSql = `SELECT * FROM employees WHERE 
+                      name = ? AND employeeCode = ? AND department = ? AND designation = ? AND orders = ? AND 
+                      (date_from BETWEEN ? AND ? OR date_to BETWEEN ? AND ?)`;
+
+    db.query(checkSql, [employeeName, employeeCode, department, designation, orders, dateFromEmployee, dateToEmployee, dateFromEmployee, dateToEmployee], (err, results) => {
+        if (err) {
+            console.error('Error checking for duplicates:', err);
+            return res.status(500).send({ error: 'An error occurred while checking for duplicates.' });
+        }
+
+        if (results.length > 0) {
+            // Duplicate entries found
+            return res.status(400).send({ error: 'A similar entry already exists in the database. Please check your input.' });
+        }
+
+        const insertSql = 'INSERT INTO employees (name, employeeCode, department, designation, orders, date_from, date_to, user_id) VALUES ?';
+
+        db.query(insertSql, [entries], (err, result) => {
+            if (err) {
+                console.error('Error inserting entries:', err);
+                return res.status(500).send({ error: 'An error occurred while creating entries.' });
+            }
+            res.redirect('/dashboard');
+        });
     });
 });
+
 
 // Start server
 const port = 3000;

@@ -26,6 +26,8 @@
                 <img src="https://media.licdn.com/dms/image/C4D0BAQFEhO_RAbTovQ/company-logo_200_200/0/1630499738773?e=2147483647&v=beta&t=0RA-JcGeh_o3Jd2P0ZxUEhiE875FBTbtwVHVk9i2kLs" alt="Logo" width="60" height="60" class="d-inline-block align-text-top">
                 Sangam India Limited
             </a>
+            <a href="/rate-list" class="btn btn-primary">Add Rate List</a>
+            <a href="/view-rate-list" class="btn btn-primary">View Rate List</a>
             <a href="/logout" class="btn btn-danger">Logout</a>
         </div>
     </nav>
@@ -41,26 +43,32 @@
         <div>
             <div>
                 <h3 style="color: red;">Employee Entries</h3>
-                <table class="table table-bordered table custom-table ">
+                <table class="table table-bordered table custom-table " id="employeeTable">
                     
 <thead id="employeeTableHead">
                         <tr style="background-color: rgb(236, 208, 171);">
-                            <th>SN No.</th>
-                            <th>Employee Name</th>
-                            <th>Person to Add</th>
-                            <th>Date From</th>
-                            <th>Date To</th>
+                          <th>SN No.</th> <!-- Line number column -->
+                          <th>Order Type</th>
+                          <th> Employee Name</th>
+                          <th>Employee Code</th>
+                          <th>Department</th>
+                          <th>Designation</th>
+                          <th>Date From</th>
+                          <!-- <th>Date To</th> -->
                         </tr>
                     </thead>
                     <tbody id="employeeTableBody">
                         <% let employeeLineNumber = 1; %>
                         <% employees.forEach(employee => { %>
-                            <tr class="even-row">
-                                <td><%= employeeLineNumber %></td>
+                            <tr >
+                              <td><%= employeeLineNumber %></td>
+                              <td><%= employee.orders %></td>
                                 <td><%= employee.name %></td>
-                                <td><%= employee.person_to_add %></td>
+                                <td><%= employee.employeeCode %></td>
+                                <td><%= employee.department %></td>
+                                <td><%= employee.designation %></td>
                                 <td><%= new Date(employee.date_from).toLocaleDateString('en-GB') %></td>
-                                <td><%= new Date(employee.date_to).toLocaleDateString('en-GB') %></td>
+                                <!-- <td><%= new Date(employee.date_to).toLocaleDateString('en-GB') %></td> -->
                             </tr>
                             <% employeeLineNumber++; %>
                         <% }); %>
@@ -69,27 +77,33 @@
             </div>
             <div>
                 <h3 style="color: red;">Guest Entries</h3>
-                <table class="table table-bordered table custom-table">
+                <table class="table table-bordered table custom-table" id="guestTable">
                     <thead id="guestTableHead">
                         <tr style="background-color: rgb(236, 208, 171);">
-                            <th>SN No.</th>
-                            <th>Employee Name</th>
-                            <th>Guest Name</th>
-                            <th>Guest Company</th>
-                            <th>Date From</th>
-                            <th>Date To</th>
+                          <th>SN No.</th> <!-- Line number column -->
+                          <th>Order Type</th>
+                          <th>Employee Name</th>
+                          <th>Guest Name</th>
+                          <th>Guest Company</th>
+                          <th>Guest Designation</th>
+                          <th>Remarks</th>
+                          <th>Date </th>
+                          <!-- <th>Date To</th> -->
                         </tr>
                     </thead>
                     <tbody id="guestTableBody">
                         <% let guestLineNumber = 1; %>
                         <% guests.forEach(guest => { %>
-                            <tr class="odd-row">
-                                <td><%= guestLineNumber %></td>
-                                <td><%= guest.name %></td>
-                                <td><%= guest.person_to_add %></td>
-                                <td><%= guest.company %></td>
-                                <td><%= new Date(guest.date_from).toLocaleDateString('en-GB') %></td>
-                                <td><%= new Date(guest.date_to).toLocaleDateString('en-GB') %></td>
+                            <tr >
+                              <td><%= guestLineNumber %></td>
+                              <td><%= guest.orders %></td>
+                              <td><%= guest.employee_name %></td>  
+                              <td><%= guest.guestName %></td>                                
+                              <td><%= guest.guestCompany %></td>
+                              <td><%= guest.guestdesignation %></td>
+                              <td><%= guest.remarks %></td>
+                              <td><%= new Date(guest.date_from).toLocaleDateString('en-GB') %></td>
+                              <!-- <td><%= new Date(guest.date_to).toLocaleDateString('en-GB') %></td> -->
                             </tr>
                             <% guestLineNumber++; %>
                         <% }); %>
@@ -133,27 +147,7 @@
           <a class="text-dark" href="https://sangamgroup.com/">sangamgroup.com</a>
         </div>
       </footer>
-    <script>
-        $(document).ready(function() {
-            // Initialize DataTable for Employee table
-            $('#employeeTable').DataTable({
-                "paging": true,
-                "order": [[0, 'asc']], // Optional: Sort by first column ascending
-                "columnDefs": [
-                    { "targets": 0, "orderable": false } // Disable sorting on SN No. column
-                ]
-            });
-    
-            // Initialize DataTable for Guest table
-            $('#guestTable').DataTable({
-                "paging": true,
-                "order": [[0, 'asc']], // Optional: Sort by first column ascending
-                "columnDefs": [
-                    { "targets": 0, "orderable": false } // Disable sorting on SN No. column
-                ]
-            });
-        });
-    </script>
+      
     
     <!-- Bootstrap JS and dependencies (Popper.js and jQuery) -->
     <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"></script>
@@ -168,5 +162,26 @@
 <!-- DataTables JavaScript -->
 <script src="https://cdn.datatables.net/1.11.4/js/jquery.dataTables.min.js"></script>
 
+<script>
+  $(document).ready(function() {
+                // Initialize DataTable for Employee table
+                $('#employeeTable').DataTable({
+                    "paging": true,
+                    "order": [[0, 'asc']], // Optional: Sort by first column ascending
+                    "columnDefs": [
+                        { "targets": 0, "orderable": false } // Disable sorting on SN No. column
+                    ]
+                });
+    
+                // Initialize DataTable for Guest table
+                $('#guestTable').DataTable({
+                    "paging": true,
+                    "order": [[0, 'asc']], // Optional: Sort by first column ascending
+                    "columnDefs": [
+                        { "targets": 0, "orderable": false } // Disable sorting on SN No. column
+                    ]
+                });
+              });
+</script>
 </body>
 </html>

@@ -10,22 +10,23 @@
     <style>
         /* Define your custom colors */
         .custom-table .even-row {
-          background-color:#b6d4ee; /* Light blue */
+            background-color:#b6d4ee; /* Light blue */
         }
       
         .custom-table .odd-row {
-          background-color: #f7d0ea; /* Lavender */
+            background-color: #f7d0ea; /* Lavender */
         }
-      </style>
+    </style>
+    
 </head>
 <body>
     <nav class="navbar navbar-expand-lg navbar-light bg-light fixed-top" style="height: 100px; font-size: 1.5rem;">
         <div class="container-fluid">
-          <a class="navbar-brand" href="#">
-            <img src="https://media.licdn.com/dms/image/C4D0BAQFEhO_RAbTovQ/company-logo_200_200/0/1630499738773?e=2147483647&v=beta&t=0RA-JcGeh_o3Jd2P0ZxUEhiE875FBTbtwVHVk9i2kLs" alt="Logo" width="60" height="60" class="d-inline-block align-text-top">
-            Sangam India Limited
-          </a>
-          <a href="/logout" class="btn btn-danger">Logout</a> 
+            <a class="navbar-brand" href="#">
+                <img src="https://media.licdn.com/dms/image/C4D0BAQFEhO_RAbTovQ/company-logo_200_200/0/1630499738773?e=2147483647&v=beta&t=0RA-JcGeh_o3Jd2P0ZxUEhiE875FBTbtwVHVk9i2kLs" alt="Logo" width="60" height="60" class="d-inline-block align-text-top">
+                Sangam India Limited
+            </a>
+            <a href="/logout" class="btn btn-danger">Logout</a> 
         </div>
     </nav>
     <h1>Welcome, <%= user.employee_name %></h1>
@@ -34,238 +35,480 @@
             <div class="col-md-12 text-center">
                 <h3 class="mt-5" style="color: red;">Add Orders</h3>
                 <!-- Button trigger modal for Add Guest -->
-                <button type="button" class="btn btn-primary m-2" data-toggle="modal" data-target="#addGuestModal">Add for guest</button>
+                <button type="button" class="btn btn-primary m-2" id="addGuestButton" data-toggle="modal" data-target="#addGuestModal">Add for guest</button>
                 <!-- Button trigger modal for Add Employee -->
-                <button type="button" class="btn btn-secondary m-2" data-toggle="modal" data-target="#addEmployeeModal">Add for Self</button>
+                <button type="button" class="btn btn-secondary m-2" id="addEmployeeButton" data-toggle="modal" data-target="#addEmployeeModal">Add for Self</button>
             </div>
         </div>
 
-  <!-- Table to display entered data -->
-<div >
-    <div>
-        <div >
-            <div >
-                <h3 style="color: red;">Employee Entries</h3>
-                <table class="table table-bordered table table custom-table">
-                    <thead id="employeeTableHead">
-                        <tr style="background-color: rgb(236, 208, 171);">
-                            <th>SN No.</th> <!-- Line number column -->
-                            <th> Employee Name</th>
-                            <th>Employee Code</th>
-                            <th>Department</th>
-                            <th>Designation</th>
-                            <th>Date From</th>
-                            <th>Date To</th>
-                        </tr>
-                    </thead>
-                    <tbody id="employeeTableBody">
-                        <% let employeeLineNumber = 1; %>
-                        <% employees.forEach(employee => { %>
-                            <tr class="even-row">
-                                <td><%= employeeLineNumber %></td>
-                                <td><%= employee.name %></td>
-                                <td><%= employee.employeeCode %></td>
-                                <td><%= employee.department %></td>
-                                <td><%= employee.designation %></td>
-                                <td><%= new Date(employee.date_from).toLocaleDateString('en-GB') %></td>
-                                <td><%= new Date(employee.date_to).toLocaleDateString('en-GB') %></td>
+        <!-- Table to display entered data -->
+        <div>
+            <div>
+                <div>
+                    <h3 style="color: red;">Self Entries</h3>
+                    <table class="table table-bordered table custom-table" id="employeeTable">
+                        <thead id="employeeTableHead">
+                            <tr style="background-color: rgb(236, 208, 171);">
+                                <th>SN No.</th> <!-- Line number column -->
+                                <th>Order Type</th>
+                                <th>Employee Name</th>
+                                <th>Employee Code</th>
+                                <th>Department</th>
+                                <th>Designation</th>
+                                <th>Date </th>
+                                <!-- <th>Date To</th> -->
                             </tr>
-                            <% employeeLineNumber++; %>
-                        <% }); %>
-                    </tbody>
-                </table>
+                        </thead>
+                        <tbody id="employeeTableBody">
+                            <% let employeeLineNumber = 1; %>
+                            <% employees.forEach(employee => { %>
+                                <tr>
+                                    <td><%= employeeLineNumber %></td>
+                                    <td><%= employee.orders %></td>
+                                    <td><%= employee.name %></td>
+                                    <td><%= employee.employeeCode %></td>
+                                    <td><%= employee.department %></td>
+                                    <td><%= employee.designation %></td>
+                                    <td><%= new Date(employee.date_from).toLocaleDateString('en-GB') %></td>
+                                    <!-- <td><%= new Date(employee.date_to).toLocaleDateString('en-GB') %></td> -->
+                                </tr>
+                                <% employeeLineNumber++; %>
+                            <% }); %>
+                        </tbody>
+                    </table>
+                </div>
+                <div>
+                    <h3 style="color: red;">Guest Entries</h3>
+                    <table class="table table-bordered table custom-table" id="guestTable">
+                        <thead id="guestTableHead">
+                            <tr style="background-color: rgb(236, 208, 171);">
+                                <th>SN No.</th> <!-- Line number column -->
+                                <th>Order Type</th>
+                                <th>Guest Name</th>
+                                <th>Guest Company</th>
+                                <th>Guest Designation</th>
+                                <th>Remarks</th>
+                                <th>Date </th>
+                                <!-- <th>Date To</th> -->
+                            </tr>
+                        </thead>
+                        <tbody id="guestTableBody">
+                            <% let guestLineNumber = 1; %>
+                            <% guests.forEach(guest => { %>
+                                <tr >
+                                    <td><%= guestLineNumber %></td>
+                                    <td><%= guest.orders %></td>
+                                    <td><%= guest.guestName %></td>
+                                    <td><%= guest.guestCompany %></td>
+                                    <td><%= guest.guestdesignation %></td>
+                                    <td><%= guest.remarks %></td>
+                                    <td><%= new Date(guest.date_from).toLocaleDateString('en-GB') %></td>
+                                    <!-- <td><%= new Date(guest.date_to).toLocaleDateString('en-GB') %></td> -->
+                                </tr>
+                                <% guestLineNumber++; %>
+                            <% }); %>
+                        </tbody>
+                    </table>
+                </div>
             </div>
-            <div >
-                <h3 style="color: red;">Guest Entries</h3>
-                <table class="table table-bordered table custom-table">
-                    <thead id="guestTableHead">
-                        <tr style="background-color: rgb(236, 208, 171);" >
-                            <th>SN No.</th> <!-- Line number column -->
-                            <th>Guest Name</th>
-                            <th>Guest Company</th>
-                            <th>Guest Designation</th>
-                            <th>Remarks</th>
-                            <th>Date From</th>
-                            <th>Date To</th>
-                        </tr>
-                    </thead>
-                    <tbody id="guestTableBody">
+        </div>
 
-                        <% let guestLineNumber = 1; %>
-                        <% guests.forEach(guest => { %>
-                            <tr class="odd-row">
-                                <td><%= guestLineNumber %></td>
-                                <td><%= guest.guestName %></td>                                
-                                <td><%= guest.guestCompany %></td>
-                                <td><%= guest.guestdesignation %></td>
-                                <td><%= guest.remarks %></td>
-                                <td><%= new Date(guest.date_from).toLocaleDateString('en-GB') %></td>
-                                <td><%= new Date(guest.date_to).toLocaleDateString('en-GB') %></td>
-                            </tr>
-                            <% guestLineNumber++; %>
-                        <% }); %>
-                    </tbody>
-                </table>
+        <!-- Modal for Add Guest -->
+    <!-- Modal for Add Guest -->
+<div class="modal fade" id="addGuestModal" tabindex="-1" role="dialog" aria-labelledby="addGuestModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="addGuestModalLabel">Add Guest</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form id="addGuestForm" action="/add-guest" method="POST">
+                    <!-- Hidden input for employee name from logged-in user -->
+                    <div class="form-group">
+                        
+                    <input type="hidden" class="form-control" id="employee_name" name="employee_name" placeholder="Enter Employee Name" readonly >
+                    </div>
+                    <div class="form-group">
+                        <label for="orders" class="required">Order</label>
+                        <select class="form-control" id="orders" name="orders" required>
+                          <option value="" disabled selected>Select Order</option>
+                          <option value="Lunch">Lunch</option>
+                          <option value="Breakfast">Breakfast</option>
+                          
+                          <!-- Add more options as needed -->
+                        </select>
+                      </div>
+                    <div class="form-group">
+                        <label for="guestName">Guest Name</label>
+                        <input type="text" class="form-control" id="guestName" name="guestName" placeholder="Enter guest name" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="guestCompany">Guest Company</label>
+                        <input type="text" class="form-control" id="guestCompany" name="guestCompany" placeholder="Enter guest company" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="guestdesignation">Guest Designation</label>
+                        <input type="text" class="form-control" id="guestdesignation" name="guestdesignation" placeholder="Enter guest designation" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="remarks">Remarks</label>
+                        <input type="text" class="form-control" id="remarks" name="remarks" placeholder="Enter remarks" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="time">Time</label>
+                        <input type="time" class="form-control" id="time" name="time" placeholder="Enter time" required readonly>
+                    </div>
+                    <div class="form-group">
+                        <label for="dateFromGuest">Date From</label>
+                        <input type="date" class="form-control" id="dateFromGuest" name="dateFromGuest" min="<%= new Date().toISOString().split('T')[0] %>" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="dateToGuest">Date To</label>
+                        <input type="date" class="form-control" id="dateToGuest" name="dateToGuest" min="<%= new Date().toISOString().split('T')[0] %>" required>
+                    </div>
+                    <button type="submit" class="btn btn-primary">Submit</button>
+                </form>
             </div>
         </div>
     </div>
 </div>
 
+        <!-- Modal for Add Employee -->
+        <div class="modal fade" id="addEmployeeModal" tabindex="-1" role="dialog" aria-labelledby="addEmployeeModalLabel" aria-hidden="true">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="addEmployeeModalLabel">Add Yourself</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <form id="addEmployeeForm" action="/add-employee" method="POST">
+                           
+                            <div class="form-group">
+                                <label for="employeeName">Employee Name</label>
+                                <input type="text" class="form-control" id="employeeName" name="employeeName" placeholder="Enter employee name" required readonly>
+                            </div>
+                            <div class="form-group">
+                                <label for="employeeCode">Employee Code</label>
+                                <input type="text" class="form-control" id="employeeCode" name="employeeCode" placeholder="Enter Employee Code" required readonly>
+                            </div>
+                            <div class="form-group">
+                                <label for="department">Department</label>
+                                <input type="text" class="form-control" id="department" name="department" placeholder="Enter Department" required readonly>
+                            </div>
+                            <div class="form-group">
+                                <label for="designation">Designation</label>
+                                <input type="text" class="form-control" id="designation" name="designation" placeholder="Enter Designation" required readonly>
+                            </div>
+                            <div class="form-group">
+                                <!-- <label for="timeat">Time</label> -->
+                                <input type="hidden" class="form-control" id="timeat" name="timeat" placeholder="Enter time" required readonly>
+                            </div>
+                            <div class="form-group">
+                                <label for="orders" class="required">Order</label>
+                                <select class="form-control" id="orders" name="orders" required>
+                                  <option value="" disabled selected>Select Order</option>
+                                  <option value="Lunch">Lunch</option>
+                                  <option value="Breakfast">Breakfast</option>
+                                </select>
+                            <div class="form-group">
+                                <label for="dateFromEmployee">Date From</label>
+                                <input type="date" class="form-control" id="dateFromEmployee" name="dateFromEmployee" min="<%= new Date().toISOString().split('T')[0] %>" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="dateToEmployee">Date To</label>
+                                <input type="date" class="form-control" id="dateToEmployee" name="dateToEmployee" min="<%= new Date().toISOString().split('T')[0] %>" required>
+                            </div>
+                            <button type="submit" class="btn btn-primary">Submit</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <footer class="bg-light text-center text-lg-start mt-5">
+            <div class="container p-4">
+                <div class="row justify-content-center mb-4">
+                    <div>
+                        <a class="navbar-brand" href="#">
+                            <img src="https://media.licdn.com/dms/image/C4D0BAQFEhO_RAbTovQ/company-logo_200_200/0/1630499738773?e=2147483647&v=beta&t=0RA-JcGeh_o3Jd2P0ZxUEhiE875FBTbtwVHVk9i2kLs" alt="Logo" width="30" height="30" class="d-inline-block align-text-top">
+                            Sangam India Limited
+                        </a>
+                    </div>
+                </div>
+                <div class="row justify-content-center">
+                    <div class="col-auto">
+                        <h5 class="text-uppercase mb-3">Follow Us</h5>
+                        <ul class="list-unstyled d-flex justify-content-center">
+                            <li class="mx-2">
+                                <a href="https://www.facebook.com/SangamGroupBhilwara/" class="text-dark"><i class="fab fa-facebook-f fa-lg"></i></a>
+                            </li>
+                            <!-- <li class="mx-2">
+                                <a href="#" class="text-dark"><i class="fab fa-twitter fa-lg"></i></a>
+                            </li> -->
+                            <li class="mx-2">
+                                <a href="https://www.instagram.com/sangamgroup_/?hl=en" class="text-dark"><i class="fab fa-instagram fa-lg"></i></a>
+                            </li>
+                            <li class="mx-2">
+                                <a href="https://www.linkedin.com/company/sangam-india-ltd-bhilwara/" class="text-dark"><i class="fab fa-linkedin-in fa-lg"></i></a>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            <div class="text-center p-3" style="background-color: rgba(0, 0, 0, 0.2);">
+                © 2024 Sangam India Limited:
+                <a class="text-dark" href="https://sangamgroup.com/">sangamgroup.com</a>
+            </div>
+        </footer>
+        
+        <!-- Bootstrap JS and dependencies (Popper.js and jQuery) -->
+        <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.11.0/umd/popper.min.js"></script>
+        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
+        <!-- DataTables CSS -->
+        <link href="https://cdn.datatables.net/1.11.4/css/jquery.dataTables.min.css" rel="stylesheet">
+        <!-- jQuery -->
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+        <!-- DataTables JavaScript -->
+        <script src="https://cdn.datatables.net/1.11.4/js/jquery.dataTables.min.js"></script>
 
-    <!-- Modal for Add Guest -->
-    <div class="modal fade" id="addGuestModal" tabindex="-1" role="dialog" aria-labelledby="addGuestModalLabel" aria-hidden="true">
-        <div class="modal-dialog" role="document">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="addGuestModalLabel">Add Guest</h5>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
-                </div>
-                <div class="modal-body">
-                    <form id="addGuestForm" action="/add-guest" method="POST">
-                        <div class="form-group">
-                            <label for="guestName">Guest Name</label>
-                            <input type="text" class="form-control" id="guestName" name="guestName" placeholder="Enter guest name" required>
-                        </div>
-                        <div class="form-group">
-                            <label for="guestCompany">Guest Company</label>
-                            <input type="text" class="form-control" id="guestCompany" name="guestCompany" placeholder="Enter guest company" required>
-                        </div>
-                        <div class="form-group">
-                            <label for="guestdesignation">Guest Designation</label>
-                            <input type="text" class="form-control" id="guestdesignation" name="guestdesignation" placeholder="Enter guest designation" required>
-                        </div>
-                        <div class="form-group">
-                            <label for="remarks">Remarks</label>
-                            <input type="text" class="form-control" id="remarks" name="remarks" placeholder="Enter remarks" required>
-                        </div>
-                        <div class="form-group">
-                            <label for="dateFromGuest">Date From</label>
-                            <input type="date" class="form-control" id="dateFromGuest" name="dateFromGuest" required>
-                        </div>
-                        <div class="form-group">
-                            <label for="dateToGuest">Date To</label>
-                            <input type="date" class="form-control" id="dateToGuest" name="dateToGuest" required>
-                        </div>
-                        <button type="submit" class="btn btn-primary">Submit</button>
-                    </form>
-                </div>
-            </div>
-        </div>
-    </div>
+        <script>
+            $(document).ready(function() {
+                // Initialize DataTable for Employee table
+                $('#employeeTable').DataTable({
+                    "paging": true,
+                    "order": [[0, 'asc']], // Optional: Sort by first column ascending
+                    "columnDefs": [
+                        { "targets": 0, "orderable": false } // Disable sorting on SN No. column
+                    ]
+                });
+            
+                // Initialize DataTable for Guest table
+                $('#guestTable').DataTable({
+                    "paging": true,
+                    "order": [[0, 'asc']], // Optional: Sort by first column ascending
+                    "columnDefs": [
+                        { "targets": 0, "orderable": false } // Disable sorting on SN No. column
+                    ]
+                });
+            });
+            </script>
 
-    <!-- Modal for Add Employee -->
-    <div class="modal fade" id="addEmployeeModal" tabindex="-1" role="dialog" aria-labelledby="addEmployeeModalLabel" aria-hidden="true">
-        <div class="modal-dialog" role="document">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="addEmployeeModalLabel">Add Yourself</h5>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
-                </div>
-                <div class="modal-body">
-                    <form id="addEmployeeForm" action="/add-employee" method="POST">
-                        <div class="form-group">
-                            <label for="employeeName">Employee Name</label>
-                            <input type="text" class="form-control" id="employeeName" name="employeeName" placeholder="Enter employee name" required>
-                        </div>
-                        <div class="form-group">
-                            <label for="employeeCode">Employee Code</label>
-                            <input type="text" class="form-control" id="employeeCode" name="employeeCode" placeholder="Enter Employee Code" required>
-                        </div>
-                        <div class="form-group">
-                            <label for="department">Department</label>
-                            <input type="text" class="form-control" id="department" name="department" placeholder="Enter Department" required>
-                        </div>
-                        <div class="form-group">
-                            <label for="designation">Designation</label>
-                            <input type="text" class="form-control" id="designation" name="designation" placeholder="Enter Designation" required>
-                        </div>
-                        <div class="form-group">
-                            <label for="dateFromEmployee">Date From</label>
-                            <input type="date" class="form-control" id="dateFromEmployee" name="dateFromEmployee" required>
-                        </div>
-                        <div class="form-group">
-                            <label for="dateToEmployee">Date To</label>
-                            <input type="date" class="form-control" id="dateToEmployee" name="dateToEmployee" required>
-                        </div>
-                        <button type="submit" class="btn btn-primary">Submit</button>
-                    </form>
-                </div>
-            </div>
-        </div>
-    </div>
-    <footer class="bg-light text-center text-lg-start mt-5">
-        <div class="container p-4">
-          <div class="row justify-content-center mb-4">
-            <div>
-              <a class="navbar-brand" href="#">
-                <img src="https://media.licdn.com/dms/image/C4D0BAQFEhO_RAbTovQ/company-logo_200_200/0/1630499738773?e=2147483647&v=beta&t=0RA-JcGeh_o3Jd2P0ZxUEhiE875FBTbtwVHVk9i2kLs" alt="Logo" width="30" height="30" class="d-inline-block align-text-top">
-                Sangam India Limited
-              </a>
-            </div>
-          </div>
-          <div class="row justify-content-center">
-            <div class="col-auto">
-              <h5 class="text-uppercase mb-3">Follow Us</h5>
-              <ul class="list-unstyled d-flex justify-content-center">
-                <li class="mx-2">
-                  <a href="https://www.facebook.com/SangamGroupBhilwara/" class="text-dark"><i class="fab fa-facebook-f fa-lg"></i></a>
-                </li>
-                <!-- <li class="mx-2">
-                  <a href="#" class="text-dark"><i class="fab fa-twitter fa-lg"></i></a>
-                </li> -->
-                <li class="mx-2">
-                  <a href="https://www.instagram.com/sangamgroup_/?hl=en" class="text-dark"><i class="fab fa-instagram fa-lg"></i></a>
-                </li>
-                <li class="mx-2">
-                  <a href="https://www.linkedin.com/company/sangam-india-ltd-bhilwara/" class="text-dark"><i class="fab fa-linkedin-in fa-lg"></i></a>
-                </li>
-              </ul>
-            </div>
-          </div>
-        </div>
-        <div class="text-center p-3" style="background-color: rgba(0, 0, 0, 0.2);">
-          © 2024 Sangam India Limited:
-          <a class="text-dark" href="https://sangamgroup.com/">sangamgroup.com</a>
-        </div>
-      </footer>
-    <script>
+     <script>
+        // Add event listener for Add for Self button
+                $('#addEmployeeButton').on('click', function() {
+                    // Make an AJAX request to fetch employee details
+                    $.ajax({
+                        url: '/api/employee-details',
+                        method: 'GET',
+                        success: function(data) {
+                            // Populate the form fields with employee details
+                            $('#employeeName').val(data.employee_name);
+                            $('#employeeCode').val(data.employee_code);
+                            $('#department').val(data.department);
+                            $('#designation').val(data.designation);
+                        },
+                        error: function(xhr, status, error) {
+                            console.error('Failed to fetch employee details:', error);
+                        }
+                    });
+                });
+                
+        </script>
+
+        <script>
+            
+            $('#addGuestButton').on('click', function() {
+                    // Make an AJAX request to fetch employee details
+                    $.ajax({
+                        url: '/api/employee-details',
+                        method: 'GET',
+                        success: function(data) {
+                            // Populate the form fields with employee details
+                            $('#employee_name').prop('disabled', false).val(data.employee_name);
+                           
+                        },
+                        error: function(xhr, status, error) {
+                            console.error('Failed to fetch employee details:', error);
+                        }
+                    });
+                });
+
+            
+            </script>
+            <script>
+                // Function to set current time to the input field
+                function setCurrentTime() {
+                    var now = new Date();
+                    var hours = now.getHours().toString().padStart(2, '0');
+                    var minutes = now.getMinutes().toString().padStart(2, '0');
+                    var timeString = hours + ':' + minutes;
+                    
+                    // Set the value of the input field
+                    document.getElementById('timeat').value = timeString;
+                }
+            
+                // Call setCurrentTime when the page is loaded
+                window.onload = function() {
+                    setCurrentTime();
+                };
+            </script>
+            
+            <script>
+                // Script to dynamically set real-time to the time input and disable/enable submit button based on date and time
+                document.addEventListener('DOMContentLoaded', function() {
+                    var timeInput = document.getElementById('time');
+                    var dateFromInput = document.getElementById('dateFromEmployee');
+                    var submitButton = document.getElementById('submitButton');
+            
+                    // Function to set current time in the time input field
+                    function setCurrentTime() {
+                        var now = new Date();
+                        var hours = now.getHours().toString().padStart(2, '0');
+                        var minutes = now.getMinutes().toString().padStart(2, '0');
+                        var currentTime = hours + ':' + minutes;
+                        timeInput.value = currentTime;
+                    }
+            
+                    // Function to check if current time is before 11:00 AM
+                    function isBeforeElevenAM() {
+                        var now = new Date();
+                        var hours = now.getHours();
+                        var minutes = now.getMinutes();
+                        return (hours < 11 || (hours === 11 && minutes === 0));
+                    }
+            
+                    // Function to handle form inputs change
+                    function handleFormInputsChange() {
+                        var currentDate = new Date();
+                        var selectedDate = new Date(dateFromInput.value);
+            
+                        // Enable submit button if date is not today or if it's today and time is before 11:00 AM
+                        submitButton.disabled = !(selectedDate.toDateString() === currentDate.toDateString() && isBeforeElevenAM());
+                    }
+            
+                    // Set current time when the page loads
+                    setCurrentTime();
+            
+                    // Attach change event listeners to relevant inputs
+                    dateFromInput.addEventListener('change', handleFormInputsChange);
+                });
+            </script>
+      <script>
         $(document).ready(function() {
-            // Initialize DataTable for Employee table
-            $('#employeeTable').DataTable({
-                "paging": true,
-                "order": [[0, 'asc']], // Optional: Sort by first column ascending
-                "columnDefs": [
-                    { "targets": 0, "orderable": false } // Disable sorting on SN No. column
-                ]
-            });
+            // Function to check if current time is after 11:00 AM
+            function isAfterElevenAM() {
+                var now = new Date();
+                var hours = now.getHours();
+                var minutes = now.getMinutes();
+                return (hours > 11 || (hours === 11 && minutes > 0));
+            }
     
-            // Initialize DataTable for Guest table
-            $('#guestTable').DataTable({
-                "paging": true,
-                "order": [[0, 'asc']], // Optional: Sort by first column ascending
-                "columnDefs": [
-                    { "targets": 0, "orderable": false } // Disable sorting on SN No. column
-                ]
-            });
+            // Function to handle form inputs change
+            function handleFormInputsChange() {
+                var currentDate = new Date();
+                var selectedDateFrom = new Date($('#dateFromEmployee').val());
+                var selectedDateTo = new Date($('#dateToEmployee').val());
+                var timeValue = $('#time').val();
+                
+                // Parse the time input to get hours and minutes
+                var hours = parseInt(timeValue.split(':')[0]);
+                var minutes = parseInt(timeValue.split(':')[1]);
+    
+                // Check if both selected dates are today's date and time is after 11:00 AM
+                if (selectedDateFrom.toDateString() === currentDate.toDateString() && 
+                    selectedDateTo.toDateString() === currentDate.toDateString() &&
+                    isAfterElevenAM()) {
+                    // Disable submit button
+                    $('#addEmployeeForm button[type="submit"]').prop('disabled', true);
+                } else {
+                    // Enable submit button
+                    $('#addEmployeeForm button[type="submit"]').prop('disabled', false);
+                }
+            }
+    
+            // Attach change event listeners to relevant inputs
+            $('#dateFromEmployee').on('change', handleFormInputsChange);
+            $('#dateToEmployee').on('change', handleFormInputsChange);
+            $('#time').on('change', handleFormInputsChange);
+    
+            // Initial check on page load
+            handleFormInputsChange();
         });
     </script>
+     <script>
+        $(document).ready(function() {
+            // Function to check if current time is after 11:00 AM
+            function isAfterElevenAM() {
+                var now = new Date();
+                var hours = now.getHours();
+                var minutes = now.getMinutes();
+                return (hours > 11 || (hours === 11 && minutes > 0));
+            }
     
-    <!-- Bootstrap JS and dependencies (Popper.js and jQuery) -->
-    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.11.0/umd/popper.min.js"></script>
-    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
-    <!-- DataTables CSS -->
-<link href="https://cdn.datatables.net/1.11.4/css/jquery.dataTables.min.css" rel="stylesheet">
+            // Function to handle form inputs change
+            function handleFormInputsChange() {
+                var currentDate = new Date();
+                var selectedDateFrom = new Date($('#dateFromGuest').val());
+                var selectedDateTo = new Date($('#dateToGuest').val());
+                var timeValue = $('#time').val();
+                
+                // Parse the time input to get hours and minutes
+                var hours = parseInt(timeValue.split(':')[0]);
+                var minutes = parseInt(timeValue.split(':')[1]);
+    
+                // Check if both selected dates are today's date and time is after 11:00 AM
+                if (selectedDateFrom.toDateString() === currentDate.toDateString() && 
+                    selectedDateTo.toDateString() === currentDate.toDateString() &&
+                    isAfterElevenAM()) {
+                    // Disable submit button
+                    $('#addGuestForm button[type="submit"]').prop('disabled', true);
+                } else {
+                    // Enable submit button
+                    $('#addGuestForm button[type="submit"]').prop('disabled', false);
+                }
+            }
+    
+            // Attach change event listeners to relevant inputs
+            $('#dateFromGuest').on('change', handleFormInputsChange);
+            $('#dateToGuest').on('change', handleFormInputsChange);
+            $('#time').on('change', handleFormInputsChange);
+    
+            // Initial check on page load
+            handleFormInputsChange();
+        });
+    </script>
+     <script>
+        function submitForm(event) {
+            event.preventDefault(); // Prevent the form from submitting the default way
 
-<!-- jQuery -->
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+            const formData = new FormData(event.target);
 
-<!-- DataTables JavaScript -->
-<script src="https://cdn.datatables.net/1.11.4/js/jquery.dataTables.min.js"></script>
-
-</body>
+            fetch('/add-guest', {
+                method: 'POST',
+                body: formData
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.error) {
+                    alert(data.error); // Display error message as alert
+                } else {
+                    window.location.href = '/dashboard'; // Redirect on success
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('An error occurred while submitting the form.');
+            });
+        }
+    </script>
+    
+    
+    
+    </body>
 </html>
