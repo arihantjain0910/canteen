@@ -165,7 +165,30 @@ app.get("/edit-item-form/:id",(req,res)=>{
 
 //update route
 app.put("/view-rate-list/:id",(req,res)=>{
-    res.send("updated");
+    let {id} = req.params;
+    let{item : item , rate : rate, date_from : date_from, date_to : date_to} = req.body;
+    let q = `SELECT * FROM RateList WHERE id='${id}'`;
+    try{
+        db.query(q,(err,result)=>{
+            if(err) throw err;
+            let user = result[0]
+          let q2 = `UPDATE RateList SET item='${item}',rate='${rate}', date_from='${date_from}', date_to='${date_to}'WHERE id='${id}'`;
+          try{
+            db.query(q2,(err,result)=>{
+                if(err) throw err;
+                // let user = result[0]
+                // res.render("edit-item-form.ejs" ,{user});
+                res.redirect('/view-rate-list');
+            });
+        } catch(err){
+            console.log(err);
+            res.send("some error in db");
+        }
+        });
+    } catch(err){
+        console.log(err);
+        res.send("some error in db");
+    }
 })
 
 app.get('/view-rate-list', (req, res) => {

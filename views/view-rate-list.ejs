@@ -13,24 +13,24 @@
         <table class="table">
             <thead>
                 <tr>
-                    <th>ID</th>
+                    <!-- <th>ID</th> -->
                     <th>Item</th>
                     <th>Rate</th>
                     <th>Date From</th>
                     <th>Date To</th>
-                    <th>Created At</th>
+                    <!-- <th>Created At</th> -->
                     <th>Edit Button</th>
                 </tr>
             </thead>
             <tbody>
                 <% rateList.forEach(rate => { %>
                     <tr>
-                        <td><%= rate.id %></td>
+                        <!-- <td><%= rate.id %></td> -->
                         <td><%= rate.item %></td>
                         <td><%= rate.rate %></td>
                         <td><%= rate.date_from ? rate.date_from.toISOString().split('T')[0] : '' %></td>
                         <td><%= rate.date_to ? rate.date_to.toISOString().split('T')[0] : '' %></td>
-                        <td><%= rate.created_at ? rate.created_at.toISOString().split('T')[0] : '' %></td>
+                        <!-- <td><%= rate.created_at ? rate.created_at.toISOString().split('T')[0] : '' %></td> -->
                         <td> <form action="/edit-item-form/<%=rate.id%>" method="GET">
                             <button type="submit" class="btn btn-primary">Edit Item</button></td>
                         </form>
