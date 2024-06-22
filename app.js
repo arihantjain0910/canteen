@@ -138,6 +138,23 @@ app.get('/admin-register', (req, res) => {
     }
 });
 
+
+app.get("/view-menu",(req,res)=>{
+    let q = "SELECT * FROM RateList";
+    try{
+        db.query(q,(err,result)=>{
+            if(err) throw err;
+            let menu = result;
+            res.render("view-menu.ejs" ,{menu});
+        });
+    } catch(err){
+        console.log(err);
+        res.send("some error in db");
+    }
+
+    
+})
+
 app.get('/rate-list', (req, res) => {
    res.render("rate-list.ejs");
 });
@@ -145,6 +162,8 @@ app.get("/edit-item-form",(req,res)=>{
     const {id} = req.body;
     res.render("edit-item-form.ejs", {id})
 })
+
+
 
 // edit route
 app.get("/edit-item-form/:id",(req,res)=>{
@@ -315,6 +334,16 @@ app.get('/logout', (req, res) => {
             return next(err);
         }
         res.redirect('/login');
+    });
+});
+
+app.get('/admin-logout', (req, res) => {
+    req.logout((err) => {
+        if (err) {
+            console.error('Error during logout:', err);
+            return next(err);
+        }
+        res.redirect('/admin-login');
     });
 });
 
