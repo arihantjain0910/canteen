@@ -43,51 +43,57 @@ passport.use(new LocalStrategy({
     passwordField: 'password'
 }, (employee_code, password, done) => {
     db.query('SELECT * FROM users WHERE employee_code = ?', [employee_code], (err, results) => {
-        if (err) throw err;
+        if (err) {
+            console.error('Error retrieving user:', err);
+            return done(err);
+        }
         if (results.length === 0) {
             return done(null, false, { message: 'Incorrect employee code.' });
         }
         const user = results[0];
-        bcrypt.compare(password, user.password, (err, isMatch) => {
-            if (err) throw err;
-            if (isMatch) {
-                return done(null, user);
-            } else {
-                return done(null, false, { message: 'Incorrect password.' });
-            }
-        });
+        // Compare plain text passwords
+        if (password !== user.password) {
+            return done(null, false, { message: 'Incorrect password.' });
+        }
+        return done(null, user);
     });
 }));
+
 // Passport Local Strategy for Admin
 passport.use('admin', new LocalStrategy({
     usernameField: 'employee_code',
     passwordField: 'password'
 }, (employee_code, password, done) => {
     db.query('SELECT * FROM users WHERE employee_code = ?', [employee_code], (err, results) => {
-        if (err) throw err;
-        
+        if (err) {
+            console.error('Database query error:', err);
+            return done(err);
+        }
+
         if (results.length === 0) {
+            console.log('Admin login: Incorrect employee code.');
             return done(null, false, { message: 'Incorrect employee code.' });
         }
-        
+
         const user = results[0];
 
         // Check if the user is an admin
         if (!user.is_admin) {
+            console.log('Admin login: Not an admin.');
             return done(null, false, { message: 'You are not authorized to access this page.' });
         }
 
-        // Compare passwords
-        bcrypt.compare(password, user.password, (err, isMatch) => {
-            if (err) throw err;
-            if (isMatch) {
-                return done(null, user);
-            } else {
-                return done(null, false, { message: 'Incorrect password.' });
-            }
-        });
+        // Compare plain text passwords
+        if (password !== user.password) {
+            console.log('Admin login: Incorrect password.');
+            return done(null, false, { message: 'Incorrect password.' });
+        }
+
+        console.log('Admin login: Success.');
+        return done(null, user);
     });
 }));
+
 
 passport.serializeUser((user, done) => {
     done(null, user.id);
@@ -119,16 +125,25 @@ app.post('/admin-login', passport.authenticate('admin', {
 }));
 
 app.post('/register', (req, res) => {
-    const { employee_code, employee_name,department,designation, email, password, isAdmin } = req.body;
-    const hashedPassword = bcrypt.hashSync(password, 10);
+    const { employee_code, employee_name, department, designation, email, password, isAdmin } = req.body;
+    // Remove hashing of password
+    // const hashedPassword = bcrypt.hashSync(password, 10);
     const isAdminFlag = isAdmin === 'on' ? true : false;
 
-    db.query('INSERT INTO users (employee_code, employee_name,department,designation, email, password, is_admin) VALUES (?, ?, ?, ?, ?, ?, ?)', 
-        [employee_code, employee_name,department,designation, email, hashedPassword, isAdminFlag], (err, result) => {
-        if (err) throw err;
+    // Use plain text password directly
+    db.query('INSERT INTO users (employee_code, employee_name, department, designation, email, password, is_admin) VALUES (?, ?, ?, ?, ?, ?, ?)', 
+        [employee_code, employee_name, department, designation, email, password, isAdminFlag], (err, result) => {
+        if (err) {
+            console.error('Error registering user:', err);
+            return res.status(500).send('Internal Server Error');
+        }
         res.redirect('/login');
     });
 });
+
+
+
+
 
 app.get('/admin-register', (req, res) => {
     if (req.isAuthenticated() && req.user.is_admin) {
@@ -163,7 +178,24 @@ app.get("/edit-item-form",(req,res)=>{
     res.render("edit-item-form.ejs", {id})
 })
 
+app.delete("/delete-item/:id",(req,res)=>{
+    let {id} = req.params;
+    let q = `DELETE FROM RateList WHERE id='${id}'`;
+    try{
+        db.query(q,(err,result)=>{
+            if(err) throw err;
+            // let user = result[0]
+            res.redirect("/view-rate-list");
+        });
+    } catch(err){
+        console.log(err);
+        res.send("some error in db");
+    }
+})
 
+app.get("/book-taxi",(req,res)=>{
+    res.render("book-taxi.ejs")
+})
 
 // edit route
 app.get("/edit-item-form/:id",(req,res)=>{
@@ -328,6 +360,21 @@ app.get('/admin-dashboard', (req, res) => {
     }
 });
 
+app.delete('/delete-entry/:id',(req,res)=>{
+    let {id} = req.params;
+    let q = `DELETE FROM employees WHERE id='${id}'`;
+    try{
+        db.query(q,(err,result)=>{
+            if(err) throw err;
+            // let user = result[0]
+            res.redirect("/admin-dashboard");
+        });
+    } catch(err){
+        console.log(err);
+        res.send("some error in db");
+    }
+})
+
 app.get('/logout', (req, res) => {
     req.logout(err => {
         if (err) {
@@ -405,8 +452,11 @@ app.post('/add-guest', (req, res) => {
 
 
 app.post('/add-employee', (req, res) => {
-    const { employeeName, employeeCode, department, designation, orders, dateFromEmployee, dateToEmployee } = req.body;
+    //const isAttended = isAttended === 'on' ? true : false;
+    const { employeeName, employeeCode, department, designation, orders, dateFromEmployee, dateToEmployee, isAttended } = req.body;
     const userId = req.user.id; // Assuming req.user.id contains the user's ID
+
+    const isAttendedFlag = isAttended === 'on';
 
     const startDate = new Date(dateFromEmployee);
     const endDate = new Date(dateToEmployee);
@@ -423,7 +473,8 @@ app.post('/add-employee', (req, res) => {
             orders,
             currentDate.toISOString().split('T')[0], // date_from
             currentDate.toISOString().split('T')[0], // date_to
-            userId
+            userId,
+            isAttendedFlag
         ];
         entries.push(entry);
 
@@ -446,7 +497,7 @@ app.post('/add-employee', (req, res) => {
             return res.status(400).send({ error: 'A similar entry already exists in the database. Please check your input.' });
         }
 
-        const insertSql = 'INSERT INTO employees (name, employeeCode, department, designation, orders, date_from, date_to, user_id) VALUES ?';
+        const insertSql = 'INSERT INTO employees (name, employeeCode, department, designation, orders, date_from, date_to, user_id, isAttended) VALUES ?';
 
         db.query(insertSql, [entries], (err, result) => {
             if (err) {

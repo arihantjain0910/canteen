@@ -27,7 +27,7 @@
                 Sangam India Limited
             </a>
             <div class="ms-auto">
-                <a href="/view-menu" class="btn btn-primary mx-2">View Menu</a>
+                <a href="/view-menu" class="btn btn-primary mx-2">View Today's Menu</a>
                 <a href="/logout" class="btn btn-danger">Logout</a>
             </div>
         </div>
@@ -144,6 +144,7 @@
                           
                           <!-- Add more options as needed -->
                         </select>
+                        <small style="color: red;" class="form-text"> *you can book a meal till 11AM for today</small>
                       </div>
                     <div class="form-group">
                         <label for="guestName">Guest Name</label>
@@ -189,6 +190,7 @@
                         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                             <span aria-hidden="true">&times;</span>
                         </button>
+                   
                     </div>
                     <div class="modal-body">
                         <form id="addEmployeeForm" action="/add-employee" method="POST">
@@ -219,7 +221,10 @@
                                   <option value="" disabled selected>Select Order</option>
                                   <option value="LUNCH">LUNCH</option>
                                   <option value="BREAKFAST">BREAKFAST</option>
+                                  
                                 </select>
+                                <small style="color: red;" class="form-text"> *you can book a meal till 11AM for today</small>
+                                </div>
                             <div class="form-group">
                                 <label for="dateFromEmployee">Date From</label>
                                 <input type="date" class="form-control" id="dateFromEmployee" name="dateFromEmployee" min="<%= new Date().toISOString().split('T')[0] %>" required>

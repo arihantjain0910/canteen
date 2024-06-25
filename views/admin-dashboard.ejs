@@ -8,13 +8,13 @@
     <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <style>
-        /* Define your custom colors */
+        
         .custom-table .even-row {
-          background-color:#b6d4ee; /* Light blue */
+          background-color:#b6d4ee; 
         }
       
         .custom-table .odd-row {
-          background-color: #f7d0ea; /* Lavender */
+          background-color: #f7d0ea; 
         }
       </style>
 </head>
@@ -27,8 +27,8 @@
             Sangam India Limited
         </a>
         <div class="d-flex me-auto">
-            <a href="/rate-list" class="btn btn-primary mx-2">Add Rate List</a>
-            <a href="/view-rate-list" class="btn btn-secondary mx-2">View Rate List</a>
+            <a href="/rate-list" class="btn btn-primary mx-2">Add Today Menu</a>
+            <a href="/view-rate-list" class="btn btn-secondary mx-2">View Menu</a>
             <a href="/admin-logout" class="btn btn-danger">Logout</a>
 
         </div>
@@ -57,7 +57,9 @@
                           <th>Department</th>
                           <th>Designation</th>
                           <th>Date From</th>
+                          <!-- <th>Attendence</th> -->
                           <!-- <th>Date To</th> -->
+                           <th>Delete Entry</th>
                         </tr>
                     </thead>
                     <tbody id="employeeTableBody">
@@ -72,6 +74,17 @@
                                 <td><%= employee.designation %></td>
                                 <td><%= new Date(employee.date_from).toLocaleDateString('en-GB') %></td>
                                 <!-- <td><%= new Date(employee.date_to).toLocaleDateString('en-GB') %></td> -->
+                                <!-- <td>
+                                  <div>
+                                    <input type="checkbox" class="form-check-input attendance-checkbox" data-employee-id="<%= employee.id %>" <%= employee.isAttended ? 'checked' : '' %>>
+                                  </div>
+                                  
+                                </td> -->
+                                 <td>
+                                  <form action="/delete-entry/<%=employee.id%>?_method=DELETE" method="POST">
+                                    <button type="submit" class="btn btn-danger">Delete</button>
+                                 </form>
+                                 </td>
                             </tr>
                             <% employeeLineNumber++; %>
                         <% }); %>

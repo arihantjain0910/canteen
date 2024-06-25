@@ -20,6 +20,7 @@
                     <th>Date To</th>
                     <!-- <th>Created At</th> -->
                     <th>Edit Button</th>
+                    <th>Delete Button</th>
                 </tr>
             </thead>
             <tbody>
@@ -34,6 +35,11 @@
                         <td> <form action="/edit-item-form/<%=rate.id%>" method="GET">
                             <button type="submit" class="btn btn-primary">Edit Item</button></td>
                         </form>
+                        <td>
+                            <form action="/delete-item/<%=rate.id%>?_method=DELETE" method="POST">
+                               <button type="submit" class="btn btn-danger">Delete Item</button>
+                            </form>
+                        </td>
                     </tr>
                 <% }); %>
             </tbody>
