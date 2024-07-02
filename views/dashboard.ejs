@@ -20,20 +20,21 @@
     
 </head>
 <body>
-    <nav class="navbar navbar-expand-lg navbar-light bg-light fixed-top" style="height: 100px; font-size: 1.5rem;">
+    <nav class="navbar navbar-expand-lg navbar-light bg-light fixed-top" style="height: 100px; font-size: 1rem;">
         <div class="container-fluid">
             <a class="navbar-brand" href="#">
                 <img src="https://sangamgroup.com/wp-content/uploads/2023/01/sangam_group_logo.png" alt="Logo" width="80" height="60" class="d-inline-block align-text-top">
                 Sangam India Limited
             </a>
             <div class="ms-auto">
-                <a href="/view-menu" class="btn btn-primary mx-2">View Today's Menu</a>
+                <a href="/termsandconditions" class="btn btn-info mx-2" >T&C</a>
+                <a href="/view-menu" class="btn btn-primary mx-2">View Menu</a>
                 <a href="/logout" class="btn btn-danger">Logout</a>
             </div>
         </div>
     </nav>
      
-    <h1>Welcome, <%= user.employee_name %></h1>
+    
     <div class="container mt-5">
         <div class="row">
             <div class="col-md-12 text-center">
@@ -48,6 +49,8 @@
         <!-- Table to display entered data -->
         <div>
             <div>
+                
+                <h5 style="color:rgba(238, 46, 46, 0.89);">WELCOME, <%= user.employee_name %></h5>
                 <div>
                     <h3 style="color: red;">Self Entries</h3>
                     <table class="table table-bordered table custom-table" id="employeeTable">
@@ -55,6 +58,7 @@
                             <tr style="background-color: rgb(236, 208, 171);">
                                 <th>SN No.</th> <!-- Line number column -->
                                 <th>Order Type</th>
+                                <th>Quantity</th>
                                 <th>Employee Name</th>
                                 <th>Employee Code</th>
                                 <th>Department</th>
@@ -69,6 +73,7 @@
                                 <tr>
                                     <td><%= employeeLineNumber %></td>
                                     <td><%= employee.orders %></td>
+                                    <td><%= employee.quantity %></td>
                                     <td><%= employee.name %></td>
                                     <td><%= employee.employeeCode %></td>
                                     <td><%= employee.department %></td>
@@ -137,14 +142,14 @@
                     </div>
                     <div class="form-group">
                         <label for="orders" class="required">Order</label>
-                        <select class="form-control" id="orders" name="orders" required>
+                        <select class="form-control" id="mealDropdown" name="orders" required onchange="validateSelection()">
                           <option value="" disabled selected>Select Order</option>
                           <option value="LUNCH">LUNCH</option>
                           <option value="BREAKFAST">BREAKFAST</option>
-                          
+                          <option value="DINNING">DINNING</option>
                           <!-- Add more options as needed -->
                         </select>
-                        <small style="color: red;" class="form-text"> *you can book a meal till 11AM for today</small>
+                        <small><p id="message"></p></small>
                       </div>
                     <div class="form-group">
                         <label for="guestName">Guest Name</label>
@@ -193,48 +198,69 @@
                    
                     </div>
                     <div class="modal-body">
-                        <form id="addEmployeeForm" action="/add-employee" method="POST">
-                           
-                            <div class="form-group">
+                        <div class="container ">
+                            <form id="addEmployeeForm" action="/add-employee" method="POST">
+                              <div class="form-group">
                                 <label for="employeeName">Employee Name</label>
                                 <input type="text" class="form-control" id="employeeName" name="employeeName" placeholder="Enter employee name" required readonly>
-                            </div>
-                            <div class="form-group">
+                              </div>
+                              <div class="form-group">
                                 <label for="employeeCode">Employee Code</label>
                                 <input type="text" class="form-control" id="employeeCode" name="employeeCode" placeholder="Enter Employee Code" required readonly>
-                            </div>
-                            <div class="form-group">
+                              </div>
+                              <div class="form-group">
                                 <label for="department">Department</label>
                                 <input type="text" class="form-control" id="department" name="department" placeholder="Enter Department" required readonly>
-                            </div>
-                            <div class="form-group">
+                              </div>
+                              <div class="form-group">
                                 <label for="designation">Designation</label>
                                 <input type="text" class="form-control" id="designation" name="designation" placeholder="Enter Designation" required readonly>
-                            </div>
-                            <div class="form-group">
-                                <!-- <label for="timeat">Time</label> -->
+                              </div>
+                              <div class="form-group">
                                 <input type="hidden" class="form-control" id="timeat" name="timeat" placeholder="Enter time" required readonly>
-                            </div>
-                            <div class="form-group">
-                                <label for="orders" class="required">Order</label>
-                                <select class="form-control" id="orders" name="orders" required>
-                                  <option value="" disabled selected>Select Order</option>
-                                  <option value="LUNCH">LUNCH</option>
-                                  <option value="BREAKFAST">BREAKFAST</option>
+                              </div>
+                        
+                              <!-- Order and Quantity in the same line -->
+                              <div class="form-row">
+                                <div class="form-group col-md-6">
+                                  <label for="orders" class="required">Order</label>
+                                  <select class="form-control" id="mealDropdown" name="orders" onchange="validateSelection()" required>
+                                    <option value="" disabled selected>Select Order</option>
+                                    <option value="LUNCH">LUNCH</option>
+                                    <option value="BREAKFAST">BREAKFAST</option>
+                                    <option value="DINNING">DINNING</option>
+                                  </select>
                                   
-                                </select>
-                                <small style="color: red;" class="form-text"> *you can book a meal till 11AM for today</small>
                                 </div>
-                            <div class="form-group">
-                                <label for="dateFromEmployee">Date From</label>
-                                <input type="date" class="form-control" id="dateFromEmployee" name="dateFromEmployee" min="<%= new Date().toISOString().split('T')[0] %>" required>
-                            </div>
-                            <div class="form-group">
-                                <label for="dateToEmployee">Date To</label>
-                                <input type="date" class="form-control" id="dateToEmployee" name="dateToEmployee" min="<%= new Date().toISOString().split('T')[0] %>" required>
-                            </div>
-                            <button type="submit" class="btn btn-primary">Submit</button>
-                        </form>
+                                <div class="form-group col-md-6">
+                                  <label for="quantity">Quantity</label>
+                                  <div class="input-group">
+                                    <div class="input-group-prepend">
+                                      <button class="btn btn-outline-secondary" type="button" id="button-decrement">-</button>
+                                    </div>
+                                    <input style="text-align: center;" type="text" class="form-control" id="quantity" value="1" name="quantity" readonly>
+                                    <div class="input-group-append">
+                                      <button class="btn btn-outline-secondary" type="button" id="button-increment">+</button>
+                                    </div>
+                                  </div>
+                                </div>
+                              </div>
+                        
+                              <!-- Date From and Date To in the same line -->
+                              <div class="form-row">
+                                <div class="form-group col-md-6">
+                                  <label for="dateFromEmployee">Date From</label>
+                                  <input type="date" class="form-control" id="dateFromEmployee" name="dateFromEmployee" required>
+                                </div>
+                                <div class="form-group col-md-6">
+                                  <label for="dateToEmployee">Date To</label>
+                                  <input type="date" class="form-control" id="dateToEmployee" name="dateToEmployee" required>
+                                </div>
+                              </div>
+                              <button type="submit" class="btn btn-primary">Submit</button>
+                            </form>
+                          </div>
+                        
                     </div>
                 </div>
             </div>
@@ -268,6 +294,9 @@
                         </ul>
                     </div>
                 </div>
+            </div>
+            <div>
+               
             </div>
             <div class="text-center p-3" style="background-color: rgba(0, 0, 0, 0.2);">
                 © 2024 Sangam India Limited:
@@ -307,7 +336,38 @@
                 });
             });
             </script>
+<script>
+    function validateSelection() {
+        const dropdown = document.getElementById('mealDropdown');
+        const selectedOption = dropdown.value;
+        const message = document.getElementById('message');
 
+        const now = new Date();
+        const currentTime = now.getHours() * 60 + now.getMinutes(); // current time in minutes
+
+        let cutOffTime;
+        switch (selectedOption) {
+            case 'breakfast':
+                cutOffTime = 10 * 60; // 10:00 AM in minutes
+                break;
+            case 'lunch':
+                cutOffTime = 10 * 60 + 30; // 10:30 AM in minutes
+                break;
+            case 'dinning':
+                cutOffTime = 17 * 60; // 5:00 PM in minutes
+                break;
+            default:
+                cutOffTime = null;
+        }
+
+        if (cutOffTime !== null && currentTime > cutOffTime) {
+            message.textContent = `You cannot book ${selectedOption} after ${cutOffTime / 60}:00.`;
+            dropdown.value = '';
+        } else {
+            message.textContent = '';
+        }
+    }
+</script>
      <script>
         // Add event listener for Add for Self button
                 $('#addEmployeeButton').on('click', function() {
@@ -557,6 +617,23 @@
         });
       </script>
     
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+          var quantityInput = document.getElementById('quantity');
+          var incrementButton = document.getElementById('button-increment');
+          var decrementButton = document.getElementById('button-decrement');
     
+          incrementButton.addEventListener('click', function() {
+            quantityInput.value = parseInt(quantityInput.value) + 1;
+          });
+    
+          decrementButton.addEventListener('click', function() {
+  var currentValue = parseInt(quantityInput.value);
+  if (currentValue > 1) {
+    quantityInput.value = currentValue - 1;
+  }
+});
+        });
+      </script>
     </body>
 </html>

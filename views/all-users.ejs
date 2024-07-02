@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>View Menu</title>
+    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #f8f9fa;
+            padding-top: 100px;
+        }
+        .container {
+            max-width: auto;
+            margin: auto;
+        }
+        h3 {
+            color: red;
+            text-align: center;
+            margin-bottom: 30px;
+            font-size: 2rem;
+        }
+        .table {
+            background-color: #ffffff;
+            border-radius: 10px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+        .table th {
+            background-color: #ecd0ab;
+            font-weight: bold;
+            text-align: center;
+        }
+        .table td {
+            text-align: center;
+            padding: 15px;
+            font-size: 1rem;
+        }
+        .table tr:nth-child(even) {
+            background-color: #f2f2f2;
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar navbar-expand-lg navbar-light bg-light fixed-top" style="height: 100px; font-size: 1.5rem;">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="#">
+                <img src="https://sangamgroup.com/wp-content/uploads/2023/01/sangam_group_logo.png" alt="Logo" width="80" height="60" class="d-inline-block align-text-top">
+                Sangam India Limited
+            </a>
+            <div class="ms-auto">
+                <!-- <a href="/view-menu" class="btn btn-primary mx-2">View Menu</a> -->
+                <a href="/logout" class="btn btn-danger">Logout</a>
+            </div>
+        </div>
+    </nav>
+    <div class="container">
+        <h3 style="font-family: Georgia, 'Times New Roman', Times, serif; font-size:xx-large; font-weight:bolder;" >All Employees List</h3>
+        <table class="table table-bordered table custom-table" id="viewMenu">
+            <thead>
+                <tr>
+                    <th>Id</th>
+                    <th>Employee Code</th>
+                    <th>Employee Name</th>
+                    <th>Department</th>
+                    <th>Designation</th>
+                    <th>Email</th>
+                </tr>
+            </thead>
+            <tbody>
+                <% for (user of users){ %>
+                <tr>
+                    <td><%= user.id %></td>
+                    <td><%= user.employee_code %></td>
+                    <td><%= user.employee_name %></td>
+                    <td><%= user.department %></td>
+                    <td><%= user.designation %></td>
+                    <td><%= user.email %></td>
+                </tr>
+                <% } %>
+            </tbody>
+        </table>
+    </div>
+    <footer class="bg-light text-center text-lg-start mt-5">
+        <div class="container p-4">
+          <div class="row justify-content-center mb-4">
+            <div>
+              <a class="navbar-brand" href="#">
+                <img src="https://sangamgroup.com/wp-content/uploads/2023/01/sangam_group_logo.png" alt="Logo" width="40" height="30" class="d-inline-block align-text-top">
+                Sangam India Limited
+              </a>
+            </div>
+          </div>
+          <div class="row justify-content-center">
+            <div class="col-auto">
+              <h5 class="text-uppercase mb-3">Follow Us</h5>
+              <ul class="list-unstyled d-flex justify-content-center">
+                <li class="mx-2">
+                  <a href="https://www.facebook.com/SangamGroupBhilwara/" class="text-dark"><i class="fab fa-facebook-f fa-lg"></i></a>
+                </li>
+                <!-- <li class="mx-2">
+                  <a href="#" class="text-dark"><i class="fab fa-twitter fa-lg"></i></a>
+                </li> -->
+                <li class="mx-2">
+                  <a href="https://www.instagram.com/sangamgroup_/?hl=en" class="text-dark"><i class="fab fa-instagram fa-lg"></i></a>
+                </li>
+                <li class="mx-2">
+                  <a href="https://www.linkedin.com/company/sangam-india-ltd-bhilwara/" class="text-dark"><i class="fab fa-linkedin-in fa-lg"></i></a>
+                </li>
+              </ul>
+            </div>
+          </div>
+        </div>
+        <div class="text-center p-3" style="background-color: rgba(0, 0, 0, 0.2);">
+          © 2024 Sangam India Limited:
+          <a class="text-dark" href="https://sangamgroup.com/">sangamgroup.com</a>
+        </div>
+      </footer>
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</body>
+</html>

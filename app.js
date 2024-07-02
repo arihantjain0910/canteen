@@ -9,6 +9,10 @@ const LocalStrategy = require('passport-local').Strategy;
 const bcrypt = require('bcryptjs');
 const flash = require('connect-flash');
 const methodOverride = require('method-override');
+const mssql = require('mssql');
+
+
+
 
 // Database connection
 const db = mysql.createConnection({
@@ -36,6 +40,10 @@ app.use(session({
 app.use(passport.initialize());
 app.use(passport.session());
 app.use(flash());
+app.use((req, res, next) => {
+    res.locals.error = req.flash('error');
+    next();
+  });
 
 // Passport Local Strategy
 passport.use(new LocalStrategy({
@@ -393,7 +401,35 @@ app.get('/admin-logout', (req, res) => {
         res.redirect('/admin-login');
     });
 });
+app.get("/add-new-employee",(req,res)=>{
+    res.render("add-employee.ejs")
+})
+app.post("/add-new-employee",(req,res)=>{
+    const{employee_name,employee_code,department,designation,email,password} = req.body;
+    let q = "INSERT INTO users (employee_name,employee_code,department,designation,email,password,is_admin) VALUES (?,?,?,?,?,?,FALSE) ";
+    db.query(q, 
+        [employee_name, employee_code, department, designation, email, password], (err, result) => {
+        if (err) {
+            console.error('Error registering user:', err);
+            return res.status(500).send('Internal Server Error');
+        }
+        res.redirect('/admin-dashboard');
+    });
 
+})
+
+app.get('/view-users', (req, res) => {
+    const sql = 'SELECT * FROM users';
+
+    db.query(sql, (err, results) => {
+        if (err) {
+            console.error('Error retrieving data from database:', err);
+            return res.status(500).send('Internal Server Error');
+        }
+        // Render the view-rate-list.ejs template with rateList data
+        res.render('all-users', { users: results });
+    });
+}); 
 
 app.post('/add-guest', (req, res) => {
     const { orders, employee_name, guestName, guestCompany, guestdesignation, remarks, dateFromGuest, dateToGuest } = req.body;
@@ -405,19 +441,24 @@ app.post('/add-guest', (req, res) => {
     let currentDate = startDate;
     const entries = [];
 
+    const now = new Date();
+    const isBefore1030AM = now.getHours() < 10 || (now.getHours() === 10 && now.getMinutes() < 30);
+
     while (currentDate <= endDate) {
-        const entry = [
-            orders,
-            employee_name,
-            guestName,
-            guestCompany,
-            guestdesignation,
-            remarks,
-            currentDate.toISOString().split('T')[0], // date_from
-            currentDate.toISOString().split('T')[0], // date_to
-            userId
-        ];
-        entries.push(entry);
+        if (!(currentDate.toDateString() === now.toDateString() && !isBefore1030AM)) {
+            const entry = [
+                orders,
+                employee_name,
+                guestName,
+                guestCompany,
+                guestdesignation,
+                remarks,
+                currentDate.toISOString().split('T')[0], // date_from
+                currentDate.toISOString().split('T')[0], // date_to
+                userId
+            ];
+            entries.push(entry);
+        }
 
         // Increment the date by one day
         currentDate.setDate(currentDate.getDate() + 1);
@@ -438,6 +479,10 @@ app.post('/add-guest', (req, res) => {
             return res.status(400).json({ error: 'A similar entry already exists in the database. Please check your input.' });
         }
 
+        if (entries.length === 0) {
+            return res.status(400).json({ error: 'No entries to insert based on the provided criteria.' });
+        }
+
         const insertSql = 'INSERT INTO guests (orders, employee_name, guestName, guestCompany, guestdesignation, remarks, date_from, date_to, user_id) VALUES ?';
 
         db.query(insertSql, [entries], (err, result) => {
@@ -445,18 +490,18 @@ app.post('/add-guest', (req, res) => {
                 console.error('Error inserting entries:', err);
                 return res.status(500).json({ error: 'An error occurred while creating entries.' });
             }
-           res.redirect("/dashboard");
+            res.redirect('/dashboard');
         });
     });
 });
 
 
+
 app.post('/add-employee', (req, res) => {
-    //const isAttended = isAttended === 'on' ? true : false;
-    const { employeeName, employeeCode, department, designation, orders, dateFromEmployee, dateToEmployee, isAttended } = req.body;
+    const { employeeName, employeeCode, department, designation, orders,quantity, dateFromEmployee, dateToEmployee } = req.body;
     const userId = req.user.id; // Assuming req.user.id contains the user's ID
 
-    const isAttendedFlag = isAttended === 'on';
+
 
     const startDate = new Date(dateFromEmployee);
     const endDate = new Date(dateToEmployee);
@@ -464,19 +509,25 @@ app.post('/add-employee', (req, res) => {
     let currentDate = startDate;
     const entries = [];
 
+    const now = new Date();
+    const isBefore1030AM = now.getHours() < 10 || (now.getHours() === 10 && now.getMinutes() < 30);
+
     while (currentDate <= endDate) {
-        const entry = [
-            employeeName,
-            employeeCode,
-            department,
-            designation,
-            orders,
-            currentDate.toISOString().split('T')[0], // date_from
-            currentDate.toISOString().split('T')[0], // date_to
-            userId,
-            isAttendedFlag
-        ];
-        entries.push(entry);
+        if (!(currentDate.toDateString() === now.toDateString() && !isBefore1030AM)) {
+            const entry = [
+                employeeName,
+                employeeCode,
+                department,
+                designation,
+                orders,
+                quantity,
+                currentDate.toISOString().split('T')[0], // date_from
+                currentDate.toISOString().split('T')[0], // date_to
+                userId,
+                
+            ];
+            entries.push(entry);
+        }
 
         // Increment the date by one day
         currentDate.setDate(currentDate.getDate() + 1);
@@ -488,6 +539,7 @@ app.post('/add-employee', (req, res) => {
 
     db.query(checkSql, [employeeName, employeeCode, department, designation, orders, dateFromEmployee, dateToEmployee, dateFromEmployee, dateToEmployee], (err, results) => {
         if (err) {
+            
             console.error('Error checking for duplicates:', err);
             return res.status(500).send({ error: 'An error occurred while checking for duplicates.' });
         }
@@ -497,7 +549,11 @@ app.post('/add-employee', (req, res) => {
             return res.status(400).send({ error: 'A similar entry already exists in the database. Please check your input.' });
         }
 
-        const insertSql = 'INSERT INTO employees (name, employeeCode, department, designation, orders, date_from, date_to, user_id, isAttended) VALUES ?';
+        if (entries.length === 0) {
+            return res.status(400).send({ error: 'No entries to insert based on the provided criteria.' });
+        }
+
+        const insertSql = 'INSERT INTO employees (name, employeeCode, department, designation, orders,quantity, date_from, date_to, user_id) VALUES ?';
 
         db.query(insertSql, [entries], (err, result) => {
             if (err) {
@@ -509,6 +565,12 @@ app.post('/add-employee', (req, res) => {
     });
 });
 
+app.get("/loginPage",(req,res)=>{
+    res.render("loginPage.ejs");
+})
+app.get("/termsandconditions",(req,res)=>{
+    res.render("terms-and-conditions.ejs")
+})
 
 // Start server
 const port = 3000;
