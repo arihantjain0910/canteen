@@ -142,14 +142,14 @@
                     </div>
                     <div class="form-group">
                         <label for="orders" class="required">Order</label>
-                        <select class="form-control" id="mealDropdown" name="orders" required onchange="validateSelection()">
+                        <select class="form-control" id="orders" name="orders" required>
                           <option value="" disabled selected>Select Order</option>
                           <option value="LUNCH">LUNCH</option>
                           <option value="BREAKFAST">BREAKFAST</option>
                           <option value="DINNING">DINNING</option>
                           <!-- Add more options as needed -->
                         </select>
-                        <small><p id="message"></p></small>
+                        
                       </div>
                     <div class="form-group">
                         <label for="guestName">Guest Name</label>
@@ -173,11 +173,11 @@
                     </div>
                     <div class="form-group">
                         <label for="dateFromGuest">Date From</label>
-                        <input type="date" class="form-control" id="dateFromGuest" name="dateFromGuest" min="<%= new Date().toISOString().split('T')[0] %>" required>
+<input type="date" class="form-control" id="dateFromGuest" name="dateFromGuest" min="<%= new Date().toISOString().split('T')[0] %>" required>
                     </div>
                     <div class="form-group">
                         <label for="dateToGuest">Date To</label>
-                        <input type="date" class="form-control" id="dateToGuest" name="dateToGuest" min="<%= new Date().toISOString().split('T')[0] %>" required>
+                <input type="date" class="form-control" id="dateToGuest" name="dateToGuest" min="<%= new Date().toISOString().split('T')[0] %>" required>
                     </div>
                     <button type="submit" class="btn btn-primary">Submit</button>
                 </form>
@@ -224,7 +224,7 @@
                               <div class="form-row">
                                 <div class="form-group col-md-6">
                                   <label for="orders" class="required">Order</label>
-                                  <select class="form-control" id="mealDropdown" name="orders" onchange="validateSelection()" required>
+                                  <select class="form-control" id="orders" name="orders" required>
                                     <option value="" disabled selected>Select Order</option>
                                     <option value="LUNCH">LUNCH</option>
                                     <option value="BREAKFAST">BREAKFAST</option>
@@ -336,38 +336,7 @@
                 });
             });
             </script>
-<script>
-    function validateSelection() {
-        const dropdown = document.getElementById('mealDropdown');
-        const selectedOption = dropdown.value;
-        const message = document.getElementById('message');
 
-        const now = new Date();
-        const currentTime = now.getHours() * 60 + now.getMinutes(); // current time in minutes
-
-        let cutOffTime;
-        switch (selectedOption) {
-            case 'breakfast':
-                cutOffTime = 10 * 60; // 10:00 AM in minutes
-                break;
-            case 'lunch':
-                cutOffTime = 10 * 60 + 30; // 10:30 AM in minutes
-                break;
-            case 'dinning':
-                cutOffTime = 17 * 60; // 5:00 PM in minutes
-                break;
-            default:
-                cutOffTime = null;
-        }
-
-        if (cutOffTime !== null && currentTime > cutOffTime) {
-            message.textContent = `You cannot book ${selectedOption} after ${cutOffTime / 60}:00.`;
-            dropdown.value = '';
-        } else {
-            message.textContent = '';
-        }
-    }
-</script>
      <script>
         // Add event listener for Add for Self button
                 $('#addEmployeeButton').on('click', function() {
