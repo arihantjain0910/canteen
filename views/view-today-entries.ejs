@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Today's Entry</title>
+    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #f8f9fa;
+            padding-top: 100px;
+        }
+        .container {
+            max-width:max-content;
+            margin: auto;
+        }
+        h3 {
+            color: red;
+            text-align: center;
+            margin-bottom: 30px;
+            font-size: 2rem;
+        }
+        .table {
+            background-color: #ffffff;
+            border-radius: 10px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+        .table th {
+            background-color: #ecd0ab;
+            font-weight: bold;
+            text-align: center;
+        }
+        .table td {
+            text-align: center;
+            padding: 15px;
+        }
+        .table tr:nth-child(even) {
+            background-color: #f2f2f2;
+        }
+    </style>
+</head>
+<body>
+  
+    <div class="container">
+        
+        <h3 style="font-family: Georgia, 'Times New Roman', Times, serif; font-size:xx-large; font-weight:bolder;" >Employee Entries</h3>
+        <table class="table table-bordered table custom-table" id="todayempentry">
+            <thead>
+                <tr>
+                    <th>Order Type</th>
+                    <th>Quantity</th>
+                    <th>Employee Name</th>
+                    <th>Employee Code</th>
+                    <th>Department</th>
+                    <th>Designation</th>
+                    <th>Date</th>
+                </tr>
+            </thead>
+            <tbody>
+                <% for (entry of entries){ %>
+                <tr>
+                    <td><%= entry.orders %></td>
+                    <td><%= entry.quantity %></td>
+                    <td><%= entry.name %></td>
+                    <td><%= entry.employeeCode %></td>
+                    <td><%= entry.department %></td>
+                    <td><%= entry.designation %></td>
+                    <td><%= new Date(entry.date_from).toLocaleDateString('en-GB') %></td>
+                </tr>
+                <% } %>
+            </tbody>
+        </table>
+        <h3 style="font-family: Georgia, 'Times New Roman', Times, serif; font-size:xx-large; font-weight:bolder;" >Guest Entries</h3>
+        <table class="table table-bordered table custom-table" id="todayguestentry">
+            <tbody>
+                <tr>
+                    <th>Order Type</th> 
+                    <th>Employee Name</th>
+                    <th>Guest Name</th>
+                    <th>Guest Comapny</th>
+                    <th>Guest Designation</th>
+                    <th>Remarks</th>
+                    <th>Date</th>
+                </tr>
+            </tbody>
+            
+            <tbody>
+                <% for (entry of guestentries){ %>
+                <tr>
+                    <td><%= entry.orders %></td>
+                    <td><%= entry.employee_name %></td>
+                    <td><%= entry.guestName %></td>
+                    <td><%= entry.guestCompany %></td>
+                    <td><%= entry.guestdesignation %></td>
+                    <td><%= entry.remarks %></td>
+                    <td><%= new Date(entry.date_from).toLocaleDateString('en-GB') %></td>
+                </tr>
+                <% } %>
+            </tbody>
+        </table>
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</body>
+</html>

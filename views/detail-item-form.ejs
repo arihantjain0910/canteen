@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Item Form</title>
+  <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+  <style>
+    .form-control[readonly] {
+      background-color: #e9ecef;
+      opacity: 1;
+    }
+  </style>
+</head>
+<body>
+  <div class="container mt-5">
+    <h3>Detail Item List</h3>
+    <form>
+      <div class="form-row">
+        <div class="form-group col-md-3">
+          <label for="item_code">Item Code</label>
+          <input type="text" class="form-control" id="item_code" name="item_code" required>
+        </div>
+        <div class="form-group col-md-9">
+          <label for="item_description">Item Description</label>
+          <input type="text" class="form-control" id="item_description" name="item_description" required>
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="form-group col-md-4">
+          <label for="uom">Unit Of Measurement</label>
+          <input type="text" class="form-control" id="uom" name="uom"required>
+        </div>
+        <div class="form-group col-md-4">
+          <label for="qty">Quantity</label>
+          <input type="number" class="form-control" id="qty" name="qty" required>
+        </div>
+        <div class="form-group col-md-4">
+          <label for="bomno">BOM NO</label>
+          <input type="number" class="form-control" id="bomno" name="bomno">
+        </div>
+       
+      </div>
+
+      <h3 class="mt-4">Item List</h3>
+      <table class="table table-bordered" id="itemTable">
+        <thead>
+          <tr>
+            <th>LINENO</th>
+            <th>ITEM CODE</th>
+            <th>ITEM DESCRIPTION</th>
+            <th>UOM</th>
+            <th>QTY</th>
+            <th>RATE</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>10</td>
+            <td><input type="text" class="form-control" name="itemCode[]"></td>
+            <td><input type="text" class="form-control" name="itemDescription[]"></td>
+            <td><input type="text" class="form-control" name="uom[]"></td>
+            <td><input type="number" class="form-control" name="qty[]"></td>
+            <td><input type="number" class="form-control" name="rate[]"></td>
+            <td><button type="button" class="btn btn-danger" onclick="deleteRow(this)">Delete</button></td>
+          </tr>
+          <tr>
+            <td>20</td>
+            <td><input type="text" class="form-control" name="itemCode[]"></td>
+            <td><input type="text" class="form-control" name="itemDescription[]"></td>
+            <td><input type="text" class="form-control" name="uom[]"></td>
+            <td><input type="number" class="form-control" name="qty[]"></td>
+            <td><input type="number" class="form-control" name="rate[]"></td>
+            <td><button type="button" class="btn btn-danger" onclick="deleteRow(this)">Delete</button></td>
+          </tr>
+        </tbody>
+      </table>
+
+      <button type="button" class="btn btn-secondary" onclick="addRow()">Add Row</button>
+      <button type="submit" class="btn btn-primary">Submit</button>
+    </form>
+  </div>
+
+  <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
+  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+  <script>
+    function addRow() {
+      const table = document.getElementById("itemTable").getElementsByTagName('tbody')[0];
+      const rowCount = table.rows.length;
+      const row = table.insertRow(rowCount);
+
+      // Add cells and input elements
+      const cell1 = row.insertCell(0);
+      const cell2 = row.insertCell(1);
+      const cell3 = row.insertCell(2);
+      const cell4 = row.insertCell(3);
+      const cell5 = row.insertCell(4);
+      const cell6 = row.insertCell(5);
+      const cell7 = row.insertCell(6);
+
+      cell1.innerHTML = (rowCount + 1) * 10;
+      cell2.innerHTML = `<input type="text" class="form-control" name="itemCode[]">`;
+      cell3.innerHTML = `<input type="text" class="form-control" name="itemDescription[]">`;
+      cell4.innerHTML = `<input type="text" class="form-control" name="uom[]">`;
+      cell5.innerHTML = `<input type="number" class="form-control" name="qty[]">`;
+      cell6.innerHTML = `<input type="number" class="form-control" name="rate[]">`;
+      cell7.innerHTML = `<button type="button" class="btn btn-danger" onclick="deleteRow(this)">Delete</button>`;
+    }
+
+    function deleteRow(button) {
+      const row = button.closest('tr');
+      row.remove();
+    }
+  </script>
+</body>
+</html>

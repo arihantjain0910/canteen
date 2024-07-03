@@ -572,6 +572,55 @@ app.get("/termsandconditions",(req,res)=>{
     res.render("terms-and-conditions.ejs")
 })
 
+app.get("/item-list",(req,res)=>{
+    res.render("item-list.ejs");
+});
+
+app.post("/item-list",(req,res)=>{
+const {item_code,type, item_description, uom, std_price, mrp, update_on} = req.body;
+let q = "INSERT INTO item_list (item_code,type,item_description,uom,std_price,mrp,update_on) VALUES (?,?,?,?,?,?,?) ";
+    db.query(q, 
+        [item_code,type, item_description, uom, std_price, mrp, update_on], (err, result) => {
+        if (err) {
+            console.error('Error registering user:', err);
+            return res.status(500).send('Internal Server Error');
+        }
+        res.redirect('/admin-dashboard');
+    });
+});
+
+app.get("/detail-item-form",(req,res)=>{
+    res.render("detail-item-form.ejs");
+})
+
+app.get("/view-today-entries",(req,res)=>{
+    const today = new Date().toISOString().split('T')[0];
+
+    const queryEmployeeEntries = `SELECT * FROM employees WHERE date_from = ?`;
+    const queryGuestEntries = `SELECT * FROM guests WHERE date_from = ?`;
+    
+    db.query(queryEmployeeEntries, [today], (err, employeeEntries) => {
+      if (err) {
+        console.error(err);
+        return;
+      }
+    
+      db.query(queryGuestEntries, [today], (err, guestEntries) => {
+        if (err) {
+          console.error(err);
+          return;
+        }
+    
+        // Render the template with both employee and guest entries
+        res.render('view-today-entries', {
+          entries: employeeEntries,
+          guestentries: guestEntries
+        });
+      });
+    });
+
+})
+
 // Start server
 const port = 3000;
 app.listen(port, () => {

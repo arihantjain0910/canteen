@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Item Form</title>
+  <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body>
+ 
+<div class="mt-5">
+  <div class="container mt-5">
+    <h2 class="mb-5">Item Form</h2>
+    <form method="POST" action="/item-list">
+        <div class="form-row">
+            <div class="form-group col-md-6">
+                <label for="item_code">Item Code</label>
+                <input type="text" class="form-control" id="item_code" name="item_code" required>
+              </div>
+              <div class="form-group col-md-6">
+                <label for="type">Type</label>
+                <input type="text" class="form-control" id="type" name="type" required value="MENU">
+              </div>
+        </div>
+      <div class="form-row">
+        <div class="form-group col-md-6">
+            <label for="item_description">Item Description</label>
+            <input type="text" class="form-control" id="item_description" name="item_description" required>
+          </div>
+          <div class="form-group col-md-6">
+            <label for="uom">Unit of Measurement</label>
+            <input type="text" class="form-control" id="uom" name="uom" value="grams" required readonly>
+          </div>
+      </div>
+      
+      <div class="form-row">
+        <div class="form-group col-md-6">
+            <label for="std_price">Standard Price</label>
+            <input type="number" step="0.01" class="form-control" id="std_price" name="std_price" required min="0">
+          </div>
+          <div class="form-group col-md-6">
+            <label for="mrp">MRP</label>
+            <input type="number" step="0.01" class="form-control" id="mrp" name="mrp" required min="0">
+          </div>
+      </div>
+      
+      <div class="form-row">
+        <div class="form-group col-md-6">
+            <label for="update_on">Update On</label>
+            <input type="date" class="form-control" id="update_on" name="update_on" required min="<%= new Date().toISOString().split('T')[0] %>">
+          </div>
+      </div>
+      
+      <button type="submit" class="btn btn-primary">Submit</button>
+    </form>
+  </div>
+</div>
+
+  
+
+  <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
+  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</body>
+</html>
