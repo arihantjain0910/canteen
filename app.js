@@ -18,7 +18,7 @@ const mssql = require('mssql');
 const db = mysql.createConnection({
     host: 'localhost',
     user: 'root',
-    password: 'Sangam@2024',
+    password: '7877Arih@nt',
     database: 'canteen'
 });
 
