@@ -6,6 +6,7 @@
     <title>Today's Entry</title>
     <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.10.25/css/dataTables.bootstrap4.min.css">
     <style>
         body {
             font-family: 'Arial', sans-serif;
@@ -13,7 +14,7 @@
             padding-top: 100px;
         }
         .container {
-            max-width:max-content;
+            max-width: max-content;
             margin: auto;
         }
         h3 {
@@ -42,10 +43,8 @@
     </style>
 </head>
 <body>
-  
     <div class="container">
-        
-        <h3 style="font-family: Georgia, 'Times New Roman', Times, serif; font-size:xx-large; font-weight:bolder;" >Employee Entries</h3>
+        <h3 style="font-family: Georgia, 'Times New Roman', Times, serif; font-size:xx-large; font-weight:bolder;">Employee Entries</h3>
         <table class="table table-bordered table custom-table" id="todayempentry">
             <thead>
                 <tr>
@@ -72,20 +71,20 @@
                 <% } %>
             </tbody>
         </table>
-        <h3 style="font-family: Georgia, 'Times New Roman', Times, serif; font-size:xx-large; font-weight:bolder;" >Guest Entries</h3>
+        
+        <h3 style="font-family: Georgia, 'Times New Roman', Times, serif; font-size:xx-large; font-weight:bolder;">Guest Entries</h3>
         <table class="table table-bordered table custom-table" id="todayguestentry">
-            <tbody>
+            <thead>
                 <tr>
-                    <th>Order Type</th> 
+                    <th>Order Type</th>
                     <th>Employee Name</th>
                     <th>Guest Name</th>
-                    <th>Guest Comapny</th>
+                    <th>Guest Company</th>
                     <th>Guest Designation</th>
                     <th>Remarks</th>
                     <th>Date</th>
                 </tr>
-            </tbody>
-            
+            </thead>
             <tbody>
                 <% for (entry of guestentries){ %>
                 <tr>
@@ -102,8 +101,22 @@
         </table>
     </div>
 
-    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+    <script src="https://cdn.datatables.net/1.10.25/js/jquery.dataTables.min.js"></script>
+    <script src="https://cdn.datatables.net/1.10.25/js/dataTables.bootstrap4.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <script>
+        $(document).ready(function() {
+            $('#todayempentry').DataTable({
+                "paging": true,
+                "order": [[0, 'asc']]
+            });
+            $('#todayguestentry').DataTable({
+                "paging": true,
+                "order": [[0, 'asc']]
+            });
+        });
+    </script>
 </body>
 </html>

@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>View BOM List</title>
+  <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body>
+  <div class="container mt-5">
+    <h3>BOM List</h3>
+    <% for (let menuItemCode in menuItems) { %>
+      <table class="table table-bordered">
+        <thead>
+          <tr>
+            <th>Menu Item Code</th>
+            <th>Item Description</th>
+            <th>UOM</th>
+            <th>Quantity</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><%= menuItems[menuItemCode].details.menu_item_code %></td>
+            <td><%= menuItems[menuItemCode].details.item_description %></td>
+            <td><%= menuItems[menuItemCode].details.uom %></td>
+            <td><%= menuItems[menuItemCode].details.qty %></td>
+            <td>
+              <a href="/menu/edit/<%= menuItems[menuItemCode].details.menu_item_code %>" class="btn btn-primary btn-sm">Edit</a>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+      <h5>Ingredients:</h5>
+      <p>
+        <% menuItems[menuItemCode].ingredients.forEach(ingredient => { %>
+          <strong>Line No:</strong> <%= ingredient.lineno %> <br>
+          <strong>Item Code:</strong> <%= ingredient.item_code %> <br>
+          <strong>Description:</strong> <%= ingredient.ingredient_description %> <br>
+          <strong>UOM:</strong> <%= ingredient.ingredient_uom %> <br>
+          <strong>Quantity:</strong> <%= ingredient.ingredient_qty %> <br>
+          <strong>Rate:</strong> <%= ingredient.rate %> <br><br>
+        <% }); %>
+      </p>
+      <hr>
+    <% } %>
+  </div>
+</body>
+</html>

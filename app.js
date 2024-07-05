@@ -12,7 +12,8 @@ const methodOverride = require('method-override');
 const mssql = require('mssql');
 
 
-
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
 
 // Database connection
 const db = mysql.createConnection({
@@ -28,7 +29,9 @@ db.connect((err) => {
 });
 
 // Middleware
-app.use(bodyParser.urlencoded({ extended: true }));
+app.use(bodyParser.urlencoded({ extended: false }));
+app.use(bodyParser.json());
+// app.use(bodyParser.urlencoded({ extended: true }));
 app.set('view engine', 'ejs');
 app.use(methodOverride('_method'));
 app.use(express.urlencoded({extended:true}));
@@ -577,20 +580,20 @@ app.get("/item-list",(req,res)=>{
 });
 
 app.post("/item-list",(req,res)=>{
-const {item_code,type, item_description, uom, std_price, mrp, update_on} = req.body;
-let q = "INSERT INTO item_list (item_code,type,item_description,uom,std_price,mrp,update_on) VALUES (?,?,?,?,?,?,?) ";
+const {menu_item_code,type, item_description, uom, std_price, mrp} = req.body;
+let q = "INSERT INTO item_list (menu_item_code,type,item_description,uom,std_price,mrp) VALUES (?,?,?,?,?,?)";
     db.query(q, 
-        [item_code,type, item_description, uom, std_price, mrp, update_on], (err, result) => {
+        [menu_item_code,type, item_description, uom, std_price, mrp], (err, result) => {
         if (err) {
             console.error('Error registering user:', err);
             return res.status(500).send('Internal Server Error');
         }
-        res.redirect('/admin-dashboard');
+        res.redirect('/view-menu-list');
     });
 });
 
 app.get("/detail-item-form",(req,res)=>{
-    res.render("detail-item-form.ejs");
+    res.render("bom.ejs");
 })
 
 app.get("/view-today-entries",(req,res)=>{
@@ -621,6 +624,360 @@ app.get("/view-today-entries",(req,res)=>{
 
 })
 
+app.get("/ad-dashboard",(req,res)=>{
+    res.render("ad-dashboard.ejs");
+})
+
+app.get("/view-menu-list",(req,res)=>{
+    const sql = 'SELECT * FROM item_list';
+
+    db.query(sql, (err, results) => {
+        if (err) {
+            console.error('Error retrieving data from database:', err);
+            return res.status(500).send('Internal Server Error');
+        }
+        // Render the view-rate-list.ejs template with rateList data
+        res.render('view-menu-list.ejs', { lists: results });
+    });
+   
+})
+
+app.get("/edit-view-item-form/:id",(req,res)=>{
+    let {id} = req.params;
+    let q = `SELECT * FROM item_list WHERE id='${id}'`;
+    try{
+        db.query(q,(err,result)=>{
+            if(err) throw err;
+            let menuListItem = result[0]
+            res.render("edit-menu-item-form.ejs" ,{menuListItem});
+        });
+    } catch(err){
+        console.log(err);
+        res.send("some error in db");
+    }
+
+});
+
+app.put("/edit-view-item-form/:id",(req,res)=>{
+    let {id} = req.params;
+    let{item_code : item_code , item_description : item_description, uom : uom, std_price : std_price, mrp : mrp , type : type} = req.body;
+    let q = `SELECT * FROM item_list WHERE id='${id}'`;
+    try{
+        db.query(q,(err,result)=>{
+            if(err) throw err;
+            let user = result[0]
+          let q2 = `UPDATE item_list SET item_code='${item_code}',item_description='${item_description}', uom='${uom}', std_price='${std_price}', mrp='${mrp}', type='${type}'WHERE id='${id}'`;
+          try{
+            db.query(q2,(err,result)=>{
+                if(err) throw err;
+                // let user = result[0]
+                // res.render("edit-item-form.ejs" ,{user});
+                res.redirect('/view-menu-list');
+            });
+        } catch(err){
+            console.log(err);
+            res.send("some error in db");
+        }
+        });
+    } catch(err){
+        console.log(err);
+        res.send("some error in db");
+    }
+})
+
+app.delete('/delete-menu-item/:id',(req,res)=>{
+    let {id} = req.params;
+    let q = `DELETE FROM item_list WHERE id='${id}'`;
+    try{
+        db.query(q,(err,result)=>{
+            if(err) throw err;
+            // let user = result[0]
+            res.redirect("/view-menu-list");
+        });
+    } catch(err){
+        console.log(err);
+        res.send("some error in db");
+    }
+})
+
+
+  app.post('/fetch-item-data', (req, res) => {
+    const menuItemCode = req.body.menuItemCode;
+  
+    const query = `SELECT item_description, uom FROM item_list WHERE menu_item_code = ?`;
+    db.query(query, [menuItemCode], (err, results) => {
+      if (err) {
+        console.error('Error querying MySQL:', err);
+        res.status(500).json(null);
+      } else if (results.length > 0) {
+        res.json(results[0]);
+      } else {
+        res.json(null);
+      }
+    });
+  });
+// FOR REQUIREMENT FORM
+app.get('/fetch-menu-item-description', (req, res) => {
+    const menuItemCode = req.query.menuItemCode;
+    console.log(`Received request for menu item code: ${menuItemCode}`);
+  
+    const sql = `SELECT item_description FROM item_list WHERE menu_item_code = ?`;
+    db.query(sql, [menuItemCode], (error, results, fields) => {
+      if (error) {
+        console.error(`Error fetching menu item description: ${error}`);
+        res.status(500).json({ error: 'Failed to fetch menu item description' });
+      } else {
+        if (results.length > 0) {
+          console.log(`Found menu item description: ${results[0].item_description}`);
+          res.json({ description: results[0].item_description });
+        } else {
+          console.log(`Menu item code not found: ${menuItemCode}`);
+          res.json({ description: '' });
+        }
+      }
+    });
+  });
+  // Node.js backend code
+app.post('/fetch-ingredient-data', (req, res) => {
+    const itemCode = req.body.itemCode;
+    // Query the ingredients_master table to fetch the data
+    const query = `SELECT ingredient_item_description, uom,qty, rate FROM ingredients_master WHERE ingredient_item_code = ?`;
+    db.query(query, itemCode, (err, results) => {
+      if (err) {
+        console.error(err);
+        res.status(500).json({ error: 'Failed to fetch data' });
+      } else {
+        const data = results[0];
+        if (data) {
+          res.json({
+            item_description: data.ingredient_item_description,
+            uom: data.uom,
+            rate: data.rate,
+            qty:data.qty
+          });
+        } else {
+          res.json({}); // Return an empty object if no data is found
+        }
+      }
+    });
+  });
+
+  app.post('/menu/add', (req, res) => {
+    //console.log('Received form data:', req.body); // Log the received data
+  
+    const { menu_item_code, item_description, uom, qty, 'itemCode[]': itemCode, 'itemDescription[]': itemDescription, 'uom[]': ingredientUOM, 'qty[]': ingredientQty, 'rate[]': rate } = req.body;
+  
+    // Validate received data
+    if (!menu_item_code || !item_description || !uom || !qty) {
+      return res.status(400).send('Required fields are missing');
+    }
+  
+    // Insert menu item and ingredients
+    const menuItemId = menu_item_code[0]; // Assuming one menu item code
+    const ingredients = (itemCode || []).map((code, index) => [
+      menu_item_code[0],
+      item_description[0],
+      uom[0],
+      qty[0],
+      (index + 1) * 10,
+      code,
+      itemDescription[index],
+      ingredientUOM[index],
+      ingredientQty[index],
+      rate[index]
+    ]);
+  
+    const menuAndIngredients = [
+      [menu_item_code[0], item_description[0], uom[0], qty[0], 0, null, null, null, null, null], // Main menu item entry
+      ...ingredients
+    ];
+  
+    const sql = `INSERT INTO bom (menu_item_code, item_description, uom, qty, lineno, item_code, ingredient_description, ingredient_uom, ingredient_qty, rate) VALUES ?`;
+  
+    db.query(sql, [menuAndIngredients], (err, result) => {
+      if (err) throw err;
+      res.send('New records created successfully');
+    });
+  });
+
+
+  app.get('/menu/view', (req, res) => {
+    const sql = `SELECT * FROM bom ORDER BY menu_item_code, lineno`;
+  
+    db.query(sql, (err, results) => {
+      if (err) throw err;
+      const menuItems = {};
+  
+      results.forEach(row => {
+        if (!menuItems[row.menu_item_code]) {
+          menuItems[row.menu_item_code] = {
+            details: {
+              menu_item_code: row.menu_item_code,
+              item_description: row.item_description,
+              uom: row.uom,
+              qty: row.qty
+            },
+            ingredients: []
+          };
+        }
+  
+        if (row.lineno !== 0) {
+          menuItems[row.menu_item_code].ingredients.push({
+            lineno: row.lineno,
+            item_code: row.item_code,
+            ingredient_description: row.ingredient_description,
+            ingredient_uom: row.ingredient_uom,
+            ingredient_qty: row.ingredient_qty,
+            rate: row.rate
+          });
+        }
+      });
+  
+      res.render('viewMenu', { menuItems });
+    });
+  });
+
+  app.get('/menu/edit/:menu_item_code', (req, res) => {
+    const menuItemCode = req.params.menu_item_code;
+    const sql = `SELECT * FROM bom WHERE menu_item_code = ? ORDER BY lineno`;
+  
+    db.query(sql, [menuItemCode], (err, results) => {
+      if (err) throw err;
+  
+      if (results.length === 0) {
+        return res.status(404).send('Menu item not found');
+      }
+  
+      const menuItem = {
+        details: {
+          menu_item_code: results[0].menu_item_code,
+          item_description: results[0].item_description,
+          uom: results[0].uom,
+          qty: results[0].qty
+        },
+        ingredients: results.filter(row => row.lineno !== 0)
+      };
+  
+      res.render('editMenu', { menuItem });
+    });
+  });
+  
+  app.post('/menu/edit/:menu_item_code', (req, res) => {
+    const menuItemCode = req.params.menu_item_code;
+    const { item_description, uom, qty, itemCode, itemDescription, ingredient_uom, ingredient_qty, rate } = req.body;
+  
+    // Validate form data
+    if (!item_description || !uom || !qty || !Array.isArray(itemCode) || !Array.isArray(itemDescription) || !Array.isArray(ingredient_uom) || !Array.isArray(ingredient_qty) || !Array.isArray(rate)) {
+      return res.status(400).send('Invalid form data');
+    }
+  
+    const menuItemUpdateSql = `UPDATE bom SET item_description = ?, uom = ?, qty = ? WHERE menu_item_code = ? AND lineno = 0`;
+    const ingredientsDeleteSql = `DELETE FROM bom WHERE menu_item_code = ? AND lineno != 0`;
+    const ingredientsInsertSql = `INSERT INTO bom (menu_item_code, item_description, uom, qty, lineno, item_code, ingredient_description, ingredient_uom, ingredient_qty, rate) VALUES ?`;
+  
+    // Update menu item details
+    db.query(menuItemUpdateSql, [item_description, uom, qty, menuItemCode], (err, result) => {
+      if (err) throw err;
+  
+      // Delete old ingredients
+      db.query(ingredientsDeleteSql, [menuItemCode], (err, result) => {
+        if (err) throw err;
+  
+        // Prepare new ingredients data
+        const ingredients = itemCode.map((code, index) => [
+          menuItemCode,
+          item_description, // Placeholder description for ingredients
+          uom,              // Placeholder unit of measure for ingredients
+          qty,              // Placeholder quantity for ingredients
+          (index + 1) * 10, // lineno
+          code,
+          itemDescription[index],
+          ingredient_uom[index],
+          ingredient_qty[index],
+          rate[index]
+        ]);
+  
+        // Insert new ingredients
+        db.query(ingredientsInsertSql, [ingredients], (err, result) => {
+          if (err) throw err;
+  
+          res.redirect('/menu/view');
+        });
+      });
+    });
+  });
+  
+app.get("/requirement_form",(req,res)=>{
+    res.render("requirement_form");
+})
+app.post('/submit-form', (req, res) => {
+    const formData = req.body;
+  
+    // Insert data into MySQL
+    const sql = 'INSERT INTO requirement_form (menu_item_code, menu_item_description, quantity) VALUES ?';
+    const values = formData.menuItemCode.map((code, index) => [
+      code,
+      formData.menuItemDescription[index],
+      formData.quantity[index],
+    //   formData.rate[index]
+    ]);
+  
+    db.query(sql, [values], (err, result) => {
+      if (err) {
+        console.error('Error inserting data: ' + err.stack);
+        res.status(500).send('Error inserting data into database');
+        return;
+      }
+      console.log('Inserted ' + result.affectedRows + ' rows'); 
+      
+      res.redirect('/requirement_form');
+    });
+  });
+
+  app.post('/calculate-requirements', (req, res) => {
+    const { 'menuItemCode[]': menuItemCode, 'quantity[]': quantity } = req.body;
+  
+    if (!menuItemCode || !quantity) {
+      return res.status(400).send('Invalid input data');
+    }
+  
+    let results = [];
+    let pendingQueries = menuItemCode.length;
+  
+    menuItemCode.forEach((menuItem, index) => {
+      const reqQty = quantity[index];
+  
+      const query = `
+        SELECT 
+          b.menu_item_code,
+          b.item_code,
+          b.ingredient_description,
+          b.ingredient_uom,
+          b.ingredient_qty,
+          b.rate,
+          (b.ingredient_qty * ?) AS total_ingredient_qty,
+          (b.rate * ?) AS total_cost
+        FROM bom b
+        WHERE b.menu_item_code = ?
+      `;
+  
+      db.query(query, [reqQty, reqQty, menuItem], (error, result) => {
+        if (error) {
+          console.error('Query Error:', error);
+          res.status(500).send('Server Error');
+          return;
+        }
+  
+        results.push(...result);
+  
+        pendingQueries--;
+        if (pendingQueries === 0) {
+          console.log('Query Results:', results);
+          res.json(results);
+        }
+      });
+    });
+  });
 // Start server
 const port = 3000;
 app.listen(port, () => {

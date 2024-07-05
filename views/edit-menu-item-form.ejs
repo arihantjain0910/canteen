@@ -3,42 +3,40 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Item Form</title>
+  <title>Edit Menu Item Form</title>
   <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
 </head>
 <body>
-  
+ 
 <div class="mt-5">
-  <div class="d-flex justify-content-center">
-    <a href="/view-menu-list" class="btn btn-info mx-1">View Menu Item</a>
-</div>
   <div class="container mt-5">
-    <h2 class="mb-5">Item Form</h2>
-    <form method="POST" action="/item-list">
+    <h2 class="mb-5">Edit Menu Item</h2>
+    <form action="/edit-view-item-form/<%=menuListItem.id%>?_method=PUT" method="POST">
         <div class="form-row">
             <div class="form-group col-md-6">
-                <label for="menu_item_code">Item Code</label>
-                <input type="text" class="form-control" id="menu_item_code" name="menu_item_code" required>
+                <label for="item_code">Item Code</label>
+                <input type="text" class="form-control" id="item_code" name="item_code" value=<%= menuListItem.item_code %>>
               </div>
               <div class="form-group col-md-6">
                 <label for="type">Type</label>
-                <input type="text" class="form-control" id="type" name="type" required value="MENU">
+                <input type="text" class="form-control" id="type" name="type" required value=<%= menuListItem.type %>>
               </div>
         </div>
       <div class="form-row">
         <div class="form-group col-md-6">
             <label for="item_description">Item Description</label>
-            <input type="text" class="form-control" id="item_description" name="item_description" required>
+            <input type="text" class="form-control" id="item_description" name="item_description" required value=<%= menuListItem.item_description %>>
           </div>
           <div class="form-group col-md-6">
             <label for="uom">Unit Of Measurement</label>
-            <select class="form-control" id="uom" name="uom" required>
+            <select class="form-control" id="uom" name="uom" required value=<%= menuListItem.uom %>>
               <option value="" disabled selected>Select UOM</option>
               <option value="KG">KG</option>
               <option value="L">L</option>
               <option value="G">G</option>
               <option value="ML">ML</option>
               <!-- Add more options as needed -->
+               
             </select>
           </div>
       </div>
@@ -46,11 +44,11 @@
       <div class="form-row">
         <div class="form-group col-md-6">
             <label for="std_price">Standard Price</label>
-            <input type="number" step="0.01" class="form-control" id="std_price" name="std_price" required min="1">
+            <input type="number" step="0.01" class="form-control" id="std_price" name="std_price" required min="1" value=<%= menuListItem.std_price %>>
           </div>
           <div class="form-group col-md-6">
             <label for="mrp">MRP</label>
-            <input type="number" step="0.01" class="form-control" id="mrp" name="mrp" required min="1">
+            <input type="number" step="0.01" class="form-control" id="mrp" name="mrp" required min="1" value=<%= menuListItem.mrp %>>
           </div>
       </div>
       
@@ -67,7 +65,7 @@
   <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
   <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
   <script>
-    document.getElementById('menu_item_code').addEventListener('input', function() {
+    document.getElementById('item_code').addEventListener('input', function() {
         this.value = this.value.toUpperCase();
     });
   </script>

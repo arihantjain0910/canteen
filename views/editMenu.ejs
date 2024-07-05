@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Edit BOM Item</title>
+  <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body>
+  <div class="container mt-5">
+    <h3>Edit BOM Item</h3>
+    <form action="/menu/edit/<%= menuItem.details.menu_item_code %>" method="post">
+      <div class="form-group">
+        <label>Menu Item Code</label>
+        <input type="text" class="form-control" name="menu_item_code" value="<%= menuItem.details.menu_item_code %>" readonly>
+      </div>
+      <div class="form-group">
+        <label>Item Description</label>
+        <input type="text" class="form-control" name="item_description" value="<%= menuItem.details.item_description %>">
+      </div>
+      <div class="form-group">
+        <label>UOM</label>
+        <input type="text" class="form-control" name="uom" value="<%= menuItem.details.uom %>">
+      </div>
+      <div class="form-group">
+        <label>Quantity</label>
+        <input type="number" class="form-control" name="qty" value="<%= menuItem.details.qty %>">
+      </div>
+      <h5>Ingredients</h5>
+      <div id="ingredients">
+        <% menuItem.ingredients.forEach((ingredient, index) => { %>
+          <div class="form-group">
+            <label>Item Code</label>
+            <input type="text" class="form-control" name="itemCode[]" value="<%= ingredient.item_code %>">
+          </div>
+          <div class="form-group">
+            <label>Item Description</label>
+            <input type="text" class="form-control" name="itemDescription[]" value="<%= ingredient.ingredient_description %>">
+          </div>
+          <div class="form-group">
+            <label>UOM</label>
+            <input type="text" class="form-control" name="ingredient_uom[]" value="<%= ingredient.ingredient_uom %>">
+          </div>
+          <div class="form-group">
+            <label>Quantity</label>
+            <input type="number" class="form-control" name="ingredient_qty[]" value="<%= ingredient.ingredient_qty %>">
+          </div>
+          <div class="form-group">
+            <label>Rate</label>
+            <input type="text" class="form-control" name="rate[]" value="<%= ingredient.rate %>">
+          </div>
+          <hr>
+        <% }); %>
+      </div>
+      <button type="submit" class="btn btn-primary">Save Changes</button>
+    </form>
+  </div>
+</body>
+</html>
