@@ -970,6 +970,30 @@ app.post('/submit-form', (req, res) => {
   
         results.push(...result);
   
+        // Insert results into requirement_ingredients table
+        result.forEach(row => {
+          const insertQuery = `
+            INSERT INTO requirement_ingredients 
+            (menu_item_code, item_code, ingredient_description, ingredient_uom, ingredient_qty, rate, total_ingredient_qty, total_cost) 
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+          `;
+          const values = [
+            row.menu_item_code,
+            row.item_code,
+            row.ingredient_description,
+            row.ingredient_uom,
+            row.ingredient_qty,
+            row.rate,
+            row.total_ingredient_qty,
+            row.total_cost
+          ];
+          db.query(insertQuery, values, (insertError) => {
+            if (insertError) {
+              console.error('Insert Error:', insertError);
+            }
+          });
+        });
+  
         pendingQueries--;
         if (pendingQueries === 0) {
           console.log('Query Results:', results);
