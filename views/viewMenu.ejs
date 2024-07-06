@@ -10,6 +10,7 @@
   <div class="container mt-5">
     <h3>BOM List</h3>
     <% for (let menuItemCode in menuItems) { %>
+      <h5>Menu Item:</h5>
       <table class="table table-bordered">
         <thead>
           <tr>
@@ -33,16 +34,31 @@
         </tbody>
       </table>
       <h5>Ingredients:</h5>
-      <p>
-        <% menuItems[menuItemCode].ingredients.forEach(ingredient => { %>
-          <strong>Line No:</strong> <%= ingredient.lineno %> <br>
-          <strong>Item Code:</strong> <%= ingredient.item_code %> <br>
-          <strong>Description:</strong> <%= ingredient.ingredient_description %> <br>
-          <strong>UOM:</strong> <%= ingredient.ingredient_uom %> <br>
-          <strong>Quantity:</strong> <%= ingredient.ingredient_qty %> <br>
-          <strong>Rate:</strong> <%= ingredient.rate %> <br><br>
-        <% }); %>
-      </p>
+      <table class="table table-bordered">
+        <thead>
+          <tr>
+            <th>Line No</th>
+            <th>Item Code</th>
+            <th>Description</th>
+            <th>UOM</th>
+            <th>Quantity</th>
+            <th>Rate</th>
+          </tr>
+        </thead>
+        <tbody>
+          <% menuItems[menuItemCode].ingredients.forEach(ingredient => { %>
+            <tr>
+              <td><%= ingredient.lineno %></td>
+              <td><%= ingredient.item_code %></td>
+              <td><%= ingredient.ingredient_description %></td>
+              <td><%= ingredient.ingredient_uom %></td>
+              <td><%= ingredient.ingredient_qty %></td>
+              <td><%= ingredient.rate %></td>
+            </tr>
+          <% }); %>
+        </tbody>
+      </table>
+      
       <hr>
     <% } %>
   </div>

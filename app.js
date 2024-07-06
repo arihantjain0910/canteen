@@ -928,7 +928,7 @@ app.post('/submit-form', (req, res) => {
         res.status(500).send('Error inserting data into database');
         return;
       }
-      console.log('Inserted ' + result.affectedRows + ' rows'); 
+      //console.log('Inserted ' + result.affectedRows + ' rows'); 
       
       res.redirect('/requirement_form');
     });
@@ -945,7 +945,16 @@ app.post('/submit-form', (req, res) => {
     let pendingQueries = menuItemCode.length;
   
     menuItemCode.forEach((menuItem, index) => {
-      const reqQty = quantity[index];
+      const reqQty = parseFloat(quantity[index]);
+  
+      // Log the quantity to check if it's parsed correctly
+     // console.log(`Parsed Quantity for ${menuItem}: ${reqQty}`);
+  
+      // Check if the parsed quantity is a valid number
+      if (isNaN(reqQty)) {
+        console.error(`Invalid quantity value for ${menuItem}: ${quantity[index]}`);
+        return res.status(400).send('Invalid quantity value');
+      }
   
       const query = `
         SELECT 
@@ -953,25 +962,41 @@ app.post('/submit-form', (req, res) => {
           b.item_code,
           b.ingredient_description,
           b.ingredient_uom,
-          b.ingredient_qty,
-          b.rate,
-          (b.ingredient_qty * ?) AS total_ingredient_qty,
-          (b.rate * ?) AS total_cost
+          CAST(b.ingredient_qty AS DECIMAL(10,2)) AS ingredient_qty,
+          CAST(b.rate AS DECIMAL(10,2)) AS rate,
+          CAST(b.ingredient_qty * ? AS DECIMAL(10,2)) AS total_ingredient_qty,
+          CAST(b.rate * ? AS DECIMAL(10,2)) AS total_cost
         FROM bom b
         WHERE b.menu_item_code = ?
       `;
   
+      // Log the query and values for debugging
+     // console.log('Executing query:', query);
+    //  console.log('With values:', [reqQty, reqQty, menuItem]);
+  
       db.query(query, [reqQty, reqQty, menuItem], (error, result) => {
         if (error) {
-          console.error('Query Error:', error);
-          res.status(500).send('Server Error');
-          return;
+         // console.error('Query Error:', error);
+          return res.status(500).send('Server Error');
         }
   
-        results.push(...result);
+        // Log the result of the query
+        //console.log('Query Result:', result);
   
-        // Insert results into requirement_ingredients table
         result.forEach(row => {
+          // Log intermediate values
+        //  console.log(`Multiplying ${row.ingredient_qty} by ${reqQty} gives ${row.total_ingredient_qty}`);
+         // console.log(`Multiplying ${row.rate} by ${reqQty} gives ${row.total_cost}`);
+  
+          // Skip rows with null values for required fields
+          if (row.item_code === null || row.ingredient_description === null || row.ingredient_uom === null) {
+           // console.log('Skipping row with null values:', row);
+            return;
+          }
+  
+          results.push(row);
+  
+          // Insert results into requirement_ingredients table
           const insertQuery = `
             INSERT INTO requirement_ingredients 
             (menu_item_code, item_code, ingredient_description, ingredient_uom, ingredient_qty, rate, total_ingredient_qty, total_cost) 
@@ -987,6 +1012,10 @@ app.post('/submit-form', (req, res) => {
             row.total_ingredient_qty,
             row.total_cost
           ];
+  
+          // Log the values to be inserted
+       //   console.log('Inserting values:', values);
+  
           db.query(insertQuery, values, (insertError) => {
             if (insertError) {
               console.error('Insert Error:', insertError);
@@ -996,12 +1025,15 @@ app.post('/submit-form', (req, res) => {
   
         pendingQueries--;
         if (pendingQueries === 0) {
-          console.log('Query Results:', results);
+          //console.log('Final Results:', results);
           res.json(results);
         }
       });
     });
   });
+  
+  
+  
 // Start server
 const port = 3000;
 app.listen(port, () => {

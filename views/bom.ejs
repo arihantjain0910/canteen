@@ -22,26 +22,25 @@
     <h3>Menu Items</h3>
     <form id="menuForm" action="/menu/add" method="POST">
       <div class="form-row">
-        <div class="form-group col-md-3">
+        <div class="form-group col-md-2">
           <label for="menu_item_code">Menu Item Code</label>
           <input type="text" class="form-control" id="menu_item_code" name="menu_item_code" required list="menu_item_codes_list">
           <datalist id="menu_item_codes_list"></datalist>
         </div>
-        <div class="form-group col-md-9">
+        <div class="form-group col-md-6">
           <label for="item_description">Item Description</label>
           <input type="text" class="form-control" id="item_description" name="item_description" required>
         </div>
-      </div>
-      <div class="form-row">
-        <div class="form-group col-md-4">
-          <label for="uom">Unit Of Measurement</label>
-          <input type="text" class="form-control" id="uom" name="uom" required>
+        <div class="form-group col-md-2">
+          <label for="uom">UOM</label>
+          <input type="text" class="form-control" id="uom" name="uom" required readonly>
         </div>
-        <div class="form-group col-md-4">
+        <div class="form-group col-md-1">
           <label for="qty">Quantity</label>
           <input type="number" class="form-control" id="qty" name="qty" required value="1" readonly>
         </div>
       </div>
+      
     
       <h3 class="mt-4">Ingredients Lists</h3>
       <table class="table table-bordered" id="itemTable">
@@ -62,7 +61,7 @@
             <td><input type="text" class="form-control" name="itemCode[]"></td>
             <td><input type="text" class="form-control" name="itemDescription[]"></td>
             <td><input type="text" class="form-control" name="uom[]"></td>
-            <td><input type="number" class="form-control" name="qty[]"></td>
+            <td><input type="decimal" class="form-control" name="qty[]"></td>
             <td><input type="number" class="form-control" name="rate[]"></td>
             <td><button type="button" class="btn btn-danger" onclick="deleteRow(this)">Delete</button></td>
           </tr>
@@ -96,7 +95,7 @@
       cell2.innerHTML = `<input type="text" class="form-control" name="itemCode[]">`;
       cell3.innerHTML = `<input type="text" class="form-control" name="itemDescription[]">`;
       cell4.innerHTML = `<input type="text" class="form-control" name="uom[]">`;
-      cell5.innerHTML = `<input type="number" class="form-control" name="qty[]">`;
+      cell5.innerHTML = `<input type="decimal" class="form-control" name="qty[]">`;
       cell6.innerHTML = `<input type="number" class="form-control" name="rate[]">`;
       cell7.innerHTML = `<button type="button" class="btn btn-danger" onclick="deleteRow(this)">Delete</button>`;
     }
