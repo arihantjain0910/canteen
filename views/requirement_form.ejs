@@ -108,6 +108,9 @@
     }
 
     function displayResults(results) {
+  // Aggregate results by item code
+  const aggregatedResults = aggregateResults(results);
+
   const resultContainer = document.getElementById('resultContainer');
   resultContainer.innerHTML = '';
 
@@ -118,7 +121,6 @@
   thead.innerHTML = `
     <tr>
       <th>SN</th>
-      <th>Menu Item Code</th>
       <th>Item Code</th>
       <th>Ingredient Description</th>
       <th>Ingredient UOM</th>
@@ -130,24 +132,67 @@
   table.appendChild(thead);
 
   const tbody = document.createElement('tbody');
-  results.forEach((result, index) => {
+  let totalCostSum = 0;
+
+  aggregatedResults.forEach((result, index) => {
+    totalCostSum += result.total_cost;
     const tr = document.createElement('tr');
     tr.innerHTML = `
       <td>${index + 1}</td>
-      <td>${result.menu_item_code}</td>
       <td>${result.item_code}</td>
       <td>${result.ingredient_description}</td>
       <td>${result.ingredient_uom}</td>
       <td>${result.total_ingredient_qty}</td>
       <td>${result.rate}</td>
-      <td>${result.total_cost}</td>
+      <td>${result.total_cost.toFixed(2)}</td>
     `;
     tbody.appendChild(tr);
   });
-  table.appendChild(tbody);
 
+  const totalRow = document.createElement('tr');
+  totalRow.innerHTML = `
+    <td colspan="6" class="text-right"><strong>Total Cost:</strong></td>
+    <td><strong>${totalCostSum.toFixed(2)}</strong></td>
+  `;
+  tbody.appendChild(totalRow);
+
+  table.appendChild(tbody);
   resultContainer.appendChild(table);
 }
+
+function aggregateResults(results) {
+  const aggregated = [];
+
+  // Map to track aggregated items
+  const map = new Map();
+
+  results.forEach(result => {
+    const key = result.item_code;
+    if (!map.has(key)) {
+      map.set(key, {
+        item_code: result.item_code,
+        ingredient_description: result.ingredient_description,
+        ingredient_uom: result.ingredient_uom,
+        total_ingredient_qty: parseFloat(result.total_ingredient_qty),
+        rate: parseFloat(result.rate),
+        total_cost: parseFloat(result.total_cost)
+      });
+    } else {
+      const existing = map.get(key);
+      existing.total_ingredient_qty += parseFloat(result.total_ingredient_qty);
+      existing.total_cost += parseFloat(result.total_cost);
+    }
+  });
+
+  // Convert map values back to array
+  map.forEach(value => {
+    aggregated.push(value);
+  });
+
+  return aggregated;
+}
+
+
 
     function fetchDescription(input) {
       const menuItemCode = input.value;

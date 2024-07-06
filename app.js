@@ -19,7 +19,7 @@ app.use(express.urlencoded({ extended: true }));
 const db = mysql.createConnection({
     host: 'localhost',
     user: 'root',
-    password: '7877Arih@nt',
+    password: 'Sangam@2024',
     database: 'canteen'
 });
 
@@ -96,11 +96,11 @@ passport.use('admin', new LocalStrategy({
 
         // Compare plain text passwords
         if (password !== user.password) {
-            console.log('Admin login: Incorrect password.');
+           // console.log('Admin login: Incorrect password.');
             return done(null, false, { message: 'Incorrect password.' });
         }
 
-        console.log('Admin login: Success.');
+     //   console.log('Admin login: Success.');
         return done(null, user);
     });
 }));
@@ -719,7 +719,7 @@ app.delete('/delete-menu-item/:id',(req,res)=>{
 // FOR REQUIREMENT FORM
 app.get('/fetch-menu-item-description', (req, res) => {
     const menuItemCode = req.query.menuItemCode;
-    console.log(`Received request for menu item code: ${menuItemCode}`);
+   // console.log(`Received request for menu item code: ${menuItemCode}`);
   
     const sql = `SELECT item_description FROM item_list WHERE menu_item_code = ?`;
     db.query(sql, [menuItemCode], (error, results, fields) => {
@@ -728,10 +728,10 @@ app.get('/fetch-menu-item-description', (req, res) => {
         res.status(500).json({ error: 'Failed to fetch menu item description' });
       } else {
         if (results.length > 0) {
-          console.log(`Found menu item description: ${results[0].item_description}`);
+        //  console.log(`Found menu item description: ${results[0].item_description}`);
           res.json({ description: results[0].item_description });
         } else {
-          console.log(`Menu item code not found: ${menuItemCode}`);
+         // console.log(`Menu item code not found: ${menuItemCode}`);
           res.json({ description: '' });
         }
       }
