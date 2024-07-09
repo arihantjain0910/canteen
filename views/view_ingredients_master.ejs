@@ -62,6 +62,8 @@
                     <th>Ingredient Item Code</th>
                     <th>Ingredient Description</th>
                     <th>UOM</th>
+                    <!-- <th>Edit</th> -->
+                    <th>Delete</th>
                 </tr>
             </thead>
             <tbody>
@@ -70,6 +72,14 @@
                     <td><%= ingredient.ingredient_item_code %></td>
                     <td><%= ingredient.ingredient_item_description %></td>
                     <td><%= ingredient.uom %></td>
+                    <!-- <td> <form action="/edit_view_ingredients_master/<%=ingredient.id%>" method="GET">
+                        <button type="submit" class="btn btn-primary">Edit</button></td> -->
+                    
+                    <td>
+                        <form action="/delete_view_ingredients_master/<%=ingredient.id%>?_method=DELETE" method="POST">
+                           <button type="submit" class="btn btn-danger">Delete</button>
+                        </form>
+                    </td>
                 </tr>
                 <% } %>
             </tbody>

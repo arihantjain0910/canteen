@@ -1063,6 +1063,53 @@ app.get("/view_ingredients_master",(req,res)=>{
     });
 })
 
+app.get("/edit_view_ingredients_master",(req,res)=>{
+    let {id} = req.params;
+    res.render("edit_view_ingredients_master.ejs", {id})
+})
+
+
+app.put("/edit_view_ingredients_master/:id",(req,res)=>{
+    let {id} = req.params;
+    let{ingredient_item_code : ingredient_item_code , ingredient_item_description : ingredient_item_description, uom : uom} = req.body;
+    let q = `SELECT * FROM ingredients_master WHERE id='${id}'`;
+    try{
+        db.query(q,(err,result)=>{
+            if(err) throw err;
+            let ingredient = result[0]
+          let q2 = `UPDATE ingredients_master SET ingredient_item_code='${ingredient_item_code}',ingredient_item_description='${ingredient_item_description}', uom='${uom}'WHERE id='${id}'`;
+          try{
+            db.query(q2,(err,result)=>{
+                if(err) throw err;
+                
+                res.redirect('/view_ingredients_master');
+            });
+        } catch(err){
+            console.log(err);
+            res.send("some error in db");
+        }
+        });
+    } catch(err){
+        console.log(err);
+        res.send("some error in db");
+    }
+})
+
+app.delete('/delete_view_ingredients_master/:id',(req,res)=>{
+    let {id} = req.params;
+    let q = `DELETE FROM ingredients_master WHERE id='${id}'`;
+    try{
+        db.query(q,(err,result)=>{
+            if(err) throw err;
+            // let user = result[0]
+            res.redirect("/view_ingredients_master");
+        });
+    } catch(err){
+        console.log(err);
+        res.send("some error in db");
+    }
+})
+
 // Start server
 const port = 3000;
 app.listen(port, () => {
