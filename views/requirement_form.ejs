@@ -31,7 +31,7 @@
             <td>1</td>
             <td><input type="text" class="form-control" name="menuItemCode[]" onchange="fetchDescription(this)"></td>
             <td><input type="text" class="form-control" name="menuItemDescription[]"></td>
-            <td><input type="decimal" class="form-control" name="quantity[]"></td>
+            <td><input type="number" step="0.01" class="form-control" name="quantity[]"></td>
             <td><button type="button" class="btn btn-danger" onclick="deleteRow(this)">Delete</button></td>
           </tr>
         </tbody>
@@ -39,13 +39,18 @@
       <button type="button" class="btn btn-secondary" onclick="addRow()">Add Row</button>
       <button type="submit" class="btn btn-primary">Submit</button>
     </form>
+    <button id="downloadExcelBtn" class="btn btn-success mt-3" onclick="downloadExcel()">Download Excel</button>
     <div id="resultContainer" class="mt-4"></div>
   </div>
 
   <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
   <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.16.9/xlsx.full.min.js"></script>
   <script>
+    let formData;
+    let results;
+
     function addRow() {
       const table = document.getElementById("menuTable").getElementsByTagName('tbody')[0];
       const rowCount = table.rows.length;
@@ -60,7 +65,7 @@
       cell1.innerHTML = rowCount + 1;
       cell2.innerHTML = `<input type="text" class="form-control" name="menuItemCode[]" onchange="fetchDescription(this)">`;
       cell3.innerHTML = `<input type="text" class="form-control" name="menuItemDescription[]">`;
-      cell4.innerHTML = `<input type="decimal" class="form-control" name="quantity[]">`;
+      cell4.innerHTML = `<input type="number" step="0.01" class="form-control" name="quantity[]">`;
       cell5.innerHTML = `<button type="button" class="btn btn-danger" onclick="deleteRow(this)">Delete</button>`;
     }
 
@@ -81,118 +86,117 @@
       event.preventDefault();
 
       const form = document.getElementById('menuForm');
-      const formData = new FormData(form);
-      const data = {};
+      const formDataObj = new FormData(form);
+      formData = {};
 
-      formData.forEach((value, key) => {
-        if (!data[key]) {
-          data[key] = [];
+      formDataObj.forEach((value, key) => {
+        if (!formData[key]) {
+          formData[key] = [];
         }
-        data[key].push(value);
+        formData[key].push(value);
       });
 
-      console.log('Form Data:', data);
+      console.log('Form Data:', formData);
 
       fetch('/calculate-requirements', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'
         },
-        body: JSON.stringify(data)
+        body: JSON.stringify(formData)
       })
       .then(response => response.json())
       .then(result => {
         console.log('Server Response:', result);
-        displayResults(result);
+        results = result;
+        displayResults(results);
       });
     }
 
     function displayResults(results) {
-  // Aggregate results by item code
-  const aggregatedResults = aggregateResults(results);
+      // Aggregate results by item code
+      const aggregatedResults = aggregateResults(results);
 
-  const resultContainer = document.getElementById('resultContainer');
-  resultContainer.innerHTML = '';
+      const resultContainer = document.getElementById('resultContainer');
+      resultContainer.innerHTML = '';
 
-  const table = document.createElement('table');
-  table.className = 'table table-striped';
+      const table = document.createElement('table');
+      table.className = 'table table-striped';
 
-  const thead = document.createElement('thead');
-  thead.innerHTML = `
-    <tr>
-      <th>SN</th>
-      <th>Item Code</th>
-      <th>Ingredient Description</th>
-      <th>Ingredient UOM</th>
-      <th>Ingredient Quantity</th>
-      <th>Rate</th>
-      <th>Total Cost</th>
-    </tr>
-  `;
-  table.appendChild(thead);
+      const thead = document.createElement('thead');
+      thead.innerHTML = `
+        <tr>
+          <th>SN</th>
+          <th>Item Code</th>
+          <th>Ingredient Description</th>
+          <th>Ingredient UOM</th>
+          <th>Ingredient Quantity</th>
+          <th>Rate</th>
+          <th>Total Cost</th>
+        </tr>
+      `;
+      table.appendChild(thead);
 
-  const tbody = document.createElement('tbody');
-  let totalCostSum = 0;
+      const tbody = document.createElement('tbody');
+      let totalCostSum = 0;
 
-  aggregatedResults.forEach((result, index) => {
-    totalCostSum += result.total_cost;
-    const tr = document.createElement('tr');
-    tr.innerHTML = `
-      <td>${index + 1}</td>
-      <td>${result.item_code}</td>
-      <td>${result.ingredient_description}</td>
-      <td>${result.ingredient_uom}</td>
-      <td>${result.total_ingredient_qty}</td>
-      <td>${result.rate}</td>
-      <td>${result.total_cost.toFixed(2)}</td>
-    `;
-    tbody.appendChild(tr);
-  });
-
-  const totalRow = document.createElement('tr');
-  totalRow.innerHTML = `
-    <td colspan="6" class="text-right"><strong>Total Cost:</strong></td>
-    <td><strong>${totalCostSum.toFixed(2)}</strong></td>
-  `;
-  tbody.appendChild(totalRow);
-
-  table.appendChild(tbody);
-  resultContainer.appendChild(table);
-}
-
-function aggregateResults(results) {
-  const aggregated = [];
-
-  // Map to track aggregated items
-  const map = new Map();
-
-  results.forEach(result => {
-    const key = result.item_code;
-    if (!map.has(key)) {
-      map.set(key, {
-        item_code: result.item_code,
-        ingredient_description: result.ingredient_description,
-        ingredient_uom: result.ingredient_uom,
-        total_ingredient_qty: parseFloat(result.total_ingredient_qty),
-        rate: parseFloat(result.rate),
-        total_cost: parseFloat(result.total_cost)
+      aggregatedResults.forEach((result, index) => {
+        totalCostSum += result.total_cost;
+        const tr = document.createElement('tr');
+        tr.innerHTML = `
+          <td>${index + 1}</td>
+          <td>${result.item_code}</td>
+          <td>${result.ingredient_description}</td>
+          <td>${result.ingredient_uom}</td>
+          <td>${result.total_ingredient_qty}</td>
+          <td>${result.rate}</td>
+          <td>${result.total_cost.toFixed(2)}</td>
+        `;
+        tbody.appendChild(tr);
       });
-    } else {
-      const existing = map.get(key);
-      existing.total_ingredient_qty += parseFloat(result.total_ingredient_qty);
-      existing.total_cost += parseFloat(result.total_cost);
+
+      const totalRow = document.createElement('tr');
+      totalRow.innerHTML = `
+        <td colspan="6" class="text-right"><strong>Total Cost:</strong></td>
+        <td><strong>${totalCostSum.toFixed(2)}</strong></td>
+      `;
+      tbody.appendChild(totalRow);
+
+      table.appendChild(tbody);
+      resultContainer.appendChild(table);
     }
-  });
 
-  // Convert map values back to array
-  map.forEach(value => {
-    aggregated.push(value);
-  });
+    function aggregateResults(results) {
+      const aggregated = [];
 
-  return aggregated;
-}
+      // Map to track aggregated items
+      const map = new Map();
 
+      results.forEach(result => {
+        const key = result.item_code;
+        if (!map.has(key)) {
+          map.set(key, {
+            item_code: result.item_code,
+            ingredient_description: result.ingredient_description,
+            ingredient_uom: result.ingredient_uom,
+            total_ingredient_qty: parseFloat(result.total_ingredient_qty),
+            rate: parseFloat(result.rate),
+            total_cost: parseFloat(result.total_cost)
+          });
+        } else {
+          const existing = map.get(key);
+          existing.total_ingredient_qty += parseFloat(result.total_ingredient_qty);
+          existing.total_cost += parseFloat(result.total_cost);
+        }
+      });
 
+      // Convert map values back to array
+      map.forEach(value => {
+        aggregated.push(value);
+      });
+
+      return aggregated;
+    }
 
     function fetchDescription(input) {
       const menuItemCode = input.value;
@@ -201,6 +205,57 @@ function aggregateResults(results) {
         const descriptionInput = input.closest('tr').querySelector('input[name="menuItemDescription[]"]');
         descriptionInput.value = data.description;
       });
+    }
+
+    function downloadExcel() {
+      if (!formData || !results) {
+        alert('Please submit the form first to fetch results.');
+        return;
+      }
+
+      // Create a new workbook
+      const wb = XLSX.utils.book_new();
+
+      // Add form data to the workbook
+      const formDataSheet = XLSX.utils.json_to_sheet(formDataToJSON(formData));
+      XLSX.utils.book_append_sheet(wb, formDataSheet, 'Form Data');
+
+      // Aggregate results
+      const aggregatedResults = aggregateResults(results);
+
+      // Convert aggregated results to JSON format
+      const resultsJSON = aggregatedResults.map((result, index) => ({
+        SN: index + 1,
+        'Item Code': result.item_code,
+        'Ingredient Description': result.ingredient_description,
+        'Ingredient UOM': result.ingredient_uom,
+        'Ingredient Quantity': result.total_ingredient_qty,
+        Rate: result.rate,
+        'Total Cost': result.total_cost.toFixed(2)
+      }));
+
+      // Add result data to the workbook
+      const resultDataSheet = XLSX.utils.json_to_sheet(resultsJSON);
+      XLSX.utils.book_append_sheet(wb, resultDataSheet, 'Results');
+
+      // Generate Excel file and trigger download
+      XLSX.writeFile(wb, 'requirement_form.xlsx');
+    }
+
+    function formDataToJSON(formData) {
+      const keys = Object.keys(formData);
+      const length = formData[keys[0]].length;
+      const json = [];
+
+      for (let i = 0; i < length; i++) {
+        const row = {};
+        keys.forEach(key => {
+          row[key] = formData[key][i];
+        });
+        json.push(row);
+      }
+
+      return json;
     }
   </script>
 </body>
