@@ -1,0 +1,268 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Dashboard Template</title>
+    <link
+      rel="stylesheet"
+      href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.1/css/all.min.css"
+    />
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+      }
+      .sidebar {
+        height: 100%;
+        position: fixed;
+        width: 250px;
+        background-color: #343a40;
+        padding-top: 20px;
+      }
+      .sidebar a {
+        padding: 10px;
+        text-align: left;
+        display: block;
+        color: white;
+      }
+      .sidebar a:hover {
+        background-color: #575d63;
+        color: white;
+      }
+      .content {
+        margin-left: 250px;
+        padding: 20px;
+      }
+      .card {
+        margin-bottom: 20px;
+      }
+      .navbar {
+        margin-bottom: 20px;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="sidebar">
+      <a href="#" class="navbar-brand text-center"
+        ><i class="fas fa-user-circle"></i> Adminity</a
+      >
+      <a href="#dashboard"><i class="fas fa-tachometer-alt"></i> Dashboard</a>
+      <a href="#crm"><i class="fas fa-address-book"></i> CRM</a>
+      <a href="#analytics"><i class="fas fa-chart-line"></i> Analytics</a>
+      <a href="#page-layouts"><i class="fas fa-file-alt"></i> Page Layouts</a>
+      <a href="#widgets"><i class="fas fa-th"></i> Widgets</a>
+      <a href="#ui-elements"><i class="fas fa-cogs"></i> UI Elements</a>
+      <a href="#forms"><i class="fas fa-edit"></i> Forms</a>
+      <a href="#tables"><i class="fas fa-table"></i> Tables</a>
+    </div>
+
+    <div class="content">
+      <nav class="navbar navbar-expand-lg navbar-light bg-light">
+        <a class="navbar-brand" href="#">Dashboard</a>
+        <button
+          class="navbar-toggler"
+          type="button"
+          data-toggle="collapse"
+          data-target="#navbarNav"
+          aria-controls="navbarNav"
+          aria-expanded="false"
+          aria-label="Toggle navigation"
+        >
+          <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+          <ul class="navbar-nav ml-auto">
+            <li class="nav-item">
+              <a class="nav-link" href="#"><i class="fas fa-bell"></i></a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="#"
+                ><i class="fas fa-user"></i> John Doe</a
+              >
+            </li>
+          </ul>
+        </div>
+      </nav>
+
+      <div class="row">
+        <div class="col-lg-3 col-md-6">
+          <div class="card text-white bg-warning">
+            <div class="card-body">
+              <h5 class="card-title">$30200</h5>
+              <p class="card-text">All Earnings</p>
+            </div>
+            <div class="card-footer">
+              <small>Update: 2:15 am</small>
+            </div>
+          </div>
+        </div>
+        <div class="col-lg-3 col-md-6">
+          <div class="card text-white bg-success">
+            <div class="card-body">
+              <h5 class="card-title">290+</h5>
+              <p class="card-text">Page Views</p>
+            </div>
+            <div class="card-footer">
+              <small>Update: 2:15 am</small>
+            </div>
+          </div>
+        </div>
+        <div class="col-lg-3 col-md-6">
+          <div class="card text-white bg-danger">
+            <div class="card-body">
+              <h5 class="card-title">145</h5>
+              <p class="card-text">Task Completed</p>
+            </div>
+            <div class="card-footer">
+              <small>Update: 2:15 am</small>
+            </div>
+          </div>
+        </div>
+        <div class="col-lg-3 col-md-6">
+          <div class="card text-white bg-info">
+            <div class="card-body">
+              <h5 class="card-title">500</h5>
+              <p class="card-text">Downloads</p>
+            </div>
+            <div class="card-footer">
+              <small>Update: 2:15 am</small>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-body">
+          <h5 class="card-title">Sales Analytics</h5>
+          <div id="chart" style="height: 300px"></div>
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="col-lg-8">
+          <div class="card">
+            <div class="card-body">
+              <h5 class="card-title">Application Sales</h5>
+              <table class="table table-hover">
+                <thead>
+                  <tr>
+                    <th>Application</th>
+                    <th>Sales</th>
+                    <th>Change</th>
+                    <th>Avg Price</th>
+                    <th>Total</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td>Able Pro</td>
+                    <td>16,300</td>
+                    <td><i class="fas fa-arrow-up text-success"></i></td>
+                    <td>$53</td>
+                    <td>$15,652</td>
+                  </tr>
+                  <tr>
+                    <td>Photoshop</td>
+                    <td>26,421</td>
+                    <td><i class="fas fa-arrow-up text-success"></i></td>
+                    <td>$35</td>
+                    <td>$18,785</td>
+                  </tr>
+                  <tr>
+                    <td>Guruable</td>
+                    <td>8,265</td>
+                    <td><i class="fas fa-arrow-up text-success"></i></td>
+                    <td>$98</td>
+                    <td>$9,652</td>
+                  </tr>
+                  <tr>
+                    <td>Flatable</td>
+                    <td>10,652</td>
+                    <td><i class="fas fa-arrow-down text-danger"></i></td>
+                    <td>$20</td>
+                    <td>$7,856</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+        <div class="col-lg-4">
+          <div class="card">
+            <div class="card-body">
+              <h5 class="card-title">Project Risk</h5>
+              <p>Balanced</p>
+              <h2>5</h2>
+              <p>Change Your Risk</p>
+            </div>
+            <div class="card-footer">
+              <button class="btn btn-primary">Download Overall Report</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-body">
+          <h5 class="card-title">Latest Updates</h5>
+          <div class="media">
+            <img src="https://via.placeholder.com/64" class="mr-3" alt="..." />
+            <div class="media-body">
+              <h5 class="mt-0">John Deo</h5>
+              <p>Lorem Ipsum is simply dummy text.</p>
+            </div>
+          </div>
+          <div class="media">
+            <img src="https://via.placeholder.com/64" class="mr-3" alt="..." />
+            <div class="media-body">
+              <h5 class="mt-0">John Deo</h5>
+              <p>Lorem Ipsum is simply dummy text.</p>
+            </div>
+          </div>
+          <div class="media">
+            <img src="https://via.placeholder.com/64" class="mr-3" alt="..." />
+            <div class="media-body">
+              <h5 class="mt-0">John Deo</h5>
+              <p>Lorem Ipsum is simply dummy text.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script>
+      var ctx = document.getElementById("chart").getContext("2d");
+      var chart = new Chart(ctx, {
+        type: "line",
+        data: {
+          labels: [
+            "January",
+            "February",
+            "March",
+            "April",
+            "May",
+            "June",
+            "July",
+          ],
+          datasets: [
+            {
+              label: "Sales Analytics",
+              backgroundColor: "rgb(255, 99, 132)",
+              borderColor: "rgb(255, 99, 132)",
+              data: [0.1, 0.5, 0.8, 1.2, 1.0, 0.6, 0.4],
+            },
+          ],
+        },
+        options: {},
+      });
+    </script>
+  </body>
+</html>
