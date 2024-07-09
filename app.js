@@ -1032,8 +1032,37 @@ app.post('/submit-form', (req, res) => {
     });
   });
   
+
+  app.get("/ingredients_master",(req,res)=>{
+    res.render("ingredients_master.ejs");
+  })
   
-  
+app.post("/ingredients_master",(req,res)=>{
+    const {ingredient_item_code,ingredient_item_description,uom} = req.body;
+    let q = "INSERT INTO ingredients_master (ingredient_item_code,ingredient_item_description,uom) VALUES (?,?,?)";
+    db.query(q, 
+        [ingredient_item_code,ingredient_item_description,uom], (err, result) => {
+        if (err) {
+            console.error('Error registering user:', err);
+            return res.status(500).send('Internal Server Error');
+        }
+        res.redirect('/ingredients_master');
+    });
+    
+})
+
+app.get("/view_ingredients_master",(req,res)=>{
+    let q = "SELECT * FROM ingredients_master";
+    db.query(q, (err, results) => {
+        if (err) {
+            console.error('Error retrieving data from database:', err);
+            return res.status(500).send('Internal Server Error');
+        }
+       
+        res.render('view_ingredients_master.ejs', { ingredients: results });
+    });
+})
+
 // Start server
 const port = 3000;
 app.listen(port, () => {
