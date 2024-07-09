@@ -1063,10 +1063,6 @@ app.get("/view_ingredients_master",(req,res)=>{
     });
 })
 
-app.get("/edit_view_ingredients_master",(req,res)=>{
-    let {id} = req.params;
-    res.render("edit_view_ingredients_master.ejs", {id})
-})
 
 
 app.put("/edit_view_ingredients_master/:id",(req,res)=>{
