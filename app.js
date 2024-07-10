@@ -1038,10 +1038,10 @@ app.post('/submit-form', (req, res) => {
   })
   
 app.post("/ingredients_master",(req,res)=>{
-    const {ingredient_item_code,ingredient_item_description,uom} = req.body;
-    let q = "INSERT INTO ingredients_master (ingredient_item_code,ingredient_item_description,uom) VALUES (?,?,?)";
+    const {ingredient_item_code,ingredient_item_description,uom,ingredient_item_type,opening_balance_quantity} = req.body;
+    let q = "INSERT INTO ingredients_master (ingredient_item_code,ingredient_item_description,uom,ingredient_item_type,opening_balance_quantity) VALUES (?,?,?,?,?)";
     db.query(q, 
-        [ingredient_item_code,ingredient_item_description,uom], (err, result) => {
+        [ingredient_item_code,ingredient_item_description,uom,ingredient_item_type,opening_balance_quantity], (err, result) => {
         if (err) {
             console.error('Error registering user:', err);
             return res.status(500).send('Internal Server Error');
@@ -1106,6 +1106,75 @@ app.delete('/delete_view_ingredients_master/:id',(req,res)=>{
     }
 })
 
+app.get("/ingredient_inward_form",(req,res)=>{
+    res.render('ingredient_inward_form.ejs');
+})
+app.post('/ingredient_inward_form', (req, res) => {
+    const {
+      bill_number,
+      supplier_name,
+      material_received_by,
+      bill_date,
+      ingredient_item_code,
+      ingredient_item_description,
+      received_quantity,
+      rate,
+      amount
+    } = req.body;
+  
+    // Create SQL query
+    const sql = `
+      INSERT INTO ingredients_inward (
+        bill_number,
+        supplier_name,
+        material_received_by,
+        bill_date,
+        ingredient_item_code,
+        ingredient_item_description,
+        received_quantity,
+        rate,
+        amount
+      ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
+    `;
+    
+    // Execute the query with data from the form
+    for (let i = 0; i < ingredient_item_code.length; i++) {
+        db.query(sql, [
+          bill_number,
+          supplier_name,
+          material_received_by,
+          bill_date,
+          ingredient_item_code[i],
+          ingredient_item_description[i],
+          received_quantity[i],
+          rate[i],
+          amount[i]
+        ], (err, result) => {
+          if (err) {
+            console.error('Error inserting data: ', err);
+            return res.status(500).send('Error inserting data');
+          }
+          console.log(`Row ${i + 1} inserted successfully`);
+          // Optionally handle success for each row
+        });
+      }
+    
+      res.redirect("/ingredient_inward_form");
+    });
+
+    app.post('/get-ingredient-description', (req, res) => {
+        const { ingredient_item_code } = req.body;
+        const sql = 'SELECT ingredient_item_description FROM ingredients_master WHERE ingredient_item_code = ?';
+        db.query(sql, [ingredient_item_code], (err, result) => {
+            if (err) throw err;
+            if (result.length > 0) {
+                res.json({ description: result[0].ingredient_item_description });
+            } else {
+                res.json({ description: '' });
+            }
+        });
+    });
+    
 // Start server
 const port = 3000;
 app.listen(port, () => {

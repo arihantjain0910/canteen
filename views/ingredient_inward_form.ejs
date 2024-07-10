@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ingredients Inward Form</title>
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        .form-container {
+            margin-top: 20px;
+        }
+        .table-container {
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container form-container">
+        <h2>Ingredients Inward Form</h2>
+        <form method="POST" action="/ingredient_inward_form">
+            <div class="form-row">
+                <div class="form-group col-md-2">
+                    <label for="bill_number">Bill Number :</label>
+                    <input type="text" class="form-control" id="bill_number" name="bill_number" required>
+                </div>
+                <div class="form-group col-md-4">
+                    <label for="supplier_name">Supplier Name :</label>
+                    <input type="text" class="form-control" id="supplier_name" name="supplier_name" required>
+                </div>
+                <div class="form-group col-md-4">
+                    <label for="material_received_by">Received By :</label>
+                    <input type="text" class="form-control" id="material_received_by" name="material_received_by" required>
+                </div>
+                <div class="form-group col-md-2">
+                    <label for="bill_date">Bill Date :</label>
+                    <input type="date" class="form-control" id="bill_date" name="bill_date" required>
+                </div>
+            </div>
+            <div class="table-container">
+                <table class="table table-bordered" id="ingredientsTable">
+                    <thead>
+                        <tr>
+                            <th>SN No</th>
+                            <th>Ingredient Item Code</th>
+                            <th>Ingredient Item Description</th>
+                            <th>Qty (in KG/L)</th>
+                            <th>Rate</th>
+                            <th>Amount</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td class="sn-no">1</td>
+                            <td><input type="text" id="ingredient_item_code" class="form-control ingredient_item_code" name="ingredient_item_code[]" required></td>
+                            <td><input type="text" id="ingredient_item_description" class="form-control ingredient_item_description" name="ingredient_item_description[]" required></td>
+                            <td><input type="decimal" id="received_quantity" class="form-control received_quantity" name="received_quantity[]" required></td>
+                            <td><input type="decimal" id="rate" class="form-control rate" name="rate[]" required></td>
+                            <td><input type="decimal" id="amount" class="form-control amount" name="amount[]" ></td>
+                            <td><button type="button" class="btn btn-danger delete-row">Delete</button></td>
+                        </tr>
+                    </tbody>
+                </table>
+                <button type="button" class="btn btn-info" id="addRow">Add Row</button>
+                <button type="submit" class="btn btn-primary" id="submitForm">Submit</button>
+            </div>
+        </form>
+    </div>
+    
+    <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <script>
+        $(document).ready(function() {
+            let snCounter = 2; // Start SN counter from 2 as first row is already present
+
+            $('#addRow').on('click', function() {
+                let newRow = `
+                    <tr>
+                        <td class="sn-no">${snCounter}</td>
+                        <td><input type="text" class="form-control ingredient_item_code" name="ingredient_item_code[]" required></td>
+                        <td><input type="text" class="form-control ingredient_item_description" name="ingredient_item_description[]" required></td>
+                        <td><input type="decimal" class="form-control received_quantity" name="received_quantity[]" required></td>
+                        <td><input type="decimal" class="form-control rate" name="rate[]" required></td>
+                        <td><input type="decimal" class="form-control amount" name="amount[]" ></td>
+                        <td><button type="button" class="btn btn-danger delete-row">Delete</button></td>
+                    </tr>`;
+                $('#ingredientsTable tbody').append(newRow);
+                snCounter++;
+            });
+
+            $('#ingredientsTable').on('click', '.delete-row', function() {
+                $(this).closest('tr').remove();
+                updateSN();
+            });
+
+            $('#ingredientsTable').on('input', '.received_quantity, .rate', function() {
+                let row = $(this).closest('tr');
+                let quantity = row.find('.received_quantity').val();
+                let rate = row.find('.rate').val();
+                let amount = (quantity * rate).toFixed(2);
+                row.find('.amount').val(amount);
+            });
+
+            $('#ingredientsTable').on('input', '.ingredient_item_code', function() {
+                let row = $(this).closest('tr');
+                let itemCode = $(this).val();
+                if (itemCode !== '') {
+                    $.ajax({
+                        type: 'POST',
+                        url: '/get-ingredient-description',
+                        data: JSON.stringify({ ingredient_item_code: itemCode }),
+                        contentType: 'application/json',
+                        success: function(response) {
+                            row.find('.ingredient_item_description').val(response.description);
+                        },
+                        error: function(err) {
+                            console.error(err);
+                        }
+                    });
+                }
+            });
+
+            $('#ingredientsTable').on('input', '.ingredient_item_code, .ingredient_item_description', function() {
+                this.value = this.value.toUpperCase();
+            });
+
+            function updateSN() {
+                let sn = 1;
+                $('#ingredientsTable tbody tr').each(function() {
+                    $(this).find('.sn-no').text(sn++);
+                });
+                snCounter = sn;
+            }
+
+            $('#supplier_name, #material_received_by').on('input', function() {
+                this.value = this.value.toUpperCase();
+            });
+        });
+    </script>
+</body>
+</html>

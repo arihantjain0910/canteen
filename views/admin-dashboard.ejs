@@ -8,23 +8,72 @@
     <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <style>
+        .navbar {
+            height: 100px;
+            font-size: 1rem;
+        }
+        .offcanvas-collapse {
+            position: fixed;
+            top: 100px; /* Adjust based on the height of your navbar */
+            bottom: 0;
+            left: 0;
+            width: 250px;
+            z-index: 1000;
+            display: none;
+            background-color: #f8f9fa;
+            overflow-y: auto;
+            padding-right: 1rem;
+            padding-left: 1rem;
+        }
+        .offcanvas-collapse.open {
+            display: block;
+        }
         .custom-table .even-row {
           background-color:#b6d4ee; 
         }
         .custom-table .odd-row {
           background-color: #f7d0ea; 
         }
+        .navbar-brand {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 100%;
+        }
+        .navbar-toggler {
+            position: absolute;
+            left: 15px;
+        }
     </style>
 </head>
 <body>
-  <nav class="navbar navbar-lg navbar-light bg-light fixed-top" style="height: 100px; font-size: 1rem;">
-    <div class="container-fluid">
-        <a class="navbar-brand" href="#">
-            <img src="https://media.licdn.com/dms/image/C4D0BAQFEhO_RAbTovQ/company-logo_200_200/0/1630499738773?e=2147483647&v=beta&t=0RA-JcGeh_o3Jd2P0ZxUEhiE875FBTbtwVHVk9i2kLs" alt="Logo" width="60" height="60" class="d-inline-block align-text-top">
-            Sangam India Limited
-        </a>
-    </div>
-  </nav>
+    <nav class="navbar navbar-lg navbar-light bg-light fixed-top">
+        <div class="container-fluid d-flex">
+            <button class="navbar-toggler" type="button" id="sidebarToggle">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <a class="navbar-brand" href="#" >
+                <img src="https://media.licdn.com/dms/image/C4D0BAQFEhO_RAbTovQ/company-logo_200_200/0/1630499738773?e=2147483647&v=beta&t=0RA-JcGeh_o3Jd2P0ZxUEhiE875FBTbtwVHVk9i2kLs" alt="Logo" width="60" height="60">
+                Sangam India Limited
+            </a>
+        </div>
+    </nav>
+
+  <div class="offcanvas-collapse" id="offcanvasSidebar">
+      <div class="nav flex-column">
+          <a href="/requirement_form" class="btn btn-info my-1">Add Requirement</a>
+          <a href="/view-today-entries" class="btn btn-info my-1">Today Entries</a>
+          <a href="/ingredients_master" class="btn btn-info my-1">Add Item In Ingredient Master</a>
+          <a href="/item-list" class="btn btn-info my-1">Add Item In Menu Master</a>
+          <a href="/detail-item-form" class="btn btn-info my-1">Create BOM</a>
+          <a href="/ingredient_inward_form" class="btn btn-info my-1">Ingredient Inwards Entry</a>
+          <a href="/add-new-employee" class="btn btn-info my-1">Add Employee</a>
+          <a href="/view-users" class="btn btn-info my-1">Total Employees</a>
+          <a href="/rate-list" class="btn btn-info my-1">Add Menu</a>
+          <a href="/view-rate-list" class="btn btn-info my-1">View Menu</a>
+          <a href="/admin-logout" class="btn btn-danger my-1">Logout</a>
+      </div>
+  </div>
 
   <div class="container mt-5">
     <div class="row">
@@ -33,26 +82,12 @@
             <h3 style="color: rgb(248, 83, 83);">All Entries</h3>
         </div>
     </div>
-    <div class="container mt-2">
-        <div class="d-flex me-auto">
-            <a href="/requirement_form" class="btn btn-success mx-1">Add Requirement</a>
-            <a href="/view-today-entries" class="btn btn-info mx-1">Today Entries</a>
-            <a href="/ingredients_master" class="btn btn-primary mx-1">Add Ingredient Item</a>
-            <a href="/item-list" class="btn btn-secondary mx-1">Add Menu Item</a>
-            <a href="/detail-item-form" class="btn btn-primary mx-1">Create BOM</a>
-            <a href="/add-new-employee" class="btn btn-success mx-1">Add Employee</a>
-            <a href="/view-users" class="btn btn-info mx-1">Employees</a>
-            <a href="/rate-list" class="btn btn-primary mx-1">Add Menu</a>
-            <a href="/view-rate-list" class="btn btn-secondary mx-1">Menu</a>
-            <a href="/admin-logout" class="btn btn-danger">Logout</a>
-        </div>
-    </div>
 
     <!-- Table to display all employee entries -->
     <div>
         <div>
             <h3 style="color: red;" class="mt-2">Employee Entries</h3>
-            <table class="table table-bordered table custom-table " id="employeeTable">
+            <table class="table table-bordered table custom-table" id="employeeTable">
                 <thead id="employeeTableHead">
                     <tr style="background-color: rgb(236, 208, 171);">
                         <th>SN No.</th> <!-- Line number column -->
@@ -124,6 +159,7 @@
         </div>
     </div>
   </div>
+
   <footer class="bg-light text-center text-lg-start mt-5">
     <div class="container p-4">
         <div class="row justify-content-center mb-4">
@@ -157,37 +193,14 @@
     </div>
   </footer>
 
-  <!-- Bootstrap JS and dependencies (Popper.js and jQuery) -->
+  <!-- Bootstrap JS and dependencies -->
   <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.11.0/umd/popper.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"></script>
   <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
-  <!-- DataTables CSS -->
-  <link href="https://cdn.datatables.net/1.11.4/css/jquery.dataTables.min.css" rel="stylesheet">
-
-  <!-- jQuery -->
-  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
-
-  <!-- DataTables JavaScript -->
-  <script src="https://cdn.datatables.net/1.11.4/js/jquery.dataTables.min.js"></script>
-
   <script>
-    $(document).ready(function() {
-        // Initialize DataTable for Employee table
-        $('#employeeTable').DataTable({
-            "paging": true,
-            "order": [[0, 'asc']], // Optional: Sort by first column ascending
-            "columnDefs": [
-                { "targets": 0, "orderable": false } // Disable sorting on SN No. column
-            ]
-        });
-
-        // Initialize DataTable for Guest table
-        $('#guestTable').DataTable({
-            "paging": true,
-            "order": [[0, 'asc']], // Optional: Sort by first column ascending
-            "columnDefs": [
-                { "targets": 0, "orderable": false } // Disable sorting on SN No. column
-            ]
+    $(document).ready(function () {
+        $('#sidebarToggle').on('click', function () {
+            $('.offcanvas-collapse').toggleClass('open');
         });
     });
   </script>

@@ -62,7 +62,7 @@
             <td><input type="text" class="form-control" name="itemDescription[]"></td>
             <td><input type="text" class="form-control" name="uom[]"></td>
             <td><input type="decimal" class="form-control" name="qty[]"></td>
-            <td><input type="number" class="form-control" name="rate[]"></td>
+            <td><input type="decimal" class="form-control" name="rate[]"></td>
             <td><button type="button" class="btn btn-danger" onclick="deleteRow(this)">Delete</button></td>
           </tr>
         </tbody>
@@ -96,7 +96,7 @@
       cell3.innerHTML = `<input type="text" class="form-control" name="itemDescription[]">`;
       cell4.innerHTML = `<input type="text" class="form-control" name="uom[]">`;
       cell5.innerHTML = `<input type="decimal" class="form-control" name="qty[]">`;
-      cell6.innerHTML = `<input type="number" class="form-control" name="rate[]">`;
+      cell6.innerHTML = `<input type="decimal" class="form-control" name="rate[]">`;
       cell7.innerHTML = `<button type="button" class="btn btn-danger" onclick="deleteRow(this)">Delete</button>`;
     }
 

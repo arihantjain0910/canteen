@@ -6,46 +6,65 @@
   <title>Ingredient Form</title>
   <!-- Bootstrap CSS -->
   <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css">
+  <style>
+    .form-box {
+      border: 1px solid #ccc;
+      padding: 20px;
+      border-radius: 5px;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    }
+  </style>
 </head>
 <body>
-
+  
   <div class="container mt-5">
-    <div class="d-flex justify-content-center">
+    <div class="d-flex justify-content-center mb-4">
         <a href="/admin-dashboard" class="btn btn-success mx-1">Home</a>
         <a href="/view_ingredients_master" class="btn btn-info mx-1">View Ingredient Item Master List</a>
     </div>
-    <h2>Ingredient Details Form</h2>
-    <form id="ingredientForm" method="POST" action="/ingredients_master">
-      <div class="form-row">
-        <div class="form-group col-md-3">
-          <label for="ingredient_item_code">Ingredient Item Code</label>
-          <input type="text" class="form-control" id="ingredient_item_code" name="ingredient_item_code" required>
-        </div>
-        <div class="form-group col-md-7">
-          <label for="ingredient_item_description">Ingredient Item Description</label>
-          <input type="text" class="form-control" id="ingredient_item_description" name="ingredient_item_description" required>
-        </div>
-        <div class="form-group col-md-2">
+    <div class="form-box">
+      <h2>Ingredient Details Form</h2>
+      <form id="ingredientForm" method="POST" action="/ingredients_master">
+        <div class="form-row">
+          <div class="form-group col-md-2">
+            <label for="ingredient_item_code">Ingredient Item Code</label>
+            <input type="text" class="form-control" id="ingredient_item_code" name="ingredient_item_code" required>
+          </div>
+          <div class="form-group col-md-4">
+            <label for="ingredient_item_description">Ingredient Item Description</label>
+            <input type="text" class="form-control" id="ingredient_item_description" name="ingredient_item_description" required>
+          </div>
+          <div class="form-group col-md-2">
             <label for="uom" class="required">UOM</label>
             <select class="form-control" id="uom" name="uom" required>
               <option value="" disabled selected>Select UOM</option>
               <option value="KG">KG</option>
               <option value="L">L</option>
-              
+              <option value="NO">NOs</option>
               <!-- Add more options as needed -->
             </select>
+          </div>
+          <div class="form-group col-md-2">
+            <label for="ingredient_item_type" class="required">Item Type</label>
+            <select class="form-control" id="ingredient_item_type" name="ingredient_item_type" required>
+              <option value="" disabled selected>Select Type</option>
+              <option value="GROCERIES">GROCERY</option>
+              <option value="SAUCES">SAUCES</option>
+              <option value="FROZEN OR DIARY PRODUCT">FROZEN & DIARY PRODUCT</option>
+              <option value="BAKERY">BAKERY</option>
+              <option value="VEGETABLE">VEGETABLE</option>
+              <!-- Add more options as needed -->
+            </select>
+          </div>
+          <div class="form-group col-md-2">
+            <label for="opening_balance_quantity">Opening Qty (in KG)</label>
+            <input type="decimal" class="form-control" id="opening_balance_quantity" name="opening_balance_quantity" required>
+          </div>
         </div>
-        <!-- <div class="form-group col-md-1">
-          <label for="qty">Qty</label>
-          <input type="number" class="form-control" id="qty" name="qty" min="1" required>
-        </div>
-        <div class="form-group col-md-1">
-          <label for="rate">Rate</label>
-          <input type="number" class="form-control" id="rate" name="rate" step="0.01" required>
-        </div>
-      </div> -->
-      <button type="submit" class="btn btn-primary">Submit</button>
-    </form>
+        
+        <button type="submit" class="btn btn-primary">Submit</button>
+      </form>
+    </div>
   </div>
 
   <!-- Bootstrap JS and dependencies (if needed) -->
@@ -64,7 +83,12 @@
     });
   </script>
   <script>
-    document.getElementById('UOM').addEventListener('input', function() {
+    document.getElementById('uom').addEventListener('input', function() {
+        this.value = this.value.toUpperCase();
+    });
+  </script>
+   <script>
+    document.getElementById('ingredient_item_type').addEventListener('input', function() {
         this.value = this.value.toUpperCase();
     });
   </script>
