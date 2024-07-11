@@ -5,55 +5,72 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Item Form</title>
   <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+  <style>
+    body {
+      padding-top: 80px; /* Adjust this value if needed */
+    }
+  </style>
 </head>
 <body>
-  
+  <nav class="navbar navbar-light bg-light fixed-top" style="height: 80px; font-size: 1rem;">
+    <div class="container-fluid">
+        <a class="navbar-brand" href="#">
+            <img src="https://sangamgroup.com/wp-content/uploads/2023/01/sangam_group_logo.png" alt="Logo" width="80" height="50" >
+            Sangam India Limited
+        </a>
+        <div class="ms-auto">
+            <!-- <a href="/termsandconditions" class="btn btn-info mx-2">T&C</a>
+            <a href="/view-menu" class="btn btn-primary mx-2">View Menu</a>
+            <a href="/logout" class="btn btn-danger">Logout</a> -->
+            <a href="/view-menu-list" class="btn btn-info mx-1">View Menu Item</a>
+            <a href="/admin-dashboard" class="btn btn-info mx-2">Dashboard</a>
+        </div>
+    </div>
+</nav>
 <div class="mt-5">
-  <div class="d-flex justify-content-center">
+  <!-- <div class="d-flex justify-content-center">
     <a href="/view-menu-list" class="btn btn-info mx-1">View Menu Item</a>
-</div>
+</div> -->
   <div class="container mt-5">
-    <h2 class="mb-5">Item Form</h2>
+    <h2 class="mb-5" style="text-align: center;">Add Menu Item</h2>
     <form method="POST" action="/item-list">
+      <div class="form-row">
+        <div class="form-group col-md-12">
+          <label for="type">Type</label>
+          <input type="text" class="form-control" id="type" name="type" required value="MENU" readonly style="text-align: center;">
+        </div>
+  
+      </div>
         <div class="form-row">
-            <div class="form-group col-md-6">
+            <div class="form-group col-md-2">
                 <label for="menu_item_code">Item Code</label>
                 <input type="text" class="form-control" id="menu_item_code" name="menu_item_code" required>
               </div>
-              <div class="form-group col-md-6">
-                <label for="type">Type</label>
-                <input type="text" class="form-control" id="type" name="type" required value="MENU">
+              <div class="form-group col-md-4">
+                <label for="item_description">Item Description</label>
+                <input type="text" class="form-control" id="item_description" name="item_description" required>
+              </div>
+              
+              <div class="form-group col-md-2">
+                <label for="uom">Unit Of Measurement</label>
+                <select class="form-control" id="uom" name="uom" required>
+                  <option value="" disabled selected>Select UOM</option>
+                  <option value="EA">EA</option>
+                  <!-- <option value="L">L</option> -->
+                  <!-- <option value="G">G</option>
+                  <option value="ML">ML</option> -->
+                  <!-- Add more options as needed -->
+                </select>
+              </div>
+              <div class="form-group col-md-2">
+                <label for="std_price">Standard Price</label>
+                <input type="number" step="0.01" class="form-control" id="std_price" name="std_price" required min="1">
+              </div>
+              <div class="form-group col-md-2">
+                <label for="mrp">MRP</label>
+                <input type="number" step="0.01" class="form-control" id="mrp" name="mrp" required min="1">
               </div>
         </div>
-      <div class="form-row">
-        <div class="form-group col-md-6">
-            <label for="item_description">Item Description</label>
-            <input type="text" class="form-control" id="item_description" name="item_description" required>
-          </div>
-          <div class="form-group col-md-6">
-            <label for="uom">Unit Of Measurement</label>
-            <select class="form-control" id="uom" name="uom" required>
-              <option value="" disabled selected>Select UOM</option>
-              <option value="EA">EA</option>
-              <!-- <option value="L">L</option> -->
-              <!-- <option value="G">G</option>
-              <option value="ML">ML</option> -->
-              <!-- Add more options as needed -->
-            </select>
-          </div>
-      </div>
-      
-      <div class="form-row">
-        <div class="form-group col-md-6">
-            <label for="std_price">Standard Price</label>
-            <input type="number" step="0.01" class="form-control" id="std_price" name="std_price" required min="1">
-          </div>
-          <div class="form-group col-md-6">
-            <label for="mrp">MRP</label>
-            <input type="number" step="0.01" class="form-control" id="mrp" name="mrp" required min="1">
-          </div>
-      </div>
-      
       
       
       <button type="submit" class="btn btn-primary">Submit</button>

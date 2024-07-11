@@ -35,24 +35,18 @@
         </div>
     </nav>
     <div class="container form-container">
-        <h2>Ingredients Inward Form</h2>
-        <form method="POST" action="/ingredient_inward_form">
+        <h2>Ingredients Outward Form</h2>
+        <form method="POST" action="/ingredient_outward">
             <div class="form-row">
+               
+                <div class="form-group col-md-6">
+                    <label for="issued_to">Issued To :</label>
+                    <input type="text" class="form-control" id="issued_to" name="issued_to" required>
+                </div>
+               
                 <div class="form-group col-md-2">
-                    <label for="bill_number">Bill Number :</label>
-                    <input type="text" class="form-control" id="bill_number" name="bill_number" required>
-                </div>
-                <div class="form-group col-md-4">
-                    <label for="supplier_name">Supplier Name :</label>
-                    <input type="text" class="form-control" id="supplier_name" name="supplier_name" required>
-                </div>
-                <div class="form-group col-md-4">
-                    <label for="material_received_by">Received By :</label>
-                    <input type="text" class="form-control" id="material_received_by" name="material_received_by" required>
-                </div>
-                <div class="form-group col-md-2">
-                    <label for="bill_date">Bill Date :</label>
-                    <input type="date" class="form-control" id="bill_date" name="bill_date" required>
+                    <label for="issue_date">Issue Date :</label>
+                    <input type="date" class="form-control" id="issue_date" name="issue_date" required>
                 </div>
             </div>
             <div class="table-container">
@@ -62,9 +56,9 @@
                             <th>SN No</th>
                             <th>Ingredient Item Code</th>
                             <th>Ingredient Item Description</th>
-                            <th>Qty (in KG/L)</th>
-                            <th>Rate</th>
-                            <th>Amount</th>
+                            <th>Issue Qty (in KG/L)</th>
+                            <!-- <th>Rate</th>
+                            <th>Amount</th> -->
                             <th>Actions</th>
                         </tr>
                     </thead>
@@ -73,9 +67,9 @@
                             <td class="sn-no">1</td>
                             <td><input type="text" id="ingredient_item_code" class="form-control ingredient_item_code" name="ingredient_item_code[]" required></td>
                             <td><input type="text" id="ingredient_item_description" class="form-control ingredient_item_description" name="ingredient_item_description[]" required></td>
-                            <td><input type="decimal" id="received_quantity" class="form-control received_quantity" name="received_quantity[]" required></td>
-                            <td><input type="decimal" id="rate" class="form-control rate" name="rate[]" required></td>
-                            <td><input type="decimal" id="amount" class="form-control amount" name="amount[]" ></td>
+                            <td><input type="decimal" id="issued_quantity" class="form-control issued_quantity" name="issued_quantity[]" required></td>
+                            <!-- <td><input type="decimal" id="rate" class="form-control rate" name="rate[]" required></td>
+                            <td><input type="decimal" id="amount" class="form-control amount" name="amount[]" ></td> -->
                             <td><button type="button" class="btn btn-danger delete-row">Delete</button></td>
                         </tr>
                     </tbody>
@@ -99,9 +93,8 @@
                         <td class="sn-no">${snCounter}</td>
                         <td><input type="text" class="form-control ingredient_item_code" name="ingredient_item_code[]" required></td>
                         <td><input type="text" class="form-control ingredient_item_description" name="ingredient_item_description[]" required></td>
-                        <td><input type="decimal" class="form-control received_quantity" name="received_quantity[]" required></td>
-                        <td><input type="decimal" class="form-control rate" name="rate[]" required></td>
-                        <td><input type="decimal" class="form-control amount" name="amount[]" ></td>
+                        <td><input type="decimal" class="form-control issued_quantity" name="issued_quantity[]" required></td>
+                        
                         <td><button type="button" class="btn btn-danger delete-row">Delete</button></td>
                     </tr>`;
                 $('#ingredientsTable tbody').append(newRow);
@@ -113,9 +106,9 @@
                 updateSN();
             });
 
-            $('#ingredientsTable').on('input', '.received_quantity, .rate', function() {
+            $('#ingredientsTable').on('input', '.issued_quantity, .rate', function() {
                 let row = $(this).closest('tr');
-                let quantity = row.find('.received_quantity').val();
+                let quantity = row.find('.issued_quantity').val();
                 let rate = row.find('.rate').val();
                 let amount = (quantity * rate).toFixed(2);
                 row.find('.amount').val(amount);
@@ -152,7 +145,7 @@
                 snCounter = sn;
             }
 
-            $('#supplier_name, #material_received_by').on('input', function() {
+            $('#issued_to').on('input', function() {
                 this.value = this.value.toUpperCase();
             });
         });

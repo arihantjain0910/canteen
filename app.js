@@ -1154,7 +1154,7 @@ app.post('/ingredient_inward_form', (req, res) => {
             console.error('Error inserting data: ', err);
             return res.status(500).send('Error inserting data');
           }
-          console.log(`Row ${i + 1} inserted successfully`);
+         // console.log(`Row ${i + 1} inserted successfully`);
           // Optionally handle success for each row
         });
       }
@@ -1174,7 +1174,39 @@ app.post('/ingredient_inward_form', (req, res) => {
             }
         });
     });
+
+    app.get("/ingredient_outward",(req,res)=>{
+        res.render("ingredient_outward.ejs");
+    })
+
+    app.post('/ingredient_outward', (req, res) => {
+        const { issued_to, issue_date, ingredient_item_code, ingredient_item_description, issued_quantity } = req.body;
     
+        // Prepare an array of values for batch insertion
+        const values = ingredient_item_code.map((code, index) => [
+            issued_to,
+            issue_date,
+            code,
+            ingredient_item_description[index],
+            issued_quantity[index]
+        ]);
+    
+        // SQL query to insert data
+        const sql = `
+            INSERT INTO ingredient_outward (issued_to, issue_date, ingredient_item_code, ingredient_item_description, issued_quantity)
+            VALUES ?
+        `;
+    
+        // Execute the query with batch data insertion
+        db.query(sql, [values], (err, result) => {
+            if (err) {
+                console.error('Error inserting data:', err);
+                return res.status(500).send('Error inserting data');
+            }
+            //console.log('Data inserted successfully');
+            res.redirect('/admin-dashboard'); // Redirect to a success page or dashboard
+        });
+    });
 // Start server
 const port = 3000;
 app.listen(port, () => {

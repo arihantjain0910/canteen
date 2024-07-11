@@ -10,9 +10,27 @@
       background-color: #e9ecef;
       opacity: 1;
     }
+    body {
+      padding-top: 80px; /* Adjust this value if needed */
+    }
   </style>
 </head>
 <body>
+  <nav class="navbar navbar-light bg-light fixed-top" style="height: 80px; font-size: 1rem;">
+    <div class="container-fluid">
+        <a class="navbar-brand" href="#">
+            <img src="https://sangamgroup.com/wp-content/uploads/2023/01/sangam_group_logo.png" alt="Logo" width="80" height="50" >
+            Sangam India Limited
+        </a>
+        <div class="ms-auto">
+            <!-- <a href="/termsandconditions" class="btn btn-info mx-2">T&C</a>
+            <a href="/view-menu" class="btn btn-primary mx-2">View Menu</a>
+            <a href="/logout" class="btn btn-danger">Logout</a> -->
+            <a href="/admin-dashboard" class="btn btn-info mx-2">Dashboard</a>
+            <a href="/admin-logout" class="btn btn-danger mx-2">Logout</a>
+        </div>
+    </div>
+</nav>
   <div class="container mt-5">
     <h3>Requirement Form</h3>
     <form id="menuForm" onsubmit="handleSubmit(event)">
