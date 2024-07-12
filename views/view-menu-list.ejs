@@ -7,10 +7,44 @@
     <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <style>
+        .form-control[readonly] {
+        background-color: #e9ecef;
+        opacity: 1;
+      }
+      body {
+        padding-top: 20px; /* Adjust this value if needed */
+        font-size: 0.7rem;
+      }
+      .navbar {
+        font-size: 0.9rem;
+        height: 56px; /* Adjust based on the height of your navbar */
+      }
+      .sidebar {
+    position: fixed;
+        top: 56px; /* Adjust this value if the navbar height changes */
+        bottom: 0;
+        left: 0;
+        width: 220px;
+        padding-top: 1rem; /* Adjust padding to match the top padding of the main content */
+        background-color: #343a40; /* Bootstrap bg-dark color */
+        color: white;
+        overflow-y: auto;
+      }
+      .sidebar a {
+        color: white;
+        text-decoration: none;
+      }
+      .sidebar a:hover {
+        color: #adb5bd;
+      }
+      .main-content {
+        margin-left: 250px;
+        padding: 60px 10px 10px;
+      }
         body {
             font-family: 'Arial', sans-serif;
             background-color: #f8f9fa;
-            padding-top: 100px;
+            
         }
         .container {
             max-width: 1000px;
@@ -42,18 +76,67 @@
     </style>
 </head>
 <body>
-    <nav class="navbar navbar-expand-lg navbar-light bg-light fixed-top" style="height: 100px; font-size: 1.5rem;">
-        <div class="container-fluid">
-            <a class="navbar-brand" href="#">
-                <img src="https://sangamgroup.com/wp-content/uploads/2023/01/sangam_group_logo.png" alt="Logo" width="80" height="60" class="d-inline-block align-text-top">
-                Sangam India Limited
-            </a>
-            <div class="ms-auto">
-                <!-- <a href="/view-menu" class="btn btn-primary mx-2">View Menu</a> -->
-                <a href="/logout" class="btn btn-danger">Logout</a>
-            </div>
-        </div>
-    </nav>
+  <nav class="navbar navbar-expand-lg navbar-dark bg-dark fixed-top">
+    <div class="container-fluid">
+      <a class="navbar-brand" href="/admin-dashboard">
+        <img
+          src="https://sangamgroup.com/wp-content/uploads/2023/01/sangam_group_logo.png"
+          alt="Logo"
+          width="60"
+          height="50"
+        />
+        Sangam India Limited
+      </a>
+   
+  </nav>
+
+  <div class="sidebar">
+    <ul class="nav flex-column">
+      <li class="nav-item">
+        <a href="/requirement_form" class="nav-link">Add Requirement</a>
+      </li>
+      <li class="nav-item">
+        <a href="/view-today-entries" class="nav-link">Today Entries</a>
+      </li>
+      <li class="nav-item">
+        <a href="/ingredients_master" class="nav-link"
+          >Add Item In Ingredient Master</a
+        >
+      </li>
+      <li class="nav-item">
+        <a href="/item-list" class="nav-link">Add Item In Menu Master</a>
+      </li>
+      <li class="nav-item">
+        <a href="/detail-item-form" class="nav-link">Create BOM</a>
+      </li>
+      <li class="nav-item">
+        <a href="/ingredient_inward_form" class="nav-link"
+          >Ingredient Inwards Entry</a
+        >
+      </li>
+      <li class="nav-item">
+        <a href="/ingredient_outward" class="nav-link"
+          >Ingredient Outward Entry</a
+        >
+      </li>
+      <li class="nav-item">
+        <a href="/add-new-employee" class="nav-link">Add Employee</a>
+      </li>
+      <li class="nav-item">
+        <a href="/view-users" class="nav-link">Total Employees</a>
+      </li>
+      <li class="nav-item">
+        <a href="/rate-list" class="nav-link">Add Menu</a>
+      </li>
+      <li class="nav-item">
+        <a href="/view-rate-list" class="nav-link">View Menu</a>
+      </li>
+      <li class="nav-item">
+        <a href="/admin-logout" class="nav-link">Logout</a>
+      </li>
+    </ul>
+</div>
+<div class="main-content">
     <div class="container">
         <h3 style="font-family: Georgia, 'Times New Roman', Times, serif; font-size:xx-large; font-weight:bolder;" >Menu Item List</h3>
         <table class="table table-bordered table custom-table" id="viewMenu">
@@ -126,6 +209,7 @@
           <a class="text-dark" href="https://sangamgroup.com/">sangamgroup.com</a>
         </div>
       </footer>
+    </div>      
     <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>

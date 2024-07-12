@@ -1204,7 +1204,47 @@ app.post('/ingredient_inward_form', (req, res) => {
                 return res.status(500).send('Error inserting data');
             }
             //console.log('Data inserted successfully');
-            res.redirect('/admin-dashboard'); // Redirect to a success page or dashboard
+            res.redirect('/ingredient_outward'); // Redirect to a success page or dashboard
+        });
+    });
+
+    // app.get("/view_stock",(req,res)=>{
+    //     let q = "SELECT ingredient_item_code,ingredient_item_description,current_stock,opening_balance_quantity,received_quantity,issued_quantity FROM ingredients_master";
+    //     db.query(q, (err, results) => {
+    //         if (err) {
+    //             console.error('Error retrieving data from database:', err);
+    //             return res.status(500).send('Internal Server Error');
+    //         }
+           
+    //         res.render('view_stock.ejs', { ingredients: results });
+    //     });
+
+
+    // });
+
+    app.get('/view_stock', (req, res) => {
+        const query = `
+            SELECT 
+                im.ingredient_item_code, 
+                im.ingredient_item_description,
+                im.opening_balance_quantity,
+                IFNULL(SUM(ii.received_quantity), 0) AS received_quantity,
+                IFNULL(SUM(io.issued_quantity), 0) AS issued_quantity,
+                (im.opening_balance_quantity + IFNULL(SUM(ii.received_quantity), 0) - IFNULL(SUM(io.issued_quantity), 0)) AS current_stock
+            FROM ingredients_master im
+            LEFT JOIN ingredients_inward ii ON im.ingredient_item_code = ii.ingredient_item_code
+            LEFT JOIN ingredient_outward io ON im.ingredient_item_code = io.ingredient_item_code
+            GROUP BY im.ingredient_item_code, im.ingredient_item_description, im.opening_balance_quantity
+        `;
+    
+        db.query(query, (error, results) => {
+            if (error) {
+                console.error('Error executing query:', error);
+                res.status(500).send('Internal Server Error');
+                return;
+            }
+            const ingredients = results; // Assign query results to ingredients variable
+            res.render('view_stock', { ingredients }); // Ensure the template name matches your actual file name
         });
     });
 // Start server

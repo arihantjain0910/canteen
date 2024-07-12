@@ -3,11 +3,43 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Add New Employee</title>
+    <title>View Menu</title>
     <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <style>
-          .form-control[readonly] {
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #f8f9fa;
+            
+        }
+        .container {
+            max-width: 800px;
+            margin: auto;
+        }
+        h3 {
+            color: red;
+            text-align: center;
+            margin-bottom: 30px;
+            font-size: 2rem;
+        }
+        .table {
+            background-color: #ffffff;
+            border-radius: 10px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+        .table th {
+            background-color: #ecd0ab;
+            font-weight: bold;
+            text-align: center;
+        }
+        .table td {
+            text-align: center;
+            padding: 15px;
+        }
+        .table tr:nth-child(even) {
+            background-color: #f2f2f2;
+        }
+        .form-control[readonly] {
         background-color: #e9ecef;
         opacity: 1;
       }
@@ -24,7 +56,7 @@
         top: 56px; /* Adjust this value if the navbar height changes */
         bottom: 0;
         left: 0;
-        width: 220px;
+        width: 250px;
         padding-top: 1rem; /* Adjust padding to match the top padding of the main content */
         background-color: #343a40; /* Bootstrap bg-dark color */
         color: white;
@@ -38,18 +70,9 @@
         color: #adb5bd;
       }
       .main-content {
-        margin-left: 250px;
+        margin-left: 220px;
         padding: 60px 10px 10px;
       }
-        .add-emp-box {
-            max-width: auto;
-            margin: auto;
-            background: #fff;
-            padding: 30px;
-            margin-top: 100px;
-            border-radius: 5px;
-            box-shadow: 0px 0px 10px rgba(0,0,0,0.1);
-        }
     </style>
 </head>
 <body>
@@ -115,59 +138,39 @@
 </div>
 <div class="main-content">
     <div class="container">
-        <div class="add-emp-box">
-            <h4 class="text-center">Add New Employee</h4>
-            <form action="/add-new-employee" method="POST">
-                <div class="row">
-                    <div class="col">
-                        <div class="form-group">
-                            <label for="employee_code">Employee Code:</label>
-                            <input type="text" class="form-control" id="employee_code" name="employee_code" required>
-                        </div>
-                    </div>
-                    <div class="col">
-                        <div class="form-group">
-                            <label for="employee_name">Employee Name:</label>
-                            <input type="text" class="form-control" id="employee_name" name="employee_name" required>
-                        </div>
-                    </div>
-                    <div class="col">
-                        <div class="form-group">
-                            <label for="department">Department:</label>
-                            <input type="text" class="form-control" id="department" name="department" required>
-                        </div>
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="col">
-                        <div class="form-group">
-                            <label for="designation">Designation:</label>
-                            <input type="text" class="form-control" id="designation" name="designation" required>
-                        </div>
-                    </div>
-                    <div class="col">
-                        <div class="form-group">
-                            <label for="email">Email:</label>
-                            <input type="email" class="form-control" id="email" name="email" required>
-                        </div>
-                    </div>
-                    <div class="col">
-                        <div class="form-group">
-                            <label for="password">Password:</label>
-                            <input type="password" class="form-control" id="password" name="password" required>
-                        </div>
-                    </div>
-                </div>
-                <button type="submit" class="btn btn-primary ">Add Employee</button>
-            </form>
-        </div>
+        <h3 style="font-family: Georgia, 'Times New Roman', Times, serif; font-size:xx-large; font-weight:bolder;" >Ingredients Stock</h3>
+        <table class="table table-bordered table custom-table" id="viewMenu">
+            <thead>
+                <tr>
+                    <th>Ingredient Item Code</th>
+                    <th>Ingredient Description</th>
+                    <th>Present Qty</th>
+                    <th>Recieved Qty</th>
+                    <th>Issued Qty</th>
+                    <th>Current Stock</th>
+                
+                </tr>
+            </thead>
+            <tbody>
+                <% for (ingredient of ingredients){ %>
+                <tr>
+                    <td><%= ingredient.ingredient_item_code %></td>
+                    <td><%= ingredient.ingredient_item_description %></td>
+                    <td><%= ingredient.opening_balance_quantity %></td>
+                    <td><%= ingredient.received_quantity %></td>
+                    <td><%= ingredient.issued_quantity %></td>
+                    <td><%= ingredient.current_stock %></td>
+                </tr>
+                <% } %>
+            </tbody>
+        </table>
     </div>
     <footer class="bg-light text-center text-lg-start mt-5">
         <div class="container p-4">
           <div class="row justify-content-center mb-4">
             <div>
               <a class="navbar-brand" href="#">
-                <img src="https://media.licdn.com/dms/image/C4D0BAQFEhO_RAbTovQ/company-logo_200_200/0/1630499738773?e=2147483647&v=beta&t=0RA-JcGeh_o3Jd2P0ZxUEhiE875FBTbtwVHVk9i2kLs" alt="Logo" width="30" height="30" class="d-inline-block align-text-top">
+                <img src="https://sangamgroup.com/wp-content/uploads/2023/01/sangam_group_logo.png" alt="Logo" width="40" height="30" class="d-inline-block align-text-top">
                 Sangam India Limited
               </a>
             </div>
@@ -196,21 +199,10 @@
           © 2024 Sangam India Limited:
           <a class="text-dark" href="https://sangamgroup.com/">sangamgroup.com</a>
         </div>
+      </div>        
       </footer>
-    </div>
-      <script>
-        document.getElementById('employee_name').addEventListener('input', function() {
-            this.value = this.value.toUpperCase();
-        });
-        document.getElementById('employee_code').addEventListener('input', function() {
-            this.value = this.value.toUpperCase();
-        });
-        document.getElementById('department').addEventListener('input', function() {
-            this.value = this.value.toUpperCase();
-        });
-        document.getElementById('designation').addEventListener('input', function() {
-            this.value = this.value.toUpperCase();
-        });
-      </script>
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 </body>
 </html>
