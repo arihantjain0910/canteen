@@ -19,7 +19,7 @@ app.use(express.urlencoded({ extended: true }));
 const db = mysql.createConnection({
     host: 'localhost',
     user: 'root',
-    password: 'Sangam@2024',
+    password: '7877Arih@nt',
     database: 'canteen'
 });
 
@@ -1222,31 +1222,43 @@ app.post('/ingredient_inward_form', (req, res) => {
 
     // });
 
-    app.get('/view_stock', (req, res) => {
-        const query = `
+   app.get('/view_stock', (req, res) => {
+    const query = `
+        SELECT 
+            im.ingredient_item_code, 
+            im.ingredient_item_description,
+            im.opening_balance_quantity,
+            IFNULL(rq.total_received_quantity, 0) AS received_quantity,
+            IFNULL(iq.total_issued_quantity, 0) AS issued_quantity,
+            (im.opening_balance_quantity + IFNULL(rq.total_received_quantity, 0) - IFNULL(iq.total_issued_quantity, 0)) AS current_stock
+        FROM ingredients_master im
+        LEFT JOIN (
             SELECT 
-                im.ingredient_item_code, 
-                im.ingredient_item_description,
-                im.opening_balance_quantity,
-                IFNULL(SUM(ii.received_quantity), 0) AS received_quantity,
-                IFNULL(SUM(io.issued_quantity), 0) AS issued_quantity,
-                (im.opening_balance_quantity + IFNULL(SUM(ii.received_quantity), 0) - IFNULL(SUM(io.issued_quantity), 0)) AS current_stock
-            FROM ingredients_master im
-            LEFT JOIN ingredients_inward ii ON im.ingredient_item_code = ii.ingredient_item_code
-            LEFT JOIN ingredient_outward io ON im.ingredient_item_code = io.ingredient_item_code
-            GROUP BY im.ingredient_item_code, im.ingredient_item_description, im.opening_balance_quantity
-        `;
-    
-        db.query(query, (error, results) => {
-            if (error) {
-                console.error('Error executing query:', error);
-                res.status(500).send('Internal Server Error');
-                return;
-            }
-            const ingredients = results; // Assign query results to ingredients variable
-            res.render('view_stock', { ingredients }); // Ensure the template name matches your actual file name
-        });
+                ingredient_item_code, 
+                SUM(received_quantity) AS total_received_quantity
+            FROM ingredients_inward
+            GROUP BY ingredient_item_code
+        ) rq ON im.ingredient_item_code = rq.ingredient_item_code
+        LEFT JOIN (
+            SELECT 
+                ingredient_item_code, 
+                SUM(issued_quantity) AS total_issued_quantity
+            FROM ingredient_outward
+            GROUP BY ingredient_item_code
+        ) iq ON im.ingredient_item_code = iq.ingredient_item_code
+    `;
+
+    db.query(query, (error, results) => {
+        if (error) {
+            console.error('Error executing query:', error);
+            res.status(500).send('Internal Server Error');
+            return;
+        }
+        const ingredients = results; // Assign query results to ingredients variable
+        res.render('view_stock', { ingredients }); // Ensure the template name matches your actual file name
     });
+});
+
 // Start server
 const port = 3000;
 app.listen(port, () => {
