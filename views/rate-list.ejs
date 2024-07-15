@@ -11,7 +11,7 @@
         opacity: 1;
       }
       body {
-        padding-top: 20px; /* Adjust this value if needed */
+        padding-top: 50px; /* Adjust this value if needed */
         font-size: 0.7rem;
       }
       .navbar {
@@ -107,25 +107,46 @@
         </ul>
   </div>
   <div class="main-content">
-    <div class="container mt-5">
-        <h2>Rate List Form</h2>
+    <div class="container">
+        <h2 style="text-align: center;">Menu Form</h2>
         <form action="/submit-rate-list" method="POST">
-            <div class="form-group">
-                <label for="item">Item</label>
-                <input type="text" class="form-control" id="item" name="item" placeholder="Enter item name">
+          <div class="form-row">
+            <div class="form-group col-md-4">
+              <label for="day" class="required">Day</label>
+              <select class="form-control" id="day" name="day" required>
+                <option value="" disabled selected>Select Day</option>
+                <option value="MONDAY">MONDAY</option>
+                <option value="TUESDAY">TUESDAY</option>
+                <option value="WEDNESDAY">WEDNESDAY</option>
+                <option value="THURSDAY">THURSDAY</option>
+                <option value="FRIDAY">FRIDAY</option>
+                <option value="SATURDAY">SATURDAY</option>
+                <!-- Add more options as needed -->
+              </select>
             </div>
-            <div class="form-group">
-                <label for="rate">Rate</label>
-                <input type="number" class="form-control" id="rate" name="rate" placeholder="Enter rate">
+            <div class="form-group col-md-4">
+                <label for="breakfast">Breakfast Item</label>
+                <input type="text" class="form-control" id="breakfast" name="breakfast" required>
             </div>
-            <div class="form-group">
-                <label for="date-from">Date From</label>
-                <input type="date" class="form-control" id="date-from" name="date_from">
+            <div class="form-group col-md-4">
+                <label for="breakfast_price">Breakfast Price</label>
+                <input type="decimal" class="form-control" id="breakfast_price" name="breakfast_price" min="0" required>
             </div>
-            <div class="form-group">
-                <label for="date-to">Date To</label>
-                <input type="date" class="form-control" id="date-to" name="date_to">
+          </div>
+          <div class="form-row">
+            <div class="form-group col-md-4">
+                <label for="lunch">Lunch</label>
+                <input type="text" class="form-control" id="lunch" name="lunch" required>
             </div>
+            <div class="form-group col-md-4">
+              <label for="lunch_price">Lunch</label>
+              <input type="decimal" class="form-control" id="lunch_price" name="lunch_price" min="0" required>
+          </div>
+          <div class="form-group col-md-4">
+            <label for="date">Date</label>
+            <input type="date" class="form-control" id="date" name="date" required>
+        </div>
+      </div>
             <button type="submit" class="btn btn-primary">Submit</button>
         </form>
     </div>
@@ -133,5 +154,15 @@
     <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <script>
+      document.getElementById('breakfast').addEventListener('input', function() {
+          this.value = this.value.toUpperCase();
+      });
+    </script>
+    <script>
+      document.getElementById('lunch').addEventListener('input', function() {
+          this.value = this.value.toUpperCase();
+      });
+    </script>
 </body>
 </html>

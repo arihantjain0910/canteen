@@ -59,15 +59,23 @@
         <table class="table table-bordered table custom-table" id="viewMenu">
             <thead>
                 <tr>
-                    <th>Items</th>
-                    <th>Price</th>
+                    <th>Day</th>
+                    <th>Breakfast</th>
+                    <th>Breakfast Price</th>
+                    <th>Lunch</th>
+                    <th>Lunch Price</th>
+                    <th>Date</th>
                 </tr>
             </thead>
             <tbody>
                 <% for (menu of menu){ %>
                 <tr>
-                    <td><%= menu.item %></td>
-                    <td><%= menu.rate %></td>
+                    <td><%= menu.day %></td>
+                    <td><%= menu.breakfast %></td>
+                    <td><%= menu.breakfast_price %></td>
+                    <td><%= menu.lunch %></td>
+                    <td><%= menu.lunch_price %></td>
+                    <td><%= new Date(menu.date).toLocaleDateString('en-GB') %></td>
                 </tr>
                 <% } %>
             </tbody>

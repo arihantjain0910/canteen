@@ -226,32 +226,34 @@ app.get("/edit-item-form/:id",(req,res)=>{
 })
 
 //update route
-app.put("/view-rate-list/:id",(req,res)=>{
-    let {id} = req.params;
-    let{item : item , rate : rate, date_from : date_from, date_to : date_to} = req.body;
-    let q = `SELECT * FROM RateList WHERE id='${id}'`;
-    try{
-        db.query(q,(err,result)=>{
-            if(err) throw err;
-            let user = result[0]
-          let q2 = `UPDATE RateList SET item='${item}',rate='${rate}', date_from='${date_from}', date_to='${date_to}'WHERE id='${id}'`;
-          try{
-            db.query(q2,(err,result)=>{
-                if(err) throw err;
-                // let user = result[0]
-                // res.render("edit-item-form.ejs" ,{user});
-                res.redirect('/view-rate-list');
-            });
-        } catch(err){
-            console.log(err);
-            res.send("some error in db");
+app.put("/view-rate-list/:id", (req, res) => {
+    let { id } = req.params;
+    let { day, breakfast, breakfast_price, lunch, lunch_price, date } = req.body;
+    
+    let q = `SELECT * FROM RateList WHERE id = ?`;
+    
+    db.query(q, [id], (err, result) => {
+        if (err) {
+            console.error(err);
+            return res.send("Some error in db");
         }
+        
+        if (result.length === 0) {
+            return res.send("No record found with the given id");
+        }
+
+        let q2 = `UPDATE RateList SET day = ?, breakfast = ?, breakfast_price = ?, lunch = ?, lunch_price = ?, date = ? WHERE id = ?`;
+        
+        db.query(q2, [day, breakfast, breakfast_price, lunch, lunch_price, date, id], (err, result) => {
+            if (err) {
+                console.error(err);
+                return res.send("Some error in db");
+            }
+            
+            res.redirect('/view-rate-list');
         });
-    } catch(err){
-        console.log(err);
-        res.send("some error in db");
-    }
-})
+    });
+});
 
 app.get('/view-rate-list', (req, res) => {
     const sql = 'SELECT * FROM RateList';
@@ -267,9 +269,9 @@ app.get('/view-rate-list', (req, res) => {
 }); 
 
 app.post('/submit-rate-list', (req, res) => {
-    const { item, rate, date_from, date_to } = req.body;
-    const sql = 'INSERT INTO RateList (item, rate, date_from, date_to) VALUES (?, ?, ?, ?)';
-    const values = [item, rate, date_from, date_to];
+    const { day,breakfast,breakfast_price,lunch,lunch_price,date } = req.body;
+    const sql = 'INSERT INTO RateList (day,breakfast,breakfast_price,lunch,lunch_price,date) VALUES (?, ?, ?, ?, ?, ?)';
+    const values = [day,breakfast,breakfast_price,lunch,lunch_price,date];
 
     db.query(sql, values, (err, result) => {
         if (err) {
@@ -277,7 +279,7 @@ app.post('/submit-rate-list', (req, res) => {
             return res.status(500).send('Internal Server Error');
         }
        // console.log('Data inserted successfully:', result);
-        res.redirect('/admin-dashboard');
+        res.redirect('/view-rate-list');
     });
 });
 

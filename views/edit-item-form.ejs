@@ -8,24 +8,32 @@
 </head>
 <body>
     <div class="container mt-5">
-        <h2>You Are About To Edit Rate List Item : <%= user.item %> </h2>
+        <h2 style="text-align: center;">Edit Menu Form </h2>
         <form method="POST" action="/view-rate-list/<%=user.id%>?_method=PUT">
             <input type="hidden" name="_method" value="PATCH">
             <div class="form-group">
-                <label for="item">Item</label>
-                <input type="text" class="form-control" id="item" name="item"  value= <%= user.item %> >
+                <label for="day">Day</label>
+                <input type="text" class="form-control" id="day" name="day" required value= <%= user.day %> >
             </div>
             <div class="form-group">
-                <label for="rate">Rate</label>
-                <input type="number" class="form-control" id="rate" name="rate"  value="<%= user.rate %>">
+                <label for="breakfast">Breakfast</label>
+                <input type="text" class="form-control" id="breakfast" name="breakfast" required  value="<%= user.breakfast %>">
             </div>
             <div class="form-group">
-                <label for="date-from">Date From</label>
-                <input type="date" class="form-control" id="date_from" name="date_from" value="<%= user.date_from %>" >
+                <label for="breakfast_price">Breakfast Price</label>
+                <input type="decimal" class="form-control" id="breakfast_price" name="breakfast_price" required value="<%= user.breakfast_price %>" >
             </div>
             <div class="form-group">
-                <label for="date-to">Date To</label>
-                <input type="date" class="form-control" id="date_to" name="date_to" value="<%= user.date_to %>" >
+                <label for="lunch">Lunch</label>
+                <input type="text" class="form-control" id="lunch" name="lunch" required value="<%= user.lunch %>" >
+            </div>
+            <div class="form-group">
+                <label for="lunch_price">Lunch Price</label>
+                <input type="decimal" class="form-control" id="lunch_price" name="lunch_price" required value="<%= user.lunch_price %>" >
+            </div>
+            <div class="form-group">
+                <label for="date">Lunch Price</label>
+                <input type="date" class="form-control" id="date" name="date" required value="<%= user.date %>" >
             </div>
             <button type="submit" class="btn btn-primary">Update</button>
         </form>
@@ -34,5 +42,20 @@
     <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <script>
+        document.getElementById('lunch').addEventListener('input', function() {
+            this.value = this.value.toUpperCase();
+        });
+      </script>
+      <script>
+        document.getElementById('day').addEventListener('input', function() {
+            this.value = this.value.toUpperCase();
+        });
+      </script>
+      <script>
+        document.getElementById('breakfast').addEventListener('input', function() {
+            this.value = this.value.toUpperCase();
+        });
+      </script>
 </body>
 </html>
