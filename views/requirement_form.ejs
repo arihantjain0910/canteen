@@ -6,6 +6,25 @@
   <title>Requirement Form</title>
   <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
   <style>
+    table.custom-table {
+            border-collapse: collapse;
+            width: 100%;
+            margin: 20px 0;
+        }
+        table.custom-table th, table.custom-table td {
+            border: 1px solid #ddd;
+            padding: 8px;
+        }
+        table.custom-table th {
+            background-color: #BFC3C6;
+            text-align: left;
+        }
+        table.custom-table tr:hover {
+            background-color: #f1f1f1;
+        }
+        table.custom-table th, table.custom-table td {
+            padding: 12px 15px;
+        }
     .form-control[readonly] {
       background-color: #e9ecef;
       opacity: 1;
@@ -92,6 +111,9 @@
         >
       </li>
       <li class="nav-item">
+        <a href="/view_stock" class="nav-link">View Stock</a>
+      </li>
+      <li class="nav-item">
         <a href="/add-new-employee" class="nav-link">Add Employee</a>
       </li>
       <li class="nav-item">
@@ -110,11 +132,11 @@
 </div>
 <div class="main-content">
   <div class="container">
-    <h3>Requirement Form</h3>
+    <h3 style="color: #56606a; text-align: center;" >Requirement Form</h3>
     <form id="menuForm" onsubmit="handleSubmit(event)">
-      <table class="table table-bordered" id="menuTable">
+      <table class="table table-bordered custom-table" id="menuTable">
         <thead>
-          <tr>
+          <tr custom-table >
             <th>SN</th>
             <th>Menu Item Code</th>
             <th>Menu Item Description</th>
@@ -122,8 +144,8 @@
             <th>Actions</th>
           </tr>
         </thead>
-        <tbody>
-          <tr>
+        <tbody custom-table>
+          <tr custom-table>
             <td>1</td>
             <td><input type="text" class="form-control" name="menuItemCode[]" onchange="fetchDescription(this)"></td>
             <td><input type="text" class="form-control" name="menuItemDescription[]"></td>
