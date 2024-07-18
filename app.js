@@ -1210,19 +1210,6 @@ app.post('/ingredient_inward_form', (req, res) => {
         });
     });
 
-    // app.get("/view_stock",(req,res)=>{
-    //     let q = "SELECT ingredient_item_code,ingredient_item_description,current_stock,opening_balance_quantity,received_quantity,issued_quantity FROM ingredients_master";
-    //     db.query(q, (err, results) => {
-    //         if (err) {
-    //             console.error('Error retrieving data from database:', err);
-    //             return res.status(500).send('Internal Server Error');
-    //         }
-           
-    //         res.render('view_stock.ejs', { ingredients: results });
-    //     });
-
-
-    // });
 
    app.get('/view_stock', (req, res) => {
     const query = `
@@ -1261,8 +1248,10 @@ app.post('/ingredient_inward_form', (req, res) => {
     });
 });
 
+
 // Start server
 const port = 3000;
 app.listen(port, () => {
     console.log(`Server is running on http://localhost:${port}`);
 });
+
