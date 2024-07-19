@@ -1248,6 +1248,165 @@ app.post('/ingredient_inward_form', (req, res) => {
     });
 });
 
+app.get("/debit_invoice",(req,res)=>{
+    res.render("debit_invoice.ejs");
+})
+
+
+app.post("/debit_invoice",(req,res)=>{
+    const {bill_number,supplier_code,supplier_name,bill_date,debit_bill_amount} = req.body;
+    let q = "INSERT INTO debit_bill (bill_number,supplier_code,supplier_name,bill_date,debit_bill_amount) VALUES (?,?,?,?,?)";
+    db.query(q, 
+        [bill_number,supplier_code,supplier_name,bill_date,debit_bill_amount], (err, result) => {
+        if (err) {
+            console.error('Error registering user:', err);
+            return res.status(500).send('Internal Server Error');
+        }
+        res.redirect('/debit_invoice');
+    });
+    
+})
+
+app.get("/credit_invoice",(req,res)=>{
+    res.render("credit_invoice.ejs");
+})
+
+app.post("/credit_invoice",(req,res)=>{
+    const {bill_number,supplier_code,supplier_name,bill_date,credit_bill_amount} = req.body;
+    let q = "INSERT INTO credit_bill (bill_number,supplier_code,supplier_name,bill_date,credit_bill_amount) VALUES (?,?,?,?,?)";
+    db.query(q, 
+        [bill_number,supplier_code,supplier_name,bill_date,credit_bill_amount], (err, result) => {
+        if (err) {
+            console.error('Error registering user:', err);
+            return res.status(500).send('Internal Server Error');
+        }
+        res.redirect('/credit_invoice');
+    });
+    
+})
+
+app.get("/suppliers_master",(req,res)=>{
+    res.render("suppliers_master.ejs");
+})
+
+app.post("/suppliers_master",(req,res)=>{
+    const {supplier_code,supplier_name,gst_no,pan_no,mobile_no,address,city} = req.body;
+    let q = "INSERT INTO supplier_master (supplier_code,supplier_name,gst_no,pan_no,mobile_no,address,city) VALUES (?,?,?,?,?,?,?)";
+    db.query(q, 
+        [supplier_code,supplier_name,gst_no,pan_no,mobile_no,address,city], (err, result) => {
+        if (err) {
+            console.error('Error registering user:', err);
+            return res.status(500).send('Internal Server Error');
+        }
+        res.redirect('/suppliers_master');
+    });
+    
+})
+
+
+app.get('/get-item-codes', (req, res) => {
+    const query = 'SELECT ingredient_item_code, ingredient_item_description FROM ingredients_master';
+    db.query(query, (error, results) => {
+        if (error) {
+            console.error('Error fetching item codes:', error);
+            res.status(500).send('Server error');
+        } else {
+            res.json(results);
+        }
+    });
+});
+
+// app.get("/outstanding_invoice",(req,res)=>{
+//     res.render("outstanding_invoice.ejs");
+// })
+
+app.get('/outstanding_invoice', (req, res) => {
+    const supplierQuery = `
+        SELECT sm.supplier_code, sm.supplier_name,
+            COALESCE(credit.total_credit, 0) AS total_credit,
+            COALESCE(debit.total_debit, 0) AS total_debit
+        FROM supplier_master sm
+        LEFT JOIN (
+            SELECT supplier_code, SUM(credit_bill_amount) AS total_credit
+            FROM credit_bill
+            GROUP BY supplier_code
+        ) AS credit ON sm.supplier_code = credit.supplier_code
+        LEFT JOIN (
+            SELECT supplier_code, SUM(debit_bill_amount) AS total_debit
+            FROM debit_bill
+            GROUP BY supplier_code
+        ) AS debit ON sm.supplier_code = debit.supplier_code
+    `;
+
+    db.query(supplierQuery, (err, results) => {
+        if (err) throw err;
+        //console.log(results);  // Log the raw results
+
+        const suppliers = results.map(supplier => ({
+            ...supplier,
+            total_credit: parseFloat(supplier.total_credit) || 0,
+            total_debit: parseFloat(supplier.total_debit) || 0,
+            outstanding_amount: (parseFloat(supplier.total_debit) || 0) - (parseFloat(supplier.total_credit) || 0)
+        }));
+
+        //console.log(suppliers);  // Log the suppliers data to debug
+        res.render('outstanding_invoice', { suppliers });
+    });
+});
+
+app.get("/view_credit_invoice",(req,res)=>{
+    let q = "SELECT * FROM credit_bill";
+    db.query(q, (err, results) => {
+        if (err) {
+            console.error('Error retrieving data from database:', err);
+            return res.status(500).send('Internal Server Error');
+        }
+       
+        res.render('view_credit_invoice.ejs', { credits: results });
+    });
+    
+})
+
+app.get("/edit_credit_bill/:id",(req,res)=>{
+    let { id } = req.params;
+    let q = `SELECT * FROM credit_bill WHERE id='${id}'`;
+    db.query(q, (err, results) => {
+        if (err) {
+            console.error('Error retrieving data from database:', err);
+            return res.status(500).send('Internal Server Error');
+        }
+       
+        res.render('edit_credit_bill.ejs', { credit: results[0] });
+    });
+})
+
+app.put("/edit_credit_bill/:id", (req, res) => {
+    let { id } = req.params;
+    let { supplier_code, supplier_name, bill_number, bill_date, credit_bill_amount } = req.body;
+
+    let q = `SELECT * FROM credit_bill WHERE id = ?`;
+    db.query(q, [id], (err, result) => {
+        if (err) {
+            console.error(err);
+            return res.send("Some error in db");
+        }
+
+        if (result.length === 0) {
+            return res.send("No record found with the given id");
+        }
+
+        let q2 = `UPDATE credit_bill SET supplier_code = ?, supplier_name = ?, bill_number = ?, bill_date = ?, credit_bill_amount = ? WHERE id = ?`;
+        db.query(q2, [supplier_code, supplier_name, bill_number, bill_date, credit_bill_amount, id], (err, result) => {
+            if (err) {
+                console.error(err);
+                return res.send("Some error in db");
+            }
+
+            res.redirect('/view_credit_invoice');
+        });
+    });
+});
+
 
 // Start server
 const port = 3000;

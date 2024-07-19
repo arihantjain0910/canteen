@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Credit Bill Form</title>
+    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body>
+    <div class="container mt-5">
+        <h2 style="text-align: center;">Credit Bill Form</h2>
+        <form method="POST" action="/credit_invoice">
+            <div class="form-row">
+            
+            <div class="form-group col-md-3">
+                <label for="supplier_code">Supplier Code</label>
+                <input type="text" class="form-control" id="supplier_code" placeholder="Enter supplier code" name="supplier_code" required>
+            </div>
+            <div class="form-group col-md-6">
+                <label for="supplier_name">Supplier Name</label>
+                <input type="text" class="form-control" id="supplier_name" placeholder="Enter supplier name" name="supplier_name" required>
+            </div>
+            <div class="form-group col-md-3">
+                <label for="bill_number">Bill Number</label>
+                <input type="text" class="form-control" id="bill_number" placeholder="Enter bill number" name="bill_number" required>
+            </div>
+            <div class="form-group col-md-3">
+                <label for="bill_date">Bill Date</label>
+                <input type="date" class="form-control" id="bill_date" name="bill_date" required>
+            </div>
+            <div class="form-group col-md-3">
+                <label for="credit_bill_amount">Bill Amount (Credit)</label>
+                <input type="decimal" class="form-control" id="credit_bill_amount" placeholder="Enter bill amount" name="credit_bill_amount" required>
+            </div>
+        </div>
+            <button type="submit" class="btn btn-primary">Submit</button>
+        </form>
+    </div>
+    
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <script>
+        document.getElementById('supplier_name').addEventListener('input', function() {
+            this.value = this.value.toUpperCase();
+        });
+      </script>
+</body>
+</html>

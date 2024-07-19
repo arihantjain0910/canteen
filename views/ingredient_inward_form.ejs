@@ -150,7 +150,10 @@
                     <tbody>
                         <tr>
                             <td class="sn-no">1</td>
-                            <td><input type="text" id="ingredient_item_code" class="form-control ingredient_item_code" name="ingredient_item_code[]" required></td>
+                            <td><input type="text" id="ingredient_item_code" class="form-control ingredient_item_code" name="ingredient_item_code[]" list="itemCodes" required>
+                              <datalist id="itemCodes">
+                                <!-- Options will be populated by JavaScript -->
+                            </datalist></td>
                             <td><input type="text" id="ingredient_item_description" class="form-control ingredient_item_description" name="ingredient_item_description[]" required></td>
                             <td><input type="decimal" id="received_quantity" class="form-control received_quantity" name="received_quantity[]" required></td>
                             <td><input type="decimal" id="rate" class="form-control rate" name="rate[]" required></td>
@@ -176,7 +179,10 @@
                 let newRow = `
                     <tr>
                         <td class="sn-no">${snCounter}</td>
-                        <td><input type="text" class="form-control ingredient_item_code" name="ingredient_item_code[]" required></td>
+                        <td><input type="text" id="ingredient_item_code" class="form-control ingredient_item_code" name="ingredient_item_code[]" list="itemCodes" required>
+                              <datalist id="itemCodes">
+                                <!-- Options will be populated by JavaScript -->
+                            </datalist></td>
                         <td><input type="text" class="form-control ingredient_item_description" name="ingredient_item_description[]" required></td>
                         <td><input type="decimal" class="form-control received_quantity" name="received_quantity[]" required></td>
                         <td><input type="decimal" class="form-control rate" name="rate[]" required></td>
@@ -235,6 +241,24 @@
                 this.value = this.value.toUpperCase();
             });
         });
+    </script>
+    <script>
+      // script.js
+document.addEventListener('DOMContentLoaded', function() {
+    fetch('/get-item-codes')
+        .then(response => response.json())
+        .then(data => {
+            const datalist = document.getElementById('itemCodes');
+            data.forEach(item => {
+                const option = document.createElement('option');
+                option.value = item.ingredient_item_code;
+                option.textContent = item.ingredient_item_description;
+                datalist.appendChild(option);
+            });
+        })
+        .catch(error => console.error('Error fetching item codes:', error));
+});
+
     </script>
 </body>
 </html>

@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Supplier Account Details</title>
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body {
+            
+            background-color: #f8f9fa;
+            
+        }
+        .container {
+            max-width: 800px;
+            margin: auto;
+        }
+        h3 {
+            color: red;
+            text-align: center;
+            margin-bottom: 30px;
+            font-size: 2rem;
+        }
+        .table {
+            background-color: #ffffff;
+            border-radius: 10px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+        .table th {
+            background-color: #BFC3C6;
+            font-weight: bold;
+            text-align: center;
+        }
+        .table td {
+            text-align: center;
+            padding: 15px;
+        }
+        .table tr:nth-child(even) {
+            background-color: #f2f2f2;
+        }
+        .form-control[readonly] {
+        background-color: #e9ecef;
+        opacity: 1;
+      }
+      body {
+        padding-top: 20px; /* Adjust this value if needed */
+        font-size: 0.7rem;
+      }
+      .navbar {
+        font-size: 0.9rem;
+        height: 56px; /* Adjust based on the height of your navbar */
+      }
+      .sidebar {
+    position: fixed;
+        top: 56px; /* Adjust this value if the navbar height changes */
+        bottom: 0;
+        left: 0;
+        width: 250px;
+        padding-top: 1rem; /* Adjust padding to match the top padding of the main content */
+        background-color: #343a40; /* Bootstrap bg-dark color */
+        color: white;
+        overflow-y: auto;
+      }
+      .sidebar a {
+        color: white;
+        text-decoration: none;
+      }
+      .sidebar a:hover {
+        color: #adb5bd;
+      }
+      .main-content {
+        margin-left: 220px;
+        padding: 60px 10px 10px;
+      }
+    </style>
+</head>
+<body>
+<div class="container">
+    <h3 style="font-family: Georgia, 'Times New Roman', Times, serif; font-size:xx-large; font-weight:bolder; color:#56606a ;"  >Suppliers Account Details</h3>
+    <table class="table table-bordered">
+        <thead>
+            <tr>
+                <th scope="col">Supplier Code</th>
+                <th scope="col">Supplier Name</th>
+                <th scope="col">Debit Amount</th>
+                <th scope="col">Credit Amount</th>
+                <th scope="col">Outstanding Amount</th>
+            </tr>
+        </thead>
+        <tbody>
+            <% suppliers.forEach(supplier => { %>
+                <tr>
+                    <td><%= supplier.supplier_code %></td>
+                    <td><%= supplier.supplier_name %></td>
+                    <td><%= supplier.total_debit.toFixed(2) %></td>
+                    <td><%= supplier.total_credit.toFixed(2) %></td>
+                    <td><%= supplier.outstanding_amount.toFixed(2) %></td>
+                </tr>
+            <% }); %>
+        </tbody>
+    </table>
+</div>
+<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.2/dist/umd/popper.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</body>
+</html>
