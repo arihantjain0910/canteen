@@ -8,262 +8,247 @@
     <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <style>
-        
         .custom-table .even-row {
-          background-color:#b6d4ee; 
+            background-color: #b6d4ee;
         }
-      
         .custom-table .odd-row {
-          background-color: #f7d0ea; 
+            background-color: #f7d0ea;
         }
         .form-control[readonly] {
-        background-color: #e9ecef;
-        opacity: 1;
-      }
-      body {
-        /* padding-top: 20px; Adjust this value if needed */
-        font-size: 0.7rem;
-        background-color: #F0F0F0;
-      }
-      .navbar {
-        font-size: 0.9rem;
-        height: 56px; /* Adjust based on the height of your navbar */
-      }
-      .sidebar {
-    position: fixed;
-        top: 56px; /* Adjust this value if the navbar height changes */
-        bottom: 0;
-        left: 0;
-        width: 220px;
-        padding-top: 1rem; /* Adjust padding to match the top padding of the main content */
-        background-color: #343a40; /* Bootstrap bg-dark color */
-        color: white;
-        overflow-y: auto;
-      }
-      .sidebar a {
-        color: white;
-        text-decoration: none;
-      }
-      .sidebar a:hover {
-        color: #adb5bd;
-      }
-      .main-content {
-        margin-left: 250px;
-        padding: 50px 10px 10px;
-      }
-      </style>
-</head>
+            background-color: #e9ecef;
+            opacity: 1;
+        }
+        body {
+            font-size: 0.7rem;
+            background-color: #F0F0F0;
+        }
+        .navbar {
+            font-size: 0.9rem;
+            height: 56px;
+        }
+        .sidebar {
+            position: fixed;
+            top: 56px;
+            bottom: 0;
+            left: 0;
+            width: 220px;
+            padding-top: 1rem;
+            background-color: #343a40;
+            color: white;
+            overflow-y: auto;
+        }
+        .sidebar a {
+            color: white;
+            text-decoration: none;
+        }
+        .sidebar a:hover {
+            color: #adb5bd;
+        }
+        .main-content {
+            margin-left: 250px;
+            padding: 50px 10px 10px;
+        }
+    </style>
 </head>
 <body>
     <nav class="navbar navbar-expand-lg navbar-dark bg-dark fixed-top">
         <div class="container-fluid">
-          <a class="navbar-brand" href="/admin-dashboard">
-            <img
-              src="https://sangamgroup.com/wp-content/uploads/2023/01/sangam_group_logo.png"
-              alt="Logo"
-              width="60"
-              height="50"
-            />
-            Sangam India Limited
-          </a>
-       
-      </nav>
-  
-      <div class="sidebar">
-        <ul class="nav flex-column">
-          <li class="nav-item">
-            <a href="/requirement_form" class="nav-link">Add Requirement</a>
-          </li>
-          <li class="nav-item">
-            <a href="/view-today-entries" class="nav-link">Today Entries</a>
-          </li>
-          <li class="nav-item">
-            <a href="/ingredients_master" class="nav-link"
-              >Add Item In Ingredient Master</a
-            >
-          </li>
-          <li class="nav-item">
-            <a href="/item-list" class="nav-link">Add Item In Menu Master</a>
-          </li>
-          <li class="nav-item">
-            <a href="/detail-item-form" class="nav-link">Create BOM</a>
-          </li>
-          <li class="nav-item">
-            <a href="/ingredient_inward_form" class="nav-link"
-              >Ingredient Inwards Entry</a
-            >
-          </li>
-          <li class="nav-item">
-            <a href="/ingredient_outward" class="nav-link"
-              >Ingredient Outward Entry</a
-            >
-          </li>
-          <li class="nav-item">
-            <a href="/view_stock" class="nav-link">View Stock</a>
-          </li>
-          <li class="nav-item">
-            <a href="/suppliers_master" class="nav-link">Add Suppliers</a>
-          </li>
-          <li class="nav-item">
-            <a href="/debit_invoice" class="nav-link">Debit Invoice</a>
-          </li>
-          <li class="nav-item">
-            <a href="/credit_invoice" class="nav-link">Credit Invoice</a>
-          </li>
-          <li class="nav-item">
-            <a href="/outstanding_invoice" class="nav-link">Outstanding Invoice</a>
-          </li>
-          <li class="nav-item">
-            <a href="/add-new-employee" class="nav-link">Add Employee</a>
-          </li>
-          <li class="nav-item">
-            <a href="/view-users" class="nav-link">Total Employees</a>
-          </li>
-          <li class="nav-item">
-            <a href="/rate-list" class="nav-link">Add Menu</a>
-          </li>
-          <li class="nav-item">
-            <a href="/view-rate-list" class="nav-link">View Menu</a>
-          </li>
-          <li class="nav-item">
-            <a href="/admin-logout" class="nav-link">Logout</a>
-          </li>
-        </ul>
-  </div>
-<div class="main-content">
-    <div class="container">
-        <div class="row">
-            <div class="col-md-12 text-center">
-                <h1 class="mt-3" style="color: #56606a ">Admin Dashboard</h1>
-                <h3 style="color: #7C8287">All Entries</h3>
-            </div>
+            <a class="navbar-brand" href="/admin-dashboard">
+                <img src="https://sangamgroup.com/wp-content/uploads/2023/01/sangam_group_logo.png" alt="Logo" width="60" height="50" />
+                Sangam India Limited
+            </a>
         </div>
+    </nav>
 
-        <!-- Table to display all employee entries -->
-        <div>
-            <div>
-                <h3 style="color: #56606a ">Employee Entries</h3>
-                <table class="table table-bordered table custom-table " id="employeeTable">
-                    
-<thead id="employeeTableHead">
-                        <tr style="background-color:#BFC3C6">
-                          <th>SN No.</th> <!-- Line number column -->
-                          <th>Order Type</th>
-                          <th>Quantity</th>
-                          <th> Employee Name</th>
-                          <th>Employee Code</th>
-                          <th>Department</th>
-                          <th>Designation</th>
-                          <th>Date From</th>
-                          <!-- <th>Attendence</th> -->
-                          <!-- <th>Date To</th> -->
-                          <!-- <th>Delete Entry</th> -->
-                        </tr>
-                    </thead>
-                    <tbody id="employeeTableBody">
-                        <% let employeeLineNumber = 1; %>
-                        <% employees.forEach(employee => { %>
-                            <tr >
-                              <td><%= employeeLineNumber %></td>
-                              <td><%= employee.orders %></td>
-                              <td><%= employee.quantity %></td>
-                                <td><%= employee.name %></td>
-                                <td><%= employee.employeeCode %></td>
-                                <td><%= employee.department %></td>
-                                <td><%= employee.designation %></td>
-                                <td><%= new Date(employee.date_from).toLocaleDateString('en-GB') %></td>
-                                <!-- <td><%= new Date(employee.date_to).toLocaleDateString('en-GB') %></td> -->
-                                <!-- <td>
-                                  <div>
-                                    <input type="checkbox" class="form-check-input attendance-checkbox" data-employee-id="<%= employee.id %>" <%= employee.isAttended ? 'checked' : '' %>>
-                                  </div>
-                                  
-                                </td> -->
-                             <!--    <td>
-                                  <form action="/delete-entry/<%=employee.id%>?_method=DELETE" method="POST">
-                                    <button type="submit" class="btn btn-danger">Delete</button>
-                                 </form>
-                                 </td>  -->
-                            </tr>
-                            <% employeeLineNumber++; %>
-                        <% }); %>
-                    </tbody>
-                </table>
+    <div class="sidebar">
+        <ul class="nav flex-column">
+            <li class="nav-item"><a href="/requirement_form" class="nav-link">Add Requirement</a></li>
+            <li class="nav-item"><a href="/view-today-entries" class="nav-link">Today Entries</a></li>
+            <li class="nav-item"><a href="/ingredients_master" class="nav-link">Add Item In Ingredient Master</a></li>
+            <li class="nav-item"><a href="/item-list" class="nav-link">Add Item In Menu Master</a></li>
+            <li class="nav-item"><a href="/detail-item-form" class="nav-link">Create BOM</a></li>
+            <li class="nav-item"><a href="/ingredient_inward_form" class="nav-link">Ingredient Inwards Entry</a></li>
+            <li class="nav-item"><a href="/ingredient_outward" class="nav-link">Ingredient Outward Entry</a></li>
+            <li class="nav-item"><a href="/view_stock" class="nav-link">View Stock</a></li>
+            <li class="nav-item"><a href="/suppliers_master" class="nav-link">Add Suppliers</a></li>
+            <li class="nav-item"><a href="/debit_invoice" class="nav-link">Debit Invoice</a></li>
+            <li class="nav-item"><a href="/credit_invoice" class="nav-link">Credit Invoice</a></li>
+            <li class="nav-item"><a href="/outstanding_invoice" class="nav-link">Outstanding Invoice</a></li>
+            <li class="nav-item"><a href="/add-new-employee" class="nav-link">Add Employee</a></li>
+            <li class="nav-item"><a href="/view-users" class="nav-link">Total Employees</a></li>
+            <li class="nav-item"><a href="/rate-list" class="nav-link">Add Menu</a></li>
+            <li class="nav-item"><a href="/view-rate-list" class="nav-link">View Menu</a></li>
+            <li class="nav-item"><a href="/admin-logout" class="nav-link">Logout</a></li>
+        </ul>
+    </div>
+
+    <div class="main-content">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-12 text-center">
+                    <h1 class="mt-3" style="color: #56606a ">Admin Dashboard</h1>
+                    <h3 style="color: #7C8287">All Entries</h3>
+                </div>
             </div>
+
+            <!-- Download Excel button -->
+            <div class="text-right mb-3">
+                <button class="btn btn-secondary btn-sm" onclick="downloadExcel()">Download Excel</button>
+            </div>
+
+            <!-- Table to display all employee entries -->
             <div>
-                <h3 style="color: #56606a ;">Guest Entries</h3>
-                <table class="table table-bordered table custom-table" id="guestTable">
-                    <thead id="guestTableHead">
-                        <tr style="background-color: #BFC3C6">
-                          <th>SN No.</th> <!-- Line number column -->
-                          <th>Order Type</th>
-                          <th>Employee Name</th>
-                          <th>Guest Name</th>
-                          <th>Guest Company</th>
-                          <th>Guest Designation</th>
-                          <th>Remarks</th>
-                          <th>Date </th>
-                          <!-- <th>Date To</th> -->
-                        </tr>
-                    </thead>
-                    <tbody id="guestTableBody">
-                        <% let guestLineNumber = 1; %>
-                        <% guests.forEach(guest => { %>
-                            <tr >
-                              <td><%= guestLineNumber %></td>
-                              <td><%= guest.orders %></td>
-                              <td><%= guest.employee_name %></td>  
-                              <td><%= guest.guestName %></td>                                
-                              <td><%= guest.guestCompany %></td>
-                              <td><%= guest.guestdesignation %></td>
-                              <td><%= guest.remarks %></td>
-                              <td><%= new Date(guest.date_from).toLocaleDateString('en-GB') %></td>
-                              <!-- <td><%= new Date(guest.date_to).toLocaleDateString('en-GB') %></td> -->
+                <div>
+                    <h3 style="color: #56606a ">Employee Entries</h3>
+                    <table class="table table-bordered table custom-table" id="employeeTable">
+                        <thead id="employeeTableHead">
+                            <tr style="background-color:#BFC3C6">
+                                <th>SN No.</th>
+                                <th>Order Type</th>
+                                <th>Quantity</th>
+                                <th> Employee Name</th>
+                                <th>Employee Code</th>
+                                <th>Department</th>
+                                <th>Designation</th>
+                                <th>Date From</th>
                             </tr>
-                            <% guestLineNumber++; %>
-                        <% }); %>
-                    </tbody>
-                </table>
+                        </thead>
+                        <tbody id="employeeTableBody">
+                            <% let employeeLineNumber = 1; %>
+                            <% employees.forEach(employee => { %>
+                                <tr>
+                                    <td><%= employeeLineNumber %></td>
+                                    <td><%= employee.orders %></td>
+                                    <td><%= employee.quantity %></td>
+                                    <td><%= employee.name %></td>
+                                    <td><%= employee.employeeCode %></td>
+                                    <td><%= employee.department %></td>
+                                    <td><%= employee.designation %></td>
+                                    <td><%= new Date(employee.date_from).toLocaleDateString('en-GB') %></td>
+                                </tr>
+                                <% employeeLineNumber++; %>
+                            <% }); %>
+                        </tbody>
+                    </table>
+                </div>
+                <div>
+                    <h3 style="color: #56606a ;">Guest Entries</h3>
+                    <table class="table table-bordered table custom-table" id="guestTable">
+                        <thead id="guestTableHead">
+                            <tr style="background-color: #BFC3C6">
+                                <th>SN No.</th>
+                                <th>Order Type</th>
+                                <th>Employee Name</th>
+                                <th>Guest Name</th>
+                                <th>Guest Company</th>
+                                <th>Guest Designation</th>
+                                <th>Remarks</th>
+                                <th>Date </th>
+                            </tr>
+                        </thead>
+                        <tbody id="guestTableBody">
+                            <% let guestLineNumber = 1; %>
+                            <% guests.forEach(guest => { %>
+                                <tr>
+                                    <td><%= guestLineNumber %></td>
+                                    <td><%= guest.orders %></td>
+                                    <td><%= guest.employee_name %></td>
+                                    <td><%= guest.guestName %></td>
+                                    <td><%= guest.guestCompany %></td>
+                                    <td><%= guest.guestdesignation %></td>
+                                    <td><%= guest.remarks %></td>
+                                    <td><%= new Date(guest.date_from).toLocaleDateString('en-GB') %></td>
+                                </tr>
+                                <% guestLineNumber++; %>
+                            <% }); %>
+                        </tbody>
+                    </table>
+                </div>
             </div>
         </div>
     </div>
-</div>      
-   
-      
-    
+
     <!-- Bootstrap JS and dependencies (Popper.js and jQuery) -->
     <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.11.0/umd/popper.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
     <!-- DataTables CSS -->
-<link href="https://cdn.datatables.net/1.11.4/css/jquery.dataTables.min.css" rel="stylesheet">
+    <link href="https://cdn.datatables.net/1.11.4/css/jquery.dataTables.min.css" rel="stylesheet">
+    <!-- jQuery -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    <!-- DataTables JavaScript -->
+    <script src="https://cdn.datatables.net/1.11.4/js/jquery.dataTables.min.js"></script>
+    <!-- SheetJS -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.17.0/xlsx.full.min.js"></script>
 
-<!-- jQuery -->
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    <script>
+        $(document).ready(function() {
+            // Initialize DataTable for Employee table
+            $('#employeeTable').DataTable({
+                "paging": true,
+                "order": [[0, 'asc']],
+                "columnDefs": [
+                    { "targets": 0, "orderable": false }
+                ]
+            });
 
-<!-- DataTables JavaScript -->
-<script src="https://cdn.datatables.net/1.11.4/js/jquery.dataTables.min.js"></script>
+            // Initialize DataTable for Guest table
+            $('#guestTable').DataTable({
+                "paging": true,
+                "order": [[0, 'asc']],
+                "columnDefs": [
+                    { "targets": 0, "orderable": false }
+                ]
+            });
+        });
 
-<script>
-  $(document).ready(function() {
-                // Initialize DataTable for Employee table
-                $('#employeeTable').DataTable({
-                    "paging": true,
-                    "order": [[0, 'asc']], // Optional: Sort by first column ascending
-                    "columnDefs": [
-                        { "targets": 0, "orderable": false } // Disable sorting on SN No. column
-                    ]
+        function downloadExcel() {
+            var employeeData = [];
+            var guestData = [];
+
+            // Get Employee Table Data
+            $('#employeeTable thead tr').each(function() {
+                var rowData = [];
+                $(this).find('th').each(function() {
+                    rowData.push($(this).text());
                 });
-    
-                // Initialize DataTable for Guest table
-                $('#guestTable').DataTable({
-                    "paging": true,
-                    "order": [[0, 'asc']], // Optional: Sort by first column ascending
-                    "columnDefs": [
-                        { "targets": 0, "orderable": false } // Disable sorting on SN No. column
-                    ]
+                employeeData.push(rowData);
+            });
+            $('#employeeTable tbody tr').each(function() {
+                var rowData = [];
+                $(this).find('td').each(function() {
+                    rowData.push($(this).text());
                 });
-              });
-</script>
+                employeeData.push(rowData);
+            });
+
+            // Get Guest Table Data
+            $('#guestTable thead tr').each(function() {
+                var rowData = [];
+                $(this).find('th').each(function() {
+                    rowData.push($(this).text());
+                });
+                guestData.push(rowData);
+            });
+            $('#guestTable tbody tr').each(function() {
+                var rowData = [];
+                $(this).find('td').each(function() {
+                    rowData.push($(this).text());
+                });
+                guestData.push(rowData);
+            });
+
+            // Create Workbook
+            var wb = XLSX.utils.book_new();
+            var employeeWS = XLSX.utils.aoa_to_sheet(employeeData);
+            var guestWS = XLSX.utils.aoa_to_sheet(guestData);
+
+            XLSX.utils.book_append_sheet(wb, employeeWS, "Employee Entries");
+            XLSX.utils.book_append_sheet(wb, guestWS, "Guest Entries");
+
+            // Download Excel File
+            XLSX.writeFile(wb, "AdminDashboardData.xlsx");
+        }
+    </script>
 </body>
 </html>
