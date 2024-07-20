@@ -1316,6 +1316,34 @@ app.get('/get-item-codes', (req, res) => {
     });
 });
 
+app.get('/get-supplier-codes', (req, res) => {
+    const query = 'SELECT supplier_code,supplier_name FROM supplier_master';
+    db.query(query, (error, results) => {
+        if (error) {
+            console.error('Error fetching item codes:', error);
+            res.status(500).send('Server error');
+        } else {
+            res.json(results);
+        }
+    });
+});
+
+app.post('/get-supplier-name', (req, res) => {
+    const { supplier_code } = req.body;
+    const sql = 'SELECT supplier_name FROM supplier_master WHERE supplier_code = ?';
+    db.query(sql, [supplier_code], (err, result) => {
+        if (err) {
+            console.error('Database query error:', err);
+            return res.status(500).json({ error: 'Internal server error' });
+        }
+        if (result.length > 0) {
+            res.json({ supplier_name: result[0].supplier_name });
+        } else {
+            res.json({ supplier_name: '' });
+        }
+    });
+});
+
 // app.get("/outstanding_invoice",(req,res)=>{
 //     res.render("outstanding_invoice.ejs");
 // })
@@ -1407,7 +1435,59 @@ app.put("/edit_credit_bill/:id", (req, res) => {
     });
 });
 
+app.get("/view_debit_invoice",(req,res)=>{
+    let q = "SELECT * FROM debit_bill";
+    db.query(q, (err, results) => {
+        if (err) {
+            console.error('Error retrieving data from database:', err);
+            return res.status(500).send('Internal Server Error');
+        }
+       
+        res.render('view_debit_invoice.ejs', { debits: results });
+    });
+    
+})
 
+app.get("/edit_debit_bill/:id",(req,res)=>{
+    let { id } = req.params;
+    let q = `SELECT * FROM debit_bill WHERE id='${id}'`;
+    db.query(q, (err, results) => {
+        if (err) {
+            console.error('Error retrieving data from database:', err);
+            return res.status(500).send('Internal Server Error');
+        }
+       
+        res.render('edit_debit_bill.ejs', { debit: results[0] });
+    });
+})
+
+
+app.put("/edit_debit_bill/:id", (req, res) => {
+    let { id } = req.params;
+    let { supplier_code, supplier_name, bill_number, bill_date, debit_bill_amount } = req.body;
+
+    let q = `SELECT * FROM debit_bill WHERE id = ?`;
+    db.query(q, [id], (err, result) => {
+        if (err) {
+            console.error(err);
+            return res.send("Some error in db");
+        }
+
+        if (result.length === 0) {
+            return res.send("No record found with the given id");
+        }
+
+        let q2 = `UPDATE debit_bill SET supplier_code = ?, supplier_name = ?, bill_number = ?, bill_date = ?, debit_bill_amount = ? WHERE id = ?`;
+        db.query(q2, [supplier_code, supplier_name, bill_number, bill_date, debit_bill_amount, id], (err, result) => {
+            if (err) {
+                console.error(err);
+                return res.send("Some error in db");
+            }
+
+            res.redirect('/view_debit_invoice');
+        });
+    });
+});
 // Start server
 const port = 3000;
 app.listen(port, () => {

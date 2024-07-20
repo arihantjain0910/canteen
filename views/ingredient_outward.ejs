@@ -95,6 +95,10 @@
           <li class="nav-item">
             <a href="/view_stock" class="nav-link">View Stock</a>
           </li>
+          <li class="nav-item"><a href="/suppliers_master" class="nav-link">Add Suppliers</a></li>
+          <li class="nav-item"><a href="/debit_invoice" class="nav-link">Debit Invoice</a></li>
+          <li class="nav-item"><a href="/credit_invoice" class="nav-link">Credit Invoice</a></li>
+          <li class="nav-item"><a href="/outstanding_invoice" class="nav-link">Outstanding Invoice</a></li>
           <li class="nav-item">
             <a href="/add-new-employee" class="nav-link">Add Employee</a>
           </li>
@@ -152,7 +156,7 @@
                             <td><input type="decimal" id="issued_quantity" class="form-control issued_quantity" name="issued_quantity[]" required></td>
                             <!-- <td><input type="decimal" id="rate" class="form-control rate" name="rate[]" required></td>
                             <td><input type="decimal" id="amount" class="form-control amount" name="amount[]" ></td> -->
-                            <td><button type="button" class="btn btn-danger delete-row">Delete</button></td>
+                            <td><button type="button" class="btn btn-danger btn-sm delete-row">Delete</button></td>
                         </tr>
                     </tbody>
                 </table>
@@ -180,7 +184,7 @@
                         <td><input type="text" class="form-control ingredient_item_description" name="ingredient_item_description[]" required></td>
                         <td><input type="decimal" class="form-control issued_quantity" name="issued_quantity[]" required></td>
                         
-                        <td><button type="button" class="btn btn-danger delete-row">Delete</button></td>
+                        <td><button type="button" class="btn btn-danger btn-sm delete-row">Delete</button></td>
                     </tr>`;
                 $('#ingredientsTable tbody').append(newRow);
                 snCounter++;

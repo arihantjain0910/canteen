@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Edit Credit Bill</title>
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body>
+    <div class="container mt-5">
+        <h2 style="text-align: center;">Edit Credit Bill</h2>
+        <form action="/edit_debit_bill/<%= debit.id %>?_method=PUT" method="POST">
+            <div class="form-row">
+                <div class="form-group col-md-3">
+                    <label for="supplier_code">Supplier Code</label>
+                    <input type="text" class="form-control" id="supplier_code" placeholder="Enter supplier code" name="supplier_code" required value="<%= debit.supplier_code %>">
+                </div>
+                <div class="form-group col-md-6">
+                    <label for="supplier_name">Supplier Name</label>
+                    <input type="text" class="form-control" id="supplier_name" placeholder="Enter supplier name" name="supplier_name" required value="<%= debit.supplier_name %>">
+                </div>
+                <div class="form-group col-md-3">
+                    <label for="bill_number">Bill Number</label>
+                    <input type="text" class="form-control" id="bill_number" placeholder="Enter bill number" name="bill_number" required value="<%= debit.bill_number %>">
+                </div>
+            </div>
+            <div class="form-row">
+                <div class="form-group col-md-3">
+                    <label for="bill_date">Bill Date</label>
+                    <input type="date" class="form-control" id="bill_date" name="bill_date" required value="<%= debit.bill_date %>">
+                </div>
+                <div class="form-group col-md-3">
+                    <label for="debit_bill_amount">Bill Amount (Debit)</label>
+                    <input type="decimal" class="form-control" id="debit_bill_amount" placeholder="Enter bill amount" name="debit_bill_amount" required value="<%= debit.debit_bill_amount %>">
+                </div>
+            </div>
+            <button type="submit" class="btn btn-primary">Update</button>
+        </form>
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <script>
+        document.getElementById('supplier_name').addEventListener('input', function() {
+            this.value = this.value.toUpperCase();
+        });
+        document.getElementById('supplier_code').addEventListener('input', function() {
+            this.value = this.value.toUpperCase();
+        });
+    </script>
+</body>
+</html>

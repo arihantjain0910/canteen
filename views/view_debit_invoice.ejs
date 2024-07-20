@@ -7,13 +7,46 @@
     <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <style>
+        .form-control[readonly] {
+            background-color: #e9ecef;
+            opacity: 1;
+        }
         body {
-            
+            padding-top: 20px;
+            font-size: 0.7rem;
+        }
+        .navbar {
+            font-size: 0.9rem;
+            height: 56px;
+        }
+        .sidebar {
+            position: fixed;
+            top: 56px;
+            bottom: 0;
+            left: 0;
+            width: 220px;
+            padding-top: 1rem;
+            background-color: #343a40;
+            color: white;
+            overflow-y: auto;
+        }
+        .sidebar a {
+            color: white;
+            text-decoration: none;
+        }
+        .sidebar a:hover {
+            color: #adb5bd;
+        }
+        .main-content {
+            margin-left: 250px;
+            padding: 60px 10px 10px;
+        }
+        body {
+            font-family: 'Arial', sans-serif;
             background-color: #f8f9fa;
-            
         }
         .container {
-            max-width: 800px;
+            max-width: 1000px;
             margin: auto;
         }
         h3 {
@@ -28,7 +61,7 @@
             box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
         }
         .table th {
-            background-color: #BFC3C6;
+            background-color: #ecd0ab;
             font-weight: bold;
             text-align: center;
         }
@@ -39,40 +72,6 @@
         .table tr:nth-child(even) {
             background-color: #f2f2f2;
         }
-        .form-control[readonly] {
-        background-color: #e9ecef;
-        opacity: 1;
-      }
-      body {
-        padding-top: 20px; /* Adjust this value if needed */
-        font-size: 0.7rem;
-      }
-      .navbar {
-        font-size: 0.9rem;
-        height: 56px; /* Adjust based on the height of your navbar */
-      }
-      .sidebar {
-    position: fixed;
-        top: 56px; /* Adjust this value if the navbar height changes */
-        bottom: 0;
-        left: 0;
-        width: 250px;
-        padding-top: 1rem; /* Adjust padding to match the top padding of the main content */
-        background-color: #343a40; /* Bootstrap bg-dark color */
-        color: white;
-        overflow-y: auto;
-      }
-      .sidebar a {
-        color: white;
-        text-decoration: none;
-      }
-      .sidebar a:hover {
-        color: #adb5bd;
-      }
-      .main-content {
-        margin-left: 220px;
-        padding: 60px 10px 10px;
-      }
     </style>
 </head>
 <body>
@@ -87,7 +86,7 @@
         />
         Sangam India Limited
       </a>
-   
+    </div>
   </nav>
 
   <div class="sidebar">
@@ -99,9 +98,7 @@
         <a href="/view-today-entries" class="nav-link">Today Entries</a>
       </li>
       <li class="nav-item">
-        <a href="/ingredients_master" class="nav-link"
-          >Add Item In Ingredient Master</a
-        >
+        <a href="/ingredients_master" class="nav-link">Add Item In Ingredient Master</a>
       </li>
       <li class="nav-item">
         <a href="/item-list" class="nav-link">Add Item In Menu Master</a>
@@ -110,14 +107,10 @@
         <a href="/detail-item-form" class="nav-link">Create BOM</a>
       </li>
       <li class="nav-item">
-        <a href="/ingredient_inward_form" class="nav-link"
-          >Ingredient Inwards Entry</a
-        >
+        <a href="/ingredient_inward_form" class="nav-link">Ingredient Inwards Entry</a>
       </li>
       <li class="nav-item">
-        <a href="/ingredient_outward" class="nav-link"
-          >Ingredient Outward Entry</a
-        >
+        <a href="/ingredient_outward" class="nav-link">Ingredient Outward Entry</a>
       </li>
       <li class="nav-item">
         <a href="/view_stock" class="nav-link">View Stock</a>
@@ -142,39 +135,44 @@
         <a href="/admin-logout" class="nav-link">Logout</a>
       </li>
     </ul>
-</div>
-<div class="main-content">
+  </div>
+  
+  <div class="main-content">
     <div class="container">
-        <h3 style="font-family: Georgia, 'Times New Roman', Times, serif; font-size:xx-large; font-weight:bolder; color:#56606a ;"  >Ingredients Stock</h3>
+        <h3 style="font-family: Georgia, 'Times New Roman', Times, serif; font-size:xx-large; font-weight:bolder;">Debit Entries List</h3>
         <table class="table table-bordered table custom-table" id="viewMenu">
             <thead>
                 <tr>
-                    <th>Ingredient Item Code</th>
-                    <th>Ingredient Description</th>
-                    <th>Present Qty (in KG/L)</th>
-                    <th>Recieved Qty (in KG/L)</th>
-                    <th>Issued Qty (in KG/L)</th>
-                    <th>Current Stock (in KG/L)</th>
-                
+                    <th>Supplier Code</th>
+                    <th>Supplier Name</th>
+                    <th>Bill No.</th>
+                    <th>Bill Date</th>
+                    <th>Credit Amount</th>
+                    <th>Edit</th>
                 </tr>
             </thead>
             <tbody>
-                <% for (ingredient of ingredients){ %>
+                <% for (let debit of debits) { %>
                 <tr>
-                    <td><%= ingredient.ingredient_item_code %></td>
-                    <td><%= ingredient.ingredient_item_description %></td>
-                    <td><%= ingredient.opening_balance_quantity %></td>
-                    <td><%= ingredient.received_quantity %></td>
-                    <td><%= ingredient.issued_quantity %></td>
-                    <td><%= ingredient.current_stock %></td>
+                    <td><%= debit.supplier_code %></td>
+                    <td><%= debit.supplier_name %></td>
+                    <td><%= debit.bill_number %></td>
+                    <td><%= new Date(debit.bill_date).toLocaleDateString('en-GB') %></td>
+                    <td><%= debit.debit_bill_amount %></td>
+                    <td>
+                        <form action="/edit_debit_bill/<%= debit.id %>" method="GET">
+                            <button type="submit" class="btn btn-primary btn-sm">Edit</button>
+                        </form>
+                    </td>
                 </tr>
                 <% } %>
             </tbody>
         </table>
     </div>
-    
-    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
-    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+  </div>
+
+  <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
+  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 </body>
 </html>

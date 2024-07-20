@@ -5,9 +5,118 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Supplier Master</title>
     <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        .form-box {
+          border: 1px solid #ccc;
+          padding: 20px;
+          border-radius: 5px;
+          box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+        .form-control[readonly] {
+            background-color: #e9ecef;
+            opacity: 1;
+          }
+          body {
+            padding-top: 20px; /* Adjust this value if needed */
+            font-size: 0.7rem;
+            /* background-color:#F0F0F0 ; */
+          }
+          .navbar {
+            font-size: 0.9rem;
+            height: 56px; /* Adjust based on the height of your navbar */
+          }
+          .sidebar {
+        position: fixed;
+            top: 56px; /* Adjust this value if the navbar height changes */
+            bottom: 0;
+            left: 0;
+            width: 220px;
+            padding-top: 1rem; /* Adjust padding to match the top padding of the main content */
+            background-color: #343a40; /* Bootstrap bg-dark color */
+            color: white;
+            overflow-y: auto;
+          }
+          .sidebar a {
+            color: white;
+            text-decoration: none;
+          }
+          .sidebar a:hover {
+            color: #adb5bd;
+          }
+          .main-content {
+            margin-left: 250px;
+            padding: 60px 10px 10px;
+          }
+      </style>
 </head>
 <body>
-    <div class="container mt-5">
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark fixed-top">
+        <div class="container-fluid">
+          <a class="navbar-brand" href="/admin-dashboard">
+            <img
+              src="https://sangamgroup.com/wp-content/uploads/2023/01/sangam_group_logo.png"
+              alt="Logo"
+              width="60"
+              height="50"
+            />
+            Sangam India Limited
+          </a>
+       
+      </nav>
+  
+      <div class="sidebar">
+        <ul class="nav flex-column">
+          <li class="nav-item">
+            <a href="/requirement_form" class="nav-link">Add Requirement</a>
+          </li>
+          <li class="nav-item">
+            <a href="/view-today-entries" class="nav-link">Today Entries</a>
+          </li>
+          <li class="nav-item">
+            <a href="/ingredients_master" class="nav-link"
+              >Add Item In Ingredient Master</a
+            >
+          </li>
+          <li class="nav-item">
+            <a href="/item-list" class="nav-link">Add Item In Menu Master</a>
+          </li>
+          <li class="nav-item">
+            <a href="/detail-item-form" class="nav-link">Create BOM</a>
+          </li>
+          <li class="nav-item">
+            <a href="/ingredient_inward_form" class="nav-link"
+              >Ingredient Inwards Entry</a
+            >
+          </li>
+          <li class="nav-item">
+            <a href="/ingredient_outward" class="nav-link"
+              >Ingredient Outward Entry</a
+            >
+          </li>
+          <li class="nav-item"><a href="/view_stock" class="nav-link">View Stock</a></li>
+            <li class="nav-item"><a href="/suppliers_master" class="nav-link">Add Suppliers</a></li>
+            <li class="nav-item"><a href="/debit_invoice" class="nav-link">Debit Invoice</a></li>
+            <li class="nav-item"><a href="/credit_invoice" class="nav-link">Credit Invoice</a></li>
+            <li class="nav-item"><a href="/outstanding_invoice" class="nav-link">Outstanding Invoice</a></li>
+          <li class="nav-item">
+            <a href="/add-new-employee" class="nav-link">Add Employee</a>
+          </li>
+          <li class="nav-item">
+            <a href="/view-users" class="nav-link">Total Employees</a>
+          </li>
+          <li class="nav-item">
+            <a href="/rate-list" class="nav-link">Add Menu</a>
+          </li>
+          <li class="nav-item">
+            <a href="/view-rate-list" class="nav-link">View Menu</a>
+          </li>
+          <li class="nav-item">
+            <a href="/admin-logout" class="nav-link">Logout</a>
+          </li>
+        </ul>
+  </div>
+  <div class="main-content">
+    <div class="container">
         <h2 style="text-align: center;">Supplier Master Form</h2>
         <form method="POST" action="/suppliers_master">
             <div class="form-row">
@@ -48,12 +157,17 @@
         </form>
     </div>
     
-
+</div>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
     <script>
         document.getElementById('supplier_name').addEventListener('input', function() {
+            this.value = this.value.toUpperCase();
+        });
+      </script>
+      <script>
+        document.getElementById('supplier_code').addEventListener('input', function() {
             this.value = this.value.toUpperCase();
         });
       </script>

@@ -91,6 +91,10 @@
           <li class="nav-item">
             <a href="/view_stock" class="nav-link">View Stock</a>
           </li>
+          <li class="nav-item"><a href="/suppliers_master" class="nav-link">Add Suppliers</a></li>
+          <li class="nav-item"><a href="/debit_invoice" class="nav-link">Debit Invoice</a></li>
+          <li class="nav-item"><a href="/credit_invoice" class="nav-link">Credit Invoice</a></li>
+          <li class="nav-item"><a href="/outstanding_invoice" class="nav-link">Outstanding Invoice</a></li>
           <li class="nav-item">
             <a href="/add-new-employee" class="nav-link">Add Employee</a>
           </li>
@@ -138,11 +142,11 @@
                         <td><%= new Date(rate.date).toLocaleDateString('en-GB') %></td>
                         <!-- <td><%= rate.created_at ? rate.created_at.toISOString().split('T')[0] : '' %></td> -->
                         <td> <form action="/edit-item-form/<%=rate.id%>" method="GET">
-                            <button type="submit" class="btn btn-primary">Edit Item</button></td>
+                            <button type="submit" class="btn btn-primary btn-sm">Edit Item</button></td>
                         </form>
                         <td>
                             <form action="/delete-item/<%=rate.id%>?_method=DELETE" method="POST">
-                               <button type="submit" class="btn btn-danger">Delete Item</button>
+                               <button type="submit" class="btn btn-danger btn-sm">Delete Item</button>
                             </form>
                         </td>
                     </tr>
