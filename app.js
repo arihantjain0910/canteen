@@ -9,7 +9,7 @@ const LocalStrategy = require('passport-local').Strategy;
 const bcrypt = require('bcryptjs');
 const flash = require('connect-flash');
 const methodOverride = require('method-override');
-const mssql = require('mssql');
+// const mssql = require('mssql');
 
 
 app.use(express.json());
