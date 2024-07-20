@@ -1488,6 +1488,10 @@ app.put("/edit_debit_bill/:id", (req, res) => {
         });
     });
 });
+
+app.get("/test",(req,res)=>{
+    res.render('test.ejs');
+})
 // Start server
 const port = 3000;
 app.listen(port, () => {
