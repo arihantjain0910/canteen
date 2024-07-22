@@ -7,26 +7,25 @@
     <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
     <style>
         .form-box {
-          border: 1px solid #ccc;
-          padding: 20px;
-          border-radius: 5px;
-          box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            border: 1px solid #ccc;
+            padding: 20px;
+            border-radius: 5px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
         }
         .form-control[readonly] {
             background-color: #e9ecef;
             opacity: 1;
-          }
-          body {
+        }
+        body {
             padding-top: 20px; /* Adjust this value if needed */
             font-size: 0.7rem;
-            /* background-color:#F0F0F0 ; */
-          }
-          .navbar {
+        }
+        .navbar {
             font-size: 0.9rem;
             height: 56px; /* Adjust based on the height of your navbar */
-          }
-          .sidebar {
-        position: fixed;
+        }
+        .sidebar {
+            position: fixed;
             top: 56px; /* Adjust this value if the navbar height changes */
             bottom: 0;
             left: 0;
@@ -35,36 +34,37 @@
             background-color: #343a40; /* Bootstrap bg-dark color */
             color: white;
             overflow-y: auto;
-          }
-          .sidebar a {
+        }
+        .sidebar a {
             color: white;
             text-decoration: none;
-          }
-          .sidebar a:hover {
+        }
+        .sidebar a:hover {
             color: #adb5bd;
-          }
-          .main-content {
+        }
+        .main-content {
             margin-left: 250px;
             padding: 60px 10px 10px;
-          }
-      </style>
+        }
+    </style>
 </head>
 <body>
     <nav class="navbar navbar-expand-lg navbar-dark bg-dark fixed-top">
         <div class="container-fluid">
-          <a class="navbar-brand" href="/admin-dashboard">
-            <img
-              src="https://sangamgroup.com/wp-content/uploads/2023/01/sangam_group_logo.png"
-              alt="Logo"
-              width="60"
-              height="50"
-            />
-            Sangam India Limited
-          </a>
-          <a href="/view_debit_invoice" class="nav-link" style="color: white;">View Debit Invoice</a>
-      </nav>
-  
-      <div class="sidebar">
+            <a class="navbar-brand" href="/admin-dashboard">
+                <img
+                    src="https://sangamgroup.com/wp-content/uploads/2023/01/sangam_group_logo.png"
+                    alt="Logo"
+                    width="60"
+                    height="50"
+                />
+                Sangam India Limited
+            </a>
+            <a href="/view_debit_invoice" class="nav-link" style="color: white;">View Debit Invoice</a>
+        </div>
+    </nav>
+
+    <div class="sidebar">
         <ul class="nav flex-column">
           <li class="nav-item"><a href="/requirement_form" class="nav-link">Add Requirement</a></li>
           <li class="nav-item"><a href="/view-today-entries" class="nav-link">Today Entries</a></li>
@@ -84,42 +84,42 @@
           <li class="nav-item"><a href="/view-rate-list" class="nav-link">View Menu</a></li>
           <li class="nav-item"><a href="/admin-logout" class="nav-link">Logout</a></li>
         </ul>
-  </div>
-  <div class="main-content">
-    <div class="container">
-        <h2 style="text-align: center;">Debit Bill Form</h2>
-        <form method="POST" action="/debit_invoice">
-            <div class="form-row">
-            
-            <div class="form-group col-md-3">
-                <label for="supplier_code">Supplier Code</label>
-                <input type="text" class="form-control" id="supplier_code" placeholder="Enter supplier code" name="supplier_code" required list="suppliers_code">
-                <datalist id="suppliers_code">
-                    <!-- Options will be populated by JavaScript -->
-                </datalist>
-            </div>
-            <div class="form-group col-md-6">
-                <label for="supplier_name">Supplier Name</label>
-                <input type="text" class="form-control" id="supplier_name" placeholder="Enter supplier name" name="supplier_name" required>
-            </div>
-            <div class="form-group col-md-3">
-                <label for="bill_number">Bill Number</label>
-                <input type="text" class="form-control" id="bill_number" placeholder="Enter bill number" name="bill_number" required>
-            </div>
-            <div class="form-group col-md-3">
-                <label for="bill_date">Bill Date</label>
-                <input type="date" class="form-control" id="bill_date" name="bill_date" required>
-            </div>
-            <div class="form-group col-md-3">
-                <label for="debit_bill_amount">Bill Amount (Debit)</label>
-                <input type="decimal" class="form-control" id="debit_bill_amount" placeholder="Enter bill amount" name="debit_bill_amount" required>
-            </div>
-        </div>
-            <button type="submit" class="btn btn-primary">Submit</button>
-        </form>
     </div>
-    
-</div>
+
+    <div class="main-content">
+        <div class="container">
+            <h2 style="text-align: center;">Debit Bill Form</h2>
+            <form method="POST" action="/debit_invoice">
+                <div class="form-row">
+                    <div class="form-group col-md-3">
+                        <label for="supplier_code">Supplier Code</label>
+                        <input type="text" class="form-control" id="supplier_code" placeholder="Enter supplier code" name="supplier_code" required list="suppliers_code">
+                        <datalist id="suppliers_code">
+                            <!-- Options will be populated by JavaScript -->
+                        </datalist>
+                    </div>
+                    <div class="form-group col-md-6">
+                        <label for="supplier_name">Supplier Name</label>
+                        <input type="text" class="form-control" id="supplier_name" placeholder="Enter supplier name" name="supplier_name" required>
+                    </div>
+                    <div class="form-group col-md-3">
+                        <label for="bill_number">Bill Number</label>
+                        <input type="text" class="form-control" id="bill_number" placeholder="Enter bill number" name="bill_number" required>
+                    </div>
+                    <div class="form-group col-md-3">
+                        <label for="bill_date">Bill Date</label>
+                        <input type="date" class="form-control" id="bill_date" name="bill_date" required>
+                    </div>
+                    <div class="form-group col-md-3">
+                        <label for="debit_bill_amount">Bill Amount (Debit)</label>
+                        <input type="decimal" class="form-control" id="debit_bill_amount" placeholder="Enter bill amount" name="debit_bill_amount" required readonly>
+                    </div>
+                </div>
+                <button type="submit" class="btn btn-primary">Submit</button>
+            </form>
+        </div>
+    </div>
+
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
@@ -127,48 +127,67 @@
         document.getElementById('supplier_name').addEventListener('input', function() {
             this.value = this.value.toUpperCase();
         });
-      
-      </script>
-      <script>
+
         document.getElementById('supplier_code').addEventListener('input', function() {
             this.value = this.value.toUpperCase();
         });
-      </script>
-       <script>
-        // script.js
-  document.addEventListener('DOMContentLoaded', function() {
-      fetch('/get-supplier-codes')
-          .then(response => response.json())
-          .then(data => {
-              const datalist = document.getElementById('suppliers_code');
-              data.forEach(item => {
-                  const option = document.createElement('option');
-                  option.value = item.supplier_code;
-                  option.textContent = item.supplier_name;
-                  datalist.appendChild(option);
-              });
-          })
-          .catch(error => console.error('Error fetching item codes:', error));
-  });
-  
-  $('#supplier_code').on('input', function() {
-    const supplierCode = $(this).val();
-    if (supplierCode !== '') {
-        $.ajax({
-            type: 'POST',
-            url: '/get-supplier-name',
-            data: JSON.stringify({ supplier_code: supplierCode }),
-            contentType: 'application/json',
-            success: function(response) {
-                $('#supplier_name').val(response.supplier_name);
-            },
-            error: function(err) {
-                console.error('Error fetching supplier name:', err);
+
+        document.addEventListener('DOMContentLoaded', function() {
+            fetch('/get-supplier-codes')
+                .then(response => response.json())
+                .then(data => {
+                    const datalist = document.getElementById('suppliers_code');
+                    data.forEach(item => {
+                        const option = document.createElement('option');
+                        option.value = item.supplier_code;
+                        option.textContent = item.supplier_name;
+                        datalist.appendChild(option);
+                    });
+                })
+                .catch(error => console.error('Error fetching item codes:', error));
+        });
+
+        $('#supplier_code').on('input', function() {
+            const supplierCode = $(this).val();
+            if (supplierCode !== '') {
+                $.ajax({
+                    type: 'POST',
+                    url: '/get-supplier-name',
+                    data: JSON.stringify({ supplier_code: supplierCode }),
+                    contentType: 'application/json',
+                    success: function(response) {
+                        $('#supplier_name').val(response.supplier_name);
+                    },
+                    error: function(err) {
+                        console.error('Error fetching supplier name:', err);
+                    }
+                });
             }
         });
-    }
-});
 
-      </script>
+        $('#bill_number').on('input', function() {
+            const billNumber = $(this).val();
+            if (billNumber !== '') {
+                $.ajax({
+                    type: 'POST',
+                    url: '/get-total-cost',
+                    data: JSON.stringify({ bill_number: billNumber }),
+                    contentType: 'application/json',
+                    success: function(response) {
+                        if (response.total_cost) {
+                            $('#debit_bill_amount').val(response.total_cost);
+                        } else {
+                            $('#debit_bill_amount').val('');
+                            console.error('Total cost not found');
+                        }
+                    },
+                    error: function(err) {
+                        $('#debit_bill_amount').val('');
+                        console.error('Error fetching total cost:', err);
+                    }
+                });
+            }
+        });
+    </script>
 </body>
 </html>

@@ -1192,10 +1192,11 @@ app.post('/ingredient_inward_form', (req, res) => {
       ingredient_item_description,
       received_quantity,
       rate,
-      amount
+      amount,
+      total_cost
     } = req.body;
-  
-    // Create SQL query
+
+    // Create SQL query for inserting ingredient details
     const sql = `
       INSERT INTO ingredients_inward (
         bill_number,
@@ -1207,35 +1208,46 @@ app.post('/ingredient_inward_form', (req, res) => {
         ingredient_item_description,
         received_quantity,
         rate,
-        amount
-      ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+        amount,
+        total_cost
+      ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
     `;
-    
-    // Execute the query with data from the form
+
+    // Use a promise to handle the completion of all insert operations
+    const insertPromises = [];
+
     for (let i = 0; i < ingredient_item_code.length; i++) {
-        pool.query(sql, [
-          bill_number,
-          supplier_code,
-          supplier_name,
-          material_received_by,
-          bill_date,
-          ingredient_item_code[i],
-          ingredient_item_description[i],
-          received_quantity[i],
-          rate[i],
-          amount[i]
-        ], (err, result) => {
-          if (err) {
-            console.error('Error inserting data: ', err);
-            return res.status(500).send('Error inserting data');
-          }
-         // console.log(`Row ${i + 1} inserted successfully`);
-          // Optionally handle success for each row
+        insertPromises.push(new Promise((resolve, reject) => {
+            pool.query(sql, [
+              bill_number,
+              supplier_code,
+              supplier_name,
+              material_received_by,
+              bill_date,
+              ingredient_item_code[i],
+              ingredient_item_description[i],
+              received_quantity[i],
+              rate[i],
+              amount[i],
+              total_cost
+            ], (err, result) => {
+                if (err) {
+                    console.error('Error inserting data: ', err);
+                    reject(err);
+                } else {
+                    resolve(result);
+                }
+            });
+        }));
+    }
+
+    Promise.all(insertPromises)
+        .then(() => res.redirect("/ingredient_inward_form"))
+        .catch(err => {
+            console.error('Error processing rows: ', err);
+            res.status(500).send('Error processing rows');
         });
-      }
-    
-      res.redirect("/ingredient_inward_form");
-    });
+});
 
     app.post('/get-ingredient-description', (req, res) => {
         const { ingredient_item_code } = req.body;
@@ -1559,6 +1571,23 @@ app.put("/edit_debit_bill/:id", (req, res) => {
 
             res.redirect('/view_debit_invoice');
         });
+    });
+});
+app.post('/get-total-cost', (req, res) => {
+    const { bill_number } = req.body;
+
+    const query = 'SELECT total_cost FROM ingredients_inward WHERE bill_number = ?';
+    pool.query(query, [bill_number], (err, results) => {
+        if (err) {
+            console.error('Error fetching total cost:', err);
+            return res.status(500).json({ error: 'Internal server error' });
+        }
+
+        if (results.length > 0) {
+            res.json({ total_cost: results[0].total_cost });
+        } else {
+            res.status(404).json({ error: 'Bill number not found' });
+        }
     });
 });
 

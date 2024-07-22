@@ -115,7 +115,9 @@
                   <label for="material_received_by">Received By :</label>
                   <input type="text" class="form-control" id="material_received_by" name="material_received_by" required>
               </div>
+              
             </div>
+            <input type="hidden" name="total_cost" id="total_cost">
             <div class="table-container">
                 <table class="table table-bordered" id="ingredientsTable">
                     <thead>
@@ -142,7 +144,15 @@
                             <td><input type="decimal" id="amount" class="form-control amount" name="amount[]" ></td>
                             <td><button type="button" class="btn btn-danger btn-sm delete-row">Delete</button></td>
                         </tr>
+
                     </tbody>
+                    <tfoot>
+                      <tr>
+                          <th colspan="5" class="text-right">Total Cost</th>
+                          <th id="totalCost">0.00</th>
+                          <th></th>
+                      </tr>
+                  </tfoot>
                 </table>
                 <button type="button" class="btn btn-info" id="addRow">Add Row</button>
                 <button type="submit" class="btn btn-primary" id="submitForm">Submit</button>
@@ -157,6 +167,16 @@
         $(document).ready(function() {
             let snCounter = 2; // Start SN counter from 2 as first row is already present
 
+            function updateTotalCost() {
+        let totalCost = 0;
+        $('#ingredientsTable .amount').each(function() {
+            let amount = parseFloat($(this).val()) || 0; // Convert to number or default to 0
+            totalCost += amount;
+        });
+        $('#totalCost').text(totalCost.toFixed(2));
+        $('#total_cost').val(totalCost.toFixed(2)); // Update hidden input
+    }
+            
             $('#addRow').on('click', function() {
                 let newRow = `
                     <tr>
@@ -175,6 +195,8 @@
                 snCounter++;
             });
 
+
+
             $('#ingredientsTable').on('click', '.delete-row', function() {
                 $(this).closest('tr').remove();
                 updateSN();
@@ -186,7 +208,16 @@
                 let rate = row.find('.rate').val();
                 let amount = (quantity * rate).toFixed(2);
                 row.find('.amount').val(amount);
+                updateTotalCost();
             });
+
+            $('#ingredientsTable').on('input', '.amount', function() {
+        updateTotalCost(); // Update total cost when amount is directly modified
+    });
+    $('#submitForm').on('click', function() {
+        updateTotalCost(); // Ensure total cost is updated before form submission
+    });
+
 
             $('#ingredientsTable').on('input', '.ingredient_item_code', function() {
                 let row = $(this).closest('tr');
@@ -276,6 +307,8 @@ $('#supplier_code').on('input', function() {
       });
   }
 });
+
+
 
     </script>
 </body>
