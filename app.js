@@ -9,24 +9,39 @@ const LocalStrategy = require('passport-local').Strategy;
 const bcrypt = require('bcryptjs');
 const flash = require('connect-flash');
 const methodOverride = require('method-override');
-// const mssql = require('mssql');
-
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-// Database connection
-const db = mysql.createConnection({
+const pool = mysql.createPool({
     host: 'localhost',
     user: 'root',
     password: 'Sangam@2024',
-    database: 'canteen'
-});
+    database: 'canteen',
+    waitForConnections: true,
+    connectionLimit: 10,
+    queueLimit: 0
+  });
 
-db.connect((err) => {
-    if (err) throw err;
-    console.log('Connected to MySQL Database.');
-});
+  pool.getConnection((err, connection) => {
+    if (err) {
+      console.error('Error getting MySQL connection:', err);
+      return;
+    }
+  
+    // Use the connection
+    pool.query('SELECT * FROM users', (error, results) => {
+      connection.release(); // Release the connection back to the pool
+  
+      if (error) {
+       // console.error('Error executing query:', error);
+        return;
+      }
+  
+     // console.log('Query results:', results);
+    });
+  });
+
 
 // Middleware
 app.use(bodyParser.urlencoded({ extended: false }));
@@ -53,7 +68,8 @@ passport.use(new LocalStrategy({
     usernameField: 'employee_code',
     passwordField: 'password'
 }, (employee_code, password, done) => {
-    db.query('SELECT * FROM users WHERE employee_code = ?', [employee_code], (err, results) => {
+    
+    pool.query('SELECT * FROM users WHERE employee_code = ?', [employee_code], (err, results) => {
         if (err) {
             console.error('Error retrieving user:', err);
             return done(err);
@@ -75,7 +91,7 @@ passport.use('admin', new LocalStrategy({
     usernameField: 'employee_code',
     passwordField: 'password'
 }, (employee_code, password, done) => {
-    db.query('SELECT * FROM users WHERE employee_code = ?', [employee_code], (err, results) => {
+    pool.query('SELECT * FROM users WHERE employee_code = ?', [employee_code], (err, results) => {
         if (err) {
             console.error('Database query error:', err);
             return done(err);
@@ -111,7 +127,7 @@ passport.serializeUser((user, done) => {
 });
 
 passport.deserializeUser((id, done) => {
-    db.query('SELECT * FROM users WHERE id = ?', [id], (err, results) => {
+    pool.query('SELECT * FROM users WHERE id = ?', [id], (err, results) => {
         if (err) throw err;
         done(null, results[0]);
     });
@@ -142,7 +158,7 @@ app.post('/register', (req, res) => {
     const isAdminFlag = isAdmin === 'on' ? true : false;
 
     // Use plain text password directly
-    db.query('INSERT INTO users (employee_code, employee_name, department, designation, email, password, is_admin) VALUES (?, ?, ?, ?, ?, ?, ?)', 
+    pool.query('INSERT INTO users (employee_code, employee_name, department, designation, email, password, is_admin) VALUES (?, ?, ?, ?, ?, ?, ?)', 
         [employee_code, employee_name, department, designation, email, password, isAdminFlag], (err, result) => {
         if (err) {
             console.error('Error registering user:', err);
@@ -157,7 +173,7 @@ passport.use('store', new LocalStrategy({
     usernameField: 'employee_code',
     passwordField: 'password'
 }, (employee_code, password, done) => {
-    db.query('SELECT * FROM users WHERE employee_code = ?', [employee_code], (err, results) => {
+    pool.query('SELECT * FROM users WHERE employee_code = ?', [employee_code], (err, results) => {
         if (err) {
             console.error('Database query error:', err);
             return done(err);
@@ -217,7 +233,7 @@ app.get('/admin-register', (req, res) => {
 app.get("/view-menu",(req,res)=>{
     let q = "SELECT * FROM RateList";
     try{
-        db.query(q,(err,result)=>{
+        pool.query(q,(err,result)=>{
             if(err) throw err;
             let menu = result;
             res.render("view-menu.ejs" ,{menu});
@@ -242,7 +258,7 @@ app.delete("/delete-item/:id",(req,res)=>{
     let {id} = req.params;
     let q = `DELETE FROM RateList WHERE id='${id}'`;
     try{
-        db.query(q,(err,result)=>{
+        pool.query(q,(err,result)=>{
             if(err) throw err;
             // let user = result[0]
             res.redirect("/view-rate-list");
@@ -253,16 +269,13 @@ app.delete("/delete-item/:id",(req,res)=>{
     }
 })
 
-app.get("/book-taxi",(req,res)=>{
-    res.render("book-taxi.ejs")
-})
 
 // edit route
 app.get("/edit-item-form/:id",(req,res)=>{
     let {id} = req.params;
     let q = `SELECT * FROM RateList WHERE id='${id}'`;
     try{
-        db.query(q,(err,result)=>{
+        pool.query(q,(err,result)=>{
             if(err) throw err;
             let user = result[0]
             res.render("edit-item-form.ejs" ,{user});
@@ -281,7 +294,7 @@ app.put("/view-rate-list/:id", (req, res) => {
     
     let q = `SELECT * FROM RateList WHERE id = ?`;
     
-    db.query(q, [id], (err, result) => {
+    pool.query(q, [id], (err, result) => {
         if (err) {
             console.error(err);
             return res.send("Some error in db");
@@ -293,7 +306,7 @@ app.put("/view-rate-list/:id", (req, res) => {
 
         let q2 = `UPDATE RateList SET day = ?, breakfast = ?, breakfast_price = ?, lunch = ?, lunch_price = ?, date = ? WHERE id = ?`;
         
-        db.query(q2, [day, breakfast, breakfast_price, lunch, lunch_price, date, id], (err, result) => {
+        pool.query(q2, [day, breakfast, breakfast_price, lunch, lunch_price, date, id], (err, result) => {
             if (err) {
                 console.error(err);
                 return res.send("Some error in db");
@@ -307,7 +320,7 @@ app.put("/view-rate-list/:id", (req, res) => {
 app.get('/view-rate-list', (req, res) => {
     const sql = 'SELECT * FROM RateList';
 
-    db.query(sql, (err, results) => {
+    pool.query(sql, (err, results) => {
         if (err) {
             console.error('Error retrieving data from database:', err);
             return res.status(500).send('Internal Server Error');
@@ -322,7 +335,7 @@ app.post('/submit-rate-list', (req, res) => {
     const sql = 'INSERT INTO RateList (day,breakfast,breakfast_price,lunch,lunch_price,date) VALUES (?, ?, ?, ?, ?, ?)';
     const values = [day,breakfast,breakfast_price,lunch,lunch_price,date];
 
-    db.query(sql, values, (err, result) => {
+    pool.query(sql, values, (err, result) => {
         if (err) {
             console.error('Error inserting data into database:', err);
             return res.status(500).send('Internal Server Error');
@@ -337,7 +350,7 @@ app.post('/admin-register', (req, res) => {
         const { employee_code, employee_name, email, password } = req.body;
         const hashedPassword = bcrypt.hashSync(password, 10);
 
-        db.query('INSERT INTO users (employee_code, employee_name, email, password, is_admin) VALUES (?, ?, ?, ?, true)', 
+        pool.query('INSERT INTO users (employee_code, employee_name, email, password, is_admin) VALUES (?, ?, ?, ?, true)', 
             [employee_code, employee_name, email, hashedPassword], (err, result) => {
             if (err) throw err;
             res.redirect('/admin-dashboard');
@@ -357,7 +370,7 @@ app.post('/login', passport.authenticate('local', {
 app.get('/api/employee-details', (req, res) => {
     const userId = req.user.id;
     
-    db.query('SELECT employee_code, employee_name, department, designation FROM users WHERE id = ?', [userId], (err, results) => {
+    pool.query('SELECT employee_code, employee_name, department, designation FROM users WHERE id = ?', [userId], (err, results) => {
         if (err) {
             console.error('Error fetching employee details: ', err);
             return res.status(500).send('Internal server error');
@@ -376,10 +389,10 @@ app.get('/dashboard', (req, res) => {
         const userId = req.user.id;
 
         // Query the database for employees and guests belonging to the logged-in user
-        db.query('SELECT * FROM employees WHERE user_id = ?', [userId], (err, employeesResults) => {
+        pool.query('SELECT * FROM employees WHERE user_id = ?', [userId], (err, employeesResults) => {
             if (err) throw err;
 
-            db.query('SELECT * FROM guests WHERE user_id = ?', [userId], (err, guestsResults) => {
+            pool.query('SELECT * FROM guests WHERE user_id = ?', [userId], (err, guestsResults) => {
                 if (err) throw err;
 
                 // Render the dashboard template with the retrieved data
@@ -397,13 +410,13 @@ app.get('/dashboard', (req, res) => {
 app.get('/admin-dashboard', (req, res) => {
     if (req.isAuthenticated() && req.user.is_admin) {
         // Query the database for all employees and guests
-        db.query('SELECT * FROM employees', (err, employeesResults) => {
+        pool.query('SELECT * FROM employees', (err, employeesResults) => {
             if (err) {
                 console.error('Error fetching employees:', err);
                 throw err; // Handle errors appropriately
             }
 
-            db.query('SELECT * FROM guests', (err, guestsResults) => {
+            pool.query('SELECT * FROM guests', (err, guestsResults) => {
                 if (err) {
                     console.error('Error fetching guests:', err);
                     throw err; // Handle errors appropriately
@@ -426,7 +439,7 @@ app.delete('/delete-entry/:id',(req,res)=>{
     let {id} = req.params;
     let q = `DELETE FROM employees WHERE id='${id}'`;
     try{
-        db.query(q,(err,result)=>{
+        pool.query(q,(err,result)=>{
             if(err) throw err;
             // let user = result[0]
             res.redirect("/admin-dashboard");
@@ -469,7 +482,7 @@ app.get("/add-new-employee",(req,res)=>{
 app.post("/add-new-employee",(req,res)=>{
     const{employee_name,employee_code,department,designation,email,password} = req.body;
     let q = "INSERT INTO users (employee_name,employee_code,department,designation,email,password,is_admin) VALUES (?,?,?,?,?,?,FALSE) ";
-    db.query(q, 
+    pool.query(q, 
         [employee_name, employee_code, department, designation, email, password], (err, result) => {
         if (err) {
             console.error('Error registering user:', err);
@@ -483,7 +496,7 @@ app.post("/add-new-employee",(req,res)=>{
 app.get('/view-users', (req, res) => {
     const sql = 'SELECT * FROM users';
 
-    db.query(sql, (err, results) => {
+    pool.query(sql, (err, results) => {
         if (err) {
             console.error('Error retrieving data from database:', err);
             return res.status(500).send('Internal Server Error');
@@ -530,7 +543,7 @@ app.post('/add-guest', (req, res) => {
                       orders = ? AND employee_name = ? AND guestName = ? AND guestCompany = ? AND guestdesignation = ? AND 
                       (date_from BETWEEN ? AND ? OR date_to BETWEEN ? AND ?)`;
 
-    db.query(checkSql, [orders, employee_name, guestName, guestCompany, guestdesignation, dateFromGuest, dateToGuest, dateFromGuest, dateToGuest], (err, results) => {
+    pool.query(checkSql, [orders, employee_name, guestName, guestCompany, guestdesignation, dateFromGuest, dateToGuest, dateFromGuest, dateToGuest], (err, results) => {
         if (err) {
             console.error('Error checking for duplicates:', err);
             return res.status(500).json({ error: 'An error occurred while checking for duplicates.' });
@@ -547,7 +560,7 @@ app.post('/add-guest', (req, res) => {
 
         const insertSql = 'INSERT INTO guests (orders, employee_name, guestName, guestCompany, guestdesignation, remarks, date_from, date_to, user_id) VALUES ?';
 
-        db.query(insertSql, [entries], (err, result) => {
+        pool.query(insertSql, [entries], (err, result) => {
             if (err) {
                 console.error('Error inserting entries:', err);
                 return res.status(500).json({ error: 'An error occurred while creating entries.' });
@@ -599,7 +612,7 @@ app.post('/add-employee', (req, res) => {
                       name = ? AND employeeCode = ? AND department = ? AND designation = ? AND orders = ? AND 
                       (date_from BETWEEN ? AND ? OR date_to BETWEEN ? AND ?)`;
 
-    db.query(checkSql, [employeeName, employeeCode, department, designation, orders, dateFromEmployee, dateToEmployee, dateFromEmployee, dateToEmployee], (err, results) => {
+    pool.query(checkSql, [employeeName, employeeCode, department, designation, orders, dateFromEmployee, dateToEmployee, dateFromEmployee, dateToEmployee], (err, results) => {
         if (err) {
             
             console.error('Error checking for duplicates:', err);
@@ -617,7 +630,7 @@ app.post('/add-employee', (req, res) => {
 
         const insertSql = 'INSERT INTO employees (name, employeeCode, department, designation, orders,quantity, date_from, date_to, user_id) VALUES ?';
 
-        db.query(insertSql, [entries], (err, result) => {
+        pool.query(insertSql, [entries], (err, result) => {
             if (err) {
                 console.error('Error inserting entries:', err);
                 return res.status(500).send({ error: 'An error occurred while creating entries.' });
@@ -641,7 +654,7 @@ app.get("/item-list",(req,res)=>{
 app.post("/item-list",(req,res)=>{
 const {menu_item_code,type, item_description, uom, std_price, mrp} = req.body;
 let q = "INSERT INTO item_list (menu_item_code,type,item_description,uom,std_price,mrp) VALUES (?,?,?,?,?,?)";
-    db.query(q, 
+    pool.query(q, 
         [menu_item_code,type, item_description, uom, std_price, mrp], (err, result) => {
         if (err) {
             console.error('Error registering user:', err);
@@ -661,13 +674,13 @@ app.get("/view-today-entries",(req,res)=>{
     const queryEmployeeEntries = `SELECT * FROM employees WHERE date_from = ?`;
     const queryGuestEntries = `SELECT * FROM guests WHERE date_from = ?`;
     
-    db.query(queryEmployeeEntries, [today], (err, employeeEntries) => {
+    pool.query(queryEmployeeEntries, [today], (err, employeeEntries) => {
       if (err) {
         console.error(err);
         return;
       }
     
-      db.query(queryGuestEntries, [today], (err, guestEntries) => {
+      pool.query(queryGuestEntries, [today], (err, guestEntries) => {
         if (err) {
           console.error(err);
           return;
@@ -690,7 +703,7 @@ app.get("/ad-dashboard",(req,res)=>{
 app.get("/view-menu-list",(req,res)=>{
     const sql = 'SELECT * FROM item_list';
 
-    db.query(sql, (err, results) => {
+    pool.query(sql, (err, results) => {
         if (err) {
             console.error('Error retrieving data from database:', err);
             return res.status(500).send('Internal Server Error');
@@ -705,7 +718,7 @@ app.get("/edit-view-item-form/:id",(req,res)=>{
     let {id} = req.params;
     let q = `SELECT * FROM item_list WHERE id='${id}'`;
     try{
-        db.query(q,(err,result)=>{
+        pool.query(q,(err,result)=>{
             if(err) throw err;
             let menuListItem = result[0]
             res.render("edit-menu-item-form.ejs" ,{menuListItem});
@@ -722,12 +735,12 @@ app.put("/edit-view-item-form/:id",(req,res)=>{
     let{item_code : item_code , item_description : item_description, uom : uom, std_price : std_price, mrp : mrp , type : type} = req.body;
     let q = `SELECT * FROM item_list WHERE id='${id}'`;
     try{
-        db.query(q,(err,result)=>{
+        pool.query(q,(err,result)=>{
             if(err) throw err;
             let user = result[0]
           let q2 = `UPDATE item_list SET item_code='${item_code}',item_description='${item_description}', uom='${uom}', std_price='${std_price}', mrp='${mrp}', type='${type}'WHERE id='${id}'`;
           try{
-            db.query(q2,(err,result)=>{
+            pool.query(q2,(err,result)=>{
                 if(err) throw err;
                 // let user = result[0]
                 // res.render("edit-item-form.ejs" ,{user});
@@ -748,7 +761,7 @@ app.delete('/delete-menu-item/:id',(req,res)=>{
     let {id} = req.params;
     let q = `DELETE FROM item_list WHERE id='${id}'`;
     try{
-        db.query(q,(err,result)=>{
+        pool.query(q,(err,result)=>{
             if(err) throw err;
             // let user = result[0]
             res.redirect("/view-menu-list");
@@ -764,7 +777,7 @@ app.delete('/delete-menu-item/:id',(req,res)=>{
     const menuItemCode = req.body.menuItemCode;
   
     const query = `SELECT item_description, uom FROM item_list WHERE menu_item_code = ?`;
-    db.query(query, [menuItemCode], (err, results) => {
+    pool.query(query, [menuItemCode], (err, results) => {
       if (err) {
         console.error('Error querying MySQL:', err);
         res.status(500).json(null);
@@ -781,7 +794,7 @@ app.get('/fetch-menu-item-description', (req, res) => {
    // console.log(`Received request for menu item code: ${menuItemCode}`);
   
     const sql = `SELECT item_description FROM item_list WHERE menu_item_code = ?`;
-    db.query(sql, [menuItemCode], (error, results, fields) => {
+    pool.query(sql, [menuItemCode], (error, results, fields) => {
       if (error) {
         console.error(`Error fetching menu item description: ${error}`);
         res.status(500).json({ error: 'Failed to fetch menu item description' });
@@ -801,7 +814,7 @@ app.post('/fetch-ingredient-data', (req, res) => {
     const itemCode = req.body.itemCode;
     // Query the ingredients_master table to fetch the data
     const query = `SELECT ingredient_item_description, uom,qty, rate FROM ingredients_master WHERE ingredient_item_code = ?`;
-    db.query(query, itemCode, (err, results) => {
+    pool.query(query, itemCode, (err, results) => {
       if (err) {
         console.error(err);
         res.status(500).json({ error: 'Failed to fetch data' });
@@ -853,7 +866,7 @@ app.post('/fetch-ingredient-data', (req, res) => {
   
     const sql = `INSERT INTO bom (menu_item_code, item_description, uom, qty, lineno, item_code, ingredient_description, ingredient_uom, ingredient_qty, rate) VALUES ?`;
   
-    db.query(sql, [menuAndIngredients], (err, result) => {
+    pool.query(sql, [menuAndIngredients], (err, result) => {
       if (err) throw err;
       res.send('New records created successfully');
     });
@@ -863,7 +876,7 @@ app.post('/fetch-ingredient-data', (req, res) => {
   app.get('/menu/view', (req, res) => {
     const sql = `SELECT * FROM bom ORDER BY menu_item_code, lineno`;
   
-    db.query(sql, (err, results) => {
+    pool.query(sql, (err, results) => {
       if (err) throw err;
       const menuItems = {};
   
@@ -900,7 +913,7 @@ app.post('/fetch-ingredient-data', (req, res) => {
     const menuItemCode = req.params.menu_item_code;
     const sql = `SELECT * FROM bom WHERE menu_item_code = ? ORDER BY lineno`;
   
-    db.query(sql, [menuItemCode], (err, results) => {
+    pool.query(sql, [menuItemCode], (err, results) => {
       if (err) throw err;
   
       if (results.length === 0) {
@@ -935,11 +948,11 @@ app.post('/fetch-ingredient-data', (req, res) => {
     const ingredientsInsertSql = `INSERT INTO bom (menu_item_code, item_description, uom, qty, lineno, item_code, ingredient_description, ingredient_uom, ingredient_qty, rate) VALUES ?`;
   
     // Update menu item details
-    db.query(menuItemUpdateSql, [item_description, uom, qty, menuItemCode], (err, result) => {
+    pool.query(menuItemUpdateSql, [item_description, uom, qty, menuItemCode], (err, result) => {
       if (err) throw err;
   
       // Delete old ingredients
-      db.query(ingredientsDeleteSql, [menuItemCode], (err, result) => {
+      pool.query(ingredientsDeleteSql, [menuItemCode], (err, result) => {
         if (err) throw err;
   
         // Prepare new ingredients data
@@ -957,7 +970,7 @@ app.post('/fetch-ingredient-data', (req, res) => {
         ]);
   
         // Insert new ingredients
-        db.query(ingredientsInsertSql, [ingredients], (err, result) => {
+        pool.query(ingredientsInsertSql, [ingredients], (err, result) => {
           if (err) throw err;
   
           res.redirect('/menu/view');
@@ -981,7 +994,7 @@ app.post('/submit-form', (req, res) => {
     //   formData.rate[index]
     ]);
   
-    db.query(sql, [values], (err, result) => {
+    pool.query(sql, [values], (err, result) => {
       if (err) {
         console.error('Error inserting data: ' + err.stack);
         res.status(500).send('Error inserting data into database');
@@ -1033,7 +1046,7 @@ app.post('/submit-form', (req, res) => {
      // console.log('Executing query:', query);
     //  console.log('With values:', [reqQty, reqQty, menuItem]);
   
-      db.query(query, [reqQty, reqQty, menuItem], (error, result) => {
+      pool.query(query, [reqQty, reqQty, menuItem], (error, result) => {
         if (error) {
          // console.error('Query Error:', error);
           return res.status(500).send('Server Error');
@@ -1075,7 +1088,7 @@ app.post('/submit-form', (req, res) => {
           // Log the values to be inserted
        //   console.log('Inserting values:', values);
   
-          db.query(insertQuery, values, (insertError) => {
+          pool.query(insertQuery, values, (insertError) => {
             if (insertError) {
               console.error('Insert Error:', insertError);
             }
@@ -1099,7 +1112,7 @@ app.post('/submit-form', (req, res) => {
 app.post("/ingredients_master",(req,res)=>{
     const {ingredient_item_code,ingredient_item_description,uom,ingredient_item_type,opening_balance_quantity} = req.body;
     let q = "INSERT INTO ingredients_master (ingredient_item_code,ingredient_item_description,uom,ingredient_item_type,opening_balance_quantity) VALUES (?,?,?,?,?)";
-    db.query(q, 
+    pool.query(q, 
         [ingredient_item_code,ingredient_item_description,uom,ingredient_item_type,opening_balance_quantity], (err, result) => {
         if (err) {
             console.error('Error registering user:', err);
@@ -1112,7 +1125,7 @@ app.post("/ingredients_master",(req,res)=>{
 
 app.get("/view_ingredients_master",(req,res)=>{
     let q = "SELECT * FROM ingredients_master";
-    db.query(q, (err, results) => {
+    pool.query(q, (err, results) => {
         if (err) {
             console.error('Error retrieving data from database:', err);
             return res.status(500).send('Internal Server Error');
@@ -1129,12 +1142,12 @@ app.put("/edit_view_ingredients_master/:id",(req,res)=>{
     let{ingredient_item_code : ingredient_item_code , ingredient_item_description : ingredient_item_description, uom : uom} = req.body;
     let q = `SELECT * FROM ingredients_master WHERE id='${id}'`;
     try{
-        db.query(q,(err,result)=>{
+        pool.query(q,(err,result)=>{
             if(err) throw err;
             let ingredient = result[0]
           let q2 = `UPDATE ingredients_master SET ingredient_item_code='${ingredient_item_code}',ingredient_item_description='${ingredient_item_description}', uom='${uom}'WHERE id='${id}'`;
           try{
-            db.query(q2,(err,result)=>{
+            pool.query(q2,(err,result)=>{
                 if(err) throw err;
                 
                 res.redirect('/view_ingredients_master');
@@ -1154,7 +1167,7 @@ app.delete('/delete_view_ingredients_master/:id',(req,res)=>{
     let {id} = req.params;
     let q = `DELETE FROM ingredients_master WHERE id='${id}'`;
     try{
-        db.query(q,(err,result)=>{
+        pool.query(q,(err,result)=>{
             if(err) throw err;
             // let user = result[0]
             res.redirect("/view_ingredients_master");
@@ -1171,6 +1184,7 @@ app.get("/ingredient_inward_form",(req,res)=>{
 app.post('/ingredient_inward_form', (req, res) => {
     const {
       bill_number,
+      supplier_code,
       supplier_name,
       material_received_by,
       bill_date,
@@ -1185,6 +1199,7 @@ app.post('/ingredient_inward_form', (req, res) => {
     const sql = `
       INSERT INTO ingredients_inward (
         bill_number,
+        supplier_code,
         supplier_name,
         material_received_by,
         bill_date,
@@ -1193,13 +1208,14 @@ app.post('/ingredient_inward_form', (req, res) => {
         received_quantity,
         rate,
         amount
-      ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
+      ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
     `;
     
     // Execute the query with data from the form
     for (let i = 0; i < ingredient_item_code.length; i++) {
-        db.query(sql, [
+        pool.query(sql, [
           bill_number,
+          supplier_code,
           supplier_name,
           material_received_by,
           bill_date,
@@ -1224,7 +1240,7 @@ app.post('/ingredient_inward_form', (req, res) => {
     app.post('/get-ingredient-description', (req, res) => {
         const { ingredient_item_code } = req.body;
         const sql = 'SELECT ingredient_item_description FROM ingredients_master WHERE ingredient_item_code = ?';
-        db.query(sql, [ingredient_item_code], (err, result) => {
+        pool.query(sql, [ingredient_item_code], (err, result) => {
             if (err) throw err;
             if (result.length > 0) {
                 res.json({ description: result[0].ingredient_item_description });
@@ -1257,7 +1273,7 @@ app.post('/ingredient_inward_form', (req, res) => {
         `;
     
         // Execute the query with batch data insertion
-        db.query(sql, [values], (err, result) => {
+        pool.query(sql, [values], (err, result) => {
             if (err) {
                 console.error('Error inserting data:', err);
                 return res.status(500).send('Error inserting data');
@@ -1294,7 +1310,7 @@ app.post('/ingredient_inward_form', (req, res) => {
         ) iq ON im.ingredient_item_code = iq.ingredient_item_code
     `;
 
-    db.query(query, (error, results) => {
+    pool.query(query, (error, results) => {
         if (error) {
             console.error('Error executing query:', error);
             res.status(500).send('Internal Server Error');
@@ -1313,7 +1329,7 @@ app.get("/debit_invoice",(req,res)=>{
 app.post("/debit_invoice",(req,res)=>{
     const {bill_number,supplier_code,supplier_name,bill_date,debit_bill_amount} = req.body;
     let q = "INSERT INTO debit_bill (bill_number,supplier_code,supplier_name,bill_date,debit_bill_amount) VALUES (?,?,?,?,?)";
-    db.query(q, 
+    pool.query(q, 
         [bill_number,supplier_code,supplier_name,bill_date,debit_bill_amount], (err, result) => {
         if (err) {
             console.error('Error registering user:', err);
@@ -1331,7 +1347,7 @@ app.get("/credit_invoice",(req,res)=>{
 app.post("/credit_invoice",(req,res)=>{
     const {bill_number,supplier_code,supplier_name,bill_date,credit_bill_amount} = req.body;
     let q = "INSERT INTO credit_bill (bill_number,supplier_code,supplier_name,bill_date,credit_bill_amount) VALUES (?,?,?,?,?)";
-    db.query(q, 
+    pool.query(q, 
         [bill_number,supplier_code,supplier_name,bill_date,credit_bill_amount], (err, result) => {
         if (err) {
             console.error('Error registering user:', err);
@@ -1349,7 +1365,7 @@ app.get("/suppliers_master",(req,res)=>{
 app.post("/suppliers_master",(req,res)=>{
     const {supplier_code,supplier_name,gst_no,pan_no,mobile_no,address,city} = req.body;
     let q = "INSERT INTO supplier_master (supplier_code,supplier_name,gst_no,pan_no,mobile_no,address,city) VALUES (?,?,?,?,?,?,?)";
-    db.query(q, 
+    pool.query(q, 
         [supplier_code,supplier_name,gst_no,pan_no,mobile_no,address,city], (err, result) => {
         if (err) {
             console.error('Error registering user:', err);
@@ -1363,7 +1379,7 @@ app.post("/suppliers_master",(req,res)=>{
 
 app.get('/get-item-codes', (req, res) => {
     const query = 'SELECT ingredient_item_code, ingredient_item_description FROM ingredients_master';
-    db.query(query, (error, results) => {
+    pool.query(query, (error, results) => {
         if (error) {
             console.error('Error fetching item codes:', error);
             res.status(500).send('Server error');
@@ -1375,7 +1391,7 @@ app.get('/get-item-codes', (req, res) => {
 
 app.get('/get-supplier-codes', (req, res) => {
     const query = 'SELECT supplier_code,supplier_name FROM supplier_master';
-    db.query(query, (error, results) => {
+    pool.query(query, (error, results) => {
         if (error) {
             console.error('Error fetching item codes:', error);
             res.status(500).send('Server error');
@@ -1388,7 +1404,7 @@ app.get('/get-supplier-codes', (req, res) => {
 app.post('/get-supplier-name', (req, res) => {
     const { supplier_code } = req.body;
     const sql = 'SELECT supplier_name FROM supplier_master WHERE supplier_code = ?';
-    db.query(sql, [supplier_code], (err, result) => {
+    pool.query(sql, [supplier_code], (err, result) => {
         if (err) {
             console.error('Database query error:', err);
             return res.status(500).json({ error: 'Internal server error' });
@@ -1423,7 +1439,7 @@ app.get('/outstanding_invoice', (req, res) => {
         ) AS debit ON sm.supplier_code = debit.supplier_code
     `;
 
-    db.query(supplierQuery, (err, results) => {
+    pool.query(supplierQuery, (err, results) => {
         if (err) throw err;
         //console.log(results);  // Log the raw results
 
@@ -1441,7 +1457,7 @@ app.get('/outstanding_invoice', (req, res) => {
 
 app.get("/view_credit_invoice",(req,res)=>{
     let q = "SELECT * FROM credit_bill";
-    db.query(q, (err, results) => {
+    pool.query(q, (err, results) => {
         if (err) {
             console.error('Error retrieving data from database:', err);
             return res.status(500).send('Internal Server Error');
@@ -1455,7 +1471,7 @@ app.get("/view_credit_invoice",(req,res)=>{
 app.get("/edit_credit_bill/:id",(req,res)=>{
     let { id } = req.params;
     let q = `SELECT * FROM credit_bill WHERE id='${id}'`;
-    db.query(q, (err, results) => {
+    pool.query(q, (err, results) => {
         if (err) {
             console.error('Error retrieving data from database:', err);
             return res.status(500).send('Internal Server Error');
@@ -1470,7 +1486,7 @@ app.put("/edit_credit_bill/:id", (req, res) => {
     let { supplier_code, supplier_name, bill_number, bill_date, credit_bill_amount } = req.body;
 
     let q = `SELECT * FROM credit_bill WHERE id = ?`;
-    db.query(q, [id], (err, result) => {
+    pool.query(q, [id], (err, result) => {
         if (err) {
             console.error(err);
             return res.send("Some error in db");
@@ -1481,7 +1497,7 @@ app.put("/edit_credit_bill/:id", (req, res) => {
         }
 
         let q2 = `UPDATE credit_bill SET supplier_code = ?, supplier_name = ?, bill_number = ?, bill_date = ?, credit_bill_amount = ? WHERE id = ?`;
-        db.query(q2, [supplier_code, supplier_name, bill_number, bill_date, credit_bill_amount, id], (err, result) => {
+        pool.query(q2, [supplier_code, supplier_name, bill_number, bill_date, credit_bill_amount, id], (err, result) => {
             if (err) {
                 console.error(err);
                 return res.send("Some error in db");
@@ -1494,7 +1510,7 @@ app.put("/edit_credit_bill/:id", (req, res) => {
 
 app.get("/view_debit_invoice",(req,res)=>{
     let q = "SELECT * FROM debit_bill";
-    db.query(q, (err, results) => {
+    pool.query(q, (err, results) => {
         if (err) {
             console.error('Error retrieving data from database:', err);
             return res.status(500).send('Internal Server Error');
@@ -1508,7 +1524,7 @@ app.get("/view_debit_invoice",(req,res)=>{
 app.get("/edit_debit_bill/:id",(req,res)=>{
     let { id } = req.params;
     let q = `SELECT * FROM debit_bill WHERE id='${id}'`;
-    db.query(q, (err, results) => {
+    pool.query(q, (err, results) => {
         if (err) {
             console.error('Error retrieving data from database:', err);
             return res.status(500).send('Internal Server Error');
@@ -1524,7 +1540,7 @@ app.put("/edit_debit_bill/:id", (req, res) => {
     let { supplier_code, supplier_name, bill_number, bill_date, debit_bill_amount } = req.body;
 
     let q = `SELECT * FROM debit_bill WHERE id = ?`;
-    db.query(q, [id], (err, result) => {
+    pool.query(q, [id], (err, result) => {
         if (err) {
             console.error(err);
             return res.send("Some error in db");
@@ -1535,7 +1551,7 @@ app.put("/edit_debit_bill/:id", (req, res) => {
         }
 
         let q2 = `UPDATE debit_bill SET supplier_code = ?, supplier_name = ?, bill_number = ?, bill_date = ?, debit_bill_amount = ? WHERE id = ?`;
-        db.query(q2, [supplier_code, supplier_name, bill_number, bill_date, debit_bill_amount, id], (err, result) => {
+        pool.query(q2, [supplier_code, supplier_name, bill_number, bill_date, debit_bill_amount, id], (err, result) => {
             if (err) {
                 console.error(err);
                 return res.send("Some error in db");

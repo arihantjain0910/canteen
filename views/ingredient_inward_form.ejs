@@ -65,55 +65,23 @@
   
       <div class="sidebar">
         <ul class="nav flex-column">
-          <li class="nav-item">
-            <a href="/requirement_form" class="nav-link">Add Requirement</a>
-          </li>
-          <li class="nav-item">
-            <a href="/view-today-entries" class="nav-link">Today Entries</a>
-          </li>
-          <li class="nav-item">
-            <a href="/ingredients_master" class="nav-link"
-              >Add Item In Ingredient Master</a
-            >
-          </li>
-          <li class="nav-item">
-            <a href="/item-list" class="nav-link">Add Item In Menu Master</a>
-          </li>
-          <li class="nav-item">
-            <a href="/detail-item-form" class="nav-link">Create BOM</a>
-          </li>
-          <li class="nav-item">
-            <a href="/ingredient_inward_form" class="nav-link"
-              >Ingredient Inwards Entry</a
-            >
-          </li>
-          <li class="nav-item">
-            <a href="/ingredient_outward" class="nav-link"
-              >Ingredient Outward Entry</a
-            >
-          </li>
-          <li class="nav-item">
-            <a href="/view_stock" class="nav-link">View Stock</a>
-          </li>
+          <li class="nav-item"><a href="/requirement_form" class="nav-link">Add Requirement</a></li>
+          <li class="nav-item"><a href="/view-today-entries" class="nav-link">Today Entries</a></li>
+          <li class="nav-item"><a href="/ingredients_master" class="nav-link">Add Item In Ingredient Master</a></li>
+          <li class="nav-item"><a href="/item-list" class="nav-link">Add Item In Menu Master</a></li>
+          <li class="nav-item"><a href="/detail-item-form" class="nav-link">Create BOM</a></li>
+          <li class="nav-item"><a href="/ingredient_inward_form" class="nav-link">Ingredient Inwards Entry</a></li>
+          <li class="nav-item"><a href="/ingredient_outward" class="nav-link">Ingredient Outward Entry</a></li>
+          <li class="nav-item"><a href="/view_stock" class="nav-link">View Stock</a></li>
           <li class="nav-item"><a href="/suppliers_master" class="nav-link">Add Suppliers</a></li>
-          <li class="nav-item"><a href="/debit_invoice" class="nav-link">Debit Invoice</a></li>
-          <li class="nav-item"><a href="/credit_invoice" class="nav-link">Credit Invoice</a></li>
-          <li class="nav-item"><a href="/outstanding_invoice" class="nav-link">Outstanding Invoice</a></li>
-          <li class="nav-item">
-            <a href="/add-new-employee" class="nav-link">Add Employee</a>
-          </li>
-          <li class="nav-item">
-            <a href="/view-users" class="nav-link">Total Employees</a>
-          </li>
-          <li class="nav-item">
-            <a href="/rate-list" class="nav-link">Add Menu</a>
-          </li>
-          <li class="nav-item">
-            <a href="/view-rate-list" class="nav-link">View Menu</a>
-          </li>
-          <li class="nav-item">
-            <a href="/admin-logout" class="nav-link">Logout</a>
-          </li>
+          <li class="nav-item"><a href="/debit_invoice" class="nav-link">Invoice</a></li>
+          <li class="nav-item"><a href="/credit_invoice" class="nav-link">Payment</a></li>
+          <li class="nav-item"><a href="/outstanding_invoice" class="nav-link">Outstanding Balance</a></li>
+          <li class="nav-item"><a href="/add-new-employee" class="nav-link">Add Employee</a></li>
+          <li class="nav-item"><a href="/view-users" class="nav-link">Total Employees</a></li>
+          <li class="nav-item"><a href="/rate-list" class="nav-link">Add Menu</a></li>
+          <li class="nav-item"><a href="/view-rate-list" class="nav-link">View Menu</a></li>
+          <li class="nav-item"><a href="/admin-logout" class="nav-link">Logout</a></li>
         </ul>
   </div>
   <div class="main-content">
@@ -121,22 +89,32 @@
         <h2>Ingredients Inward Form</h2>
         <form method="POST" action="/ingredient_inward_form">
             <div class="form-row">
+              <div class="form-group col-md-3">
+                <label for="supplier_code">Supplier Code</label>
+                <input type="text" class="form-control" id="supplier_code" name="supplier_code" required list="suppliers_code">
+                <datalist id="suppliers_code">
+                    <!-- Options will be populated by JavaScript -->
+                </datalist>
+            </div>
+              <div class="form-group col-md-4">
+                <label for="supplier_name">Supplier Name :</label>
+                <input type="text" class="form-control" id="supplier_name" name="supplier_name" required>
+            </div>
+            
                 <div class="form-group col-md-2">
                     <label for="bill_number">Bill Number :</label>
                     <input type="text" class="form-control" id="bill_number" name="bill_number" required>
                 </div>
-                <div class="form-group col-md-4">
-                    <label for="supplier_name">Supplier Name :</label>
-                    <input type="text" class="form-control" id="supplier_name" name="supplier_name" required>
-                </div>
-                <div class="form-group col-md-4">
-                    <label for="material_received_by">Received By :</label>
-                    <input type="text" class="form-control" id="material_received_by" name="material_received_by" required>
-                </div>
+                
+                
                 <div class="form-group col-md-2">
                     <label for="bill_date">Bill Date :</label>
                     <input type="date" class="form-control" id="bill_date" name="bill_date" required>
                 </div>
+                <div class="form-group col-md-4">
+                  <label for="material_received_by">Received By :</label>
+                  <input type="text" class="form-control" id="material_received_by" name="material_received_by" required>
+              </div>
             </div>
             <div class="table-container">
                 <table class="table table-bordered" id="ingredientsTable">
@@ -261,6 +239,42 @@ document.addEventListener('DOMContentLoaded', function() {
             });
         })
         .catch(error => console.error('Error fetching item codes:', error));
+});
+
+    </script>
+    <script>
+      // script.js
+document.addEventListener('DOMContentLoaded', function() {
+    fetch('/get-supplier-codes')
+        .then(response => response.json())
+        .then(data => {
+            const datalist = document.getElementById('suppliers_code');
+            data.forEach(item => {
+                const option = document.createElement('option');
+                option.value = item.supplier_code;
+                option.textContent = item.supplier_name;
+                datalist.appendChild(option);
+            });
+        })
+        .catch(error => console.error('Error fetching item codes:', error));
+});
+
+$('#supplier_code').on('input', function() {
+  const supplierCode = $(this).val();
+  if (supplierCode !== '') {
+      $.ajax({
+          type: 'POST',
+          url: '/get-supplier-name',
+          data: JSON.stringify({ supplier_code: supplierCode }),
+          contentType: 'application/json',
+          success: function(response) {
+              $('#supplier_name').val(response.supplier_name);
+          },
+          error: function(err) {
+              console.error('Error fetching supplier name:', err);
+          }
+      });
+  }
 });
 
     </script>
