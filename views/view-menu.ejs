@@ -7,55 +7,67 @@
     <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <style>
-        body {
-            font-family: 'Arial', sans-serif;
-            background-color: #f8f9fa;
-            padding-top: 100px;
-        }
-        .container {
-            max-width: 800px;
-            margin: auto;
-        }
-        h3 {
-            color: red;
-            text-align: center;
-            margin-bottom: 30px;
-            font-size: 2rem;
-        }
-        .table {
-            background-color: #ffffff;
-            border-radius: 10px;
-            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-        }
-        .table th {
-            background-color: #ecd0ab;
-            font-weight: bold;
-            text-align: center;
-        }
-        .table td {
-            text-align: center;
-            padding: 15px;
-        }
-        .table tr:nth-child(even) {
-            background-color: #f2f2f2;
-        }
-    </style>
+      .custom-table .even-row {
+          background-color: #b6d4ee;
+      }
+      .custom-table .odd-row {
+          background-color: #f7d0ea;
+      }
+      .form-control[readonly] {
+          background-color: #e9ecef;
+          opacity: 1;
+      }
+      body {
+          font-size: 0.7rem;
+          background-color: #F0F0F0;
+      }
+      .navbar {
+          font-size: 0.9rem;
+          height: 56px;
+      }
+      .sidebar {
+          position: fixed;
+          top: 56px;
+          bottom: 0;
+          left: 0;
+          width: 220px;
+          padding-top: 1rem;
+          background-color: #343a40;
+          color: white;
+          overflow-y: auto;
+      }
+      .sidebar a {
+          color: white;
+          text-decoration: none;
+      }
+      .sidebar a:hover {
+          color: #adb5bd;
+      }
+      .main-content {
+          margin-left: 250px;
+          padding: 50px 10px 10px;
+      }
+  </style>
 </head>
 <body>
-    <nav class="navbar navbar-expand-lg navbar-light bg-light fixed-top" style="height: 100px; font-size: 1.5rem;">
-        <div class="container-fluid">
-            <a class="navbar-brand" href="#">
-                <img src="https://sangamgroup.com/wp-content/uploads/2023/01/sangam_group_logo.png" alt="Logo" width="80" height="60" class="d-inline-block align-text-top">
-                Sangam India Limited
-            </a>
-            <div class="ms-auto">
-                <!-- <a href="/view-menu" class="btn btn-primary mx-2">View Menu</a> -->
-                <a href="/logout" class="btn btn-danger">Logout</a>
-            </div>
-        </div>
-    </nav>
-    <div class="container">
-        <h3 style="font-family: Georgia, 'Times New Roman', Times, serif; font-size:xx-large; font-weight:bolder;" >Canteen Menu</h3>
+  <nav class="navbar navbar-expand-lg navbar-dark bg-dark fixed-top">
+    <div class="container-fluid">
+        <a class="navbar-brand" href="/dashboard">
+            <img src="https://sangamgroup.com/wp-content/uploads/2023/01/sangam_group_logo.png" alt="Logo" width="60" height="50" />
+            Sangam India Limited
+        </a>
+    </div>
+</nav>
+<div class="sidebar">
+    <ul class="nav flex-column">
+        <li class="nav-item"><a href="/termsandconditions" class="nav-link">Terms And Conditions</a></li>
+        <li class="nav-item"><a href="/view-menu" class="nav-link">View Menu</a></li>
+        <li class="nav-item"><a href="/logout" class="nav-link">Logout</a></li>
+    </ul>
+</div>
+<div class="main-content">
+    <div class="container mt-5">
+        <h3 style="font-family: Georgia, 'Times New Roman', Times, serif; font-size:xx-large; font-weight:bolder; text-align: center;" >Canteen Menu</h3>
         <table class="table table-bordered table custom-table" id="viewMenu">
             <thead>
                 <tr>
@@ -81,41 +93,7 @@
             </tbody>
         </table>
     </div>
-    <footer class="bg-light text-center text-lg-start mt-5">
-        <div class="container p-4">
-          <div class="row justify-content-center mb-4">
-            <div>
-              <a class="navbar-brand" href="#">
-                <img src="https://sangamgroup.com/wp-content/uploads/2023/01/sangam_group_logo.png" alt="Logo" width="40" height="30" class="d-inline-block align-text-top">
-                Sangam India Limited
-              </a>
-            </div>
-          </div>
-          <div class="row justify-content-center">
-            <div class="col-auto">
-              <h5 class="text-uppercase mb-3">Follow Us</h5>
-              <ul class="list-unstyled d-flex justify-content-center">
-                <li class="mx-2">
-                  <a href="https://www.facebook.com/SangamGroupBhilwara/" class="text-dark"><i class="fab fa-facebook-f fa-lg"></i></a>
-                </li>
-                <!-- <li class="mx-2">
-                  <a href="#" class="text-dark"><i class="fab fa-twitter fa-lg"></i></a>
-                </li> -->
-                <li class="mx-2">
-                  <a href="https://www.instagram.com/sangamgroup_/?hl=en" class="text-dark"><i class="fab fa-instagram fa-lg"></i></a>
-                </li>
-                <li class="mx-2">
-                  <a href="https://www.linkedin.com/company/sangam-india-ltd-bhilwara/" class="text-dark"><i class="fab fa-linkedin-in fa-lg"></i></a>
-                </li>
-              </ul>
-            </div>
-          </div>
-        </div>
-        <div class="text-center p-3" style="background-color: rgba(0, 0, 0, 0.2);">
-          © 2024 Sangam India Limited:
-          <a class="text-dark" href="https://sangamgroup.com/">sangamgroup.com</a>
-        </div>
-      </footer>
+  </div> 
     <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
