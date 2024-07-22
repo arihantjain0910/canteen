@@ -152,6 +152,55 @@ app.post('/register', (req, res) => {
     });
 });
 
+// Passport Local Strategy for Store
+passport.use('store', new LocalStrategy({
+    usernameField: 'employee_code',
+    passwordField: 'password'
+}, (employee_code, password, done) => {
+    db.query('SELECT * FROM users WHERE employee_code = ?', [employee_code], (err, results) => {
+        if (err) {
+            console.error('Database query error:', err);
+            return done(err);
+        }
+
+        if (results.length === 0) {
+            console.log('Store login: Incorrect employee code.');
+            return done(null, false, { message: 'Incorrect employee code.' });
+        }
+
+        const user = results[0];
+
+        // Check if the user is a store user
+        if (!user.is_store) {
+            console.log('Store login: Not a store user.');
+            return done(null, false, { message: 'You are not authorized to access this page.' });
+        }
+
+        // Compare plain text passwords
+        if (password !== user.password) {
+            console.log('Store login: Incorrect password.');
+            return done(null, false, { message: 'Incorrect password.' });
+        }
+
+        console.log('Store login: Success.');
+        return done(null, user);
+    });
+}));
+
+// Routes for store login
+app.get('/store-login', (req, res) => {
+    res.render('store-login', { message: req.flash('error') });
+});
+
+app.post('/store-login', passport.authenticate('store', {
+    successRedirect: '/store-dashboard',
+    failureRedirect: '/store-login',
+    failureFlash: true
+}));
+
+app.get('/store-dashboard', (req, res) => {
+    res.render('store-dashboard', { user: req.user });
+});
 
 
 
@@ -394,6 +443,14 @@ app.get('/logout', (req, res) => {
             return next(err);
         }
         res.redirect('/login');
+    });
+});
+app.get('/store-logout', (req, res) => {
+    req.logout(err => {
+        if (err) {
+            return next(err);
+        }
+        res.redirect('/store-login');
     });
 });
 
