@@ -113,35 +113,38 @@
 </div>
 <div class="main-content">
     <div class="container">
-        <h3 style="font-family: Georgia, 'Times New Roman', Times, serif; font-size:xx-large; font-weight:bolder;" >Ingredients Master List</h3>
+        <h3 style="font-family: Georgia, 'Times New Roman', Times, serif; font-size:xx-large; font-weight:bolder;" >Ingredients Inwards</h3>
         <table class="table table-bordered table custom-table" id="viewMenu">
             <thead>
                 <tr>
+                    <th>Supplier Code</th>
+                    <th>Supplier Name</th>
+                    <th>Bill Number</th>
+                    <th>Bill Date</th>
                     <th>Ingredient Item Code</th>
-                    <th>Ingredient Description</th>
-                    <th>UOM</th>
-                    <th>Ingredient Type</th>
-                    <th>Opening Balance Qty(in KG)</th>
-                    <!-- <th>Edit</th> -->
-                    <th>Delete</th>
+                    <th>Ingredient Item Description</th>
+                    <th>Quantity(in kg)</th>
+                    <th>Rate</th>
+                    <th>Amount</th>
+                    <th>Total Cost</th>
+                    
                 </tr>
             </thead>
             <tbody>
-                <% for (ingredient of ingredients){ %>
+                <% for (inwardIngredient of inwardIngredients){ %>
                 <tr>
-                    <td><%= ingredient.ingredient_item_code %></td>
-                    <td><%= ingredient.ingredient_item_description %></td>
-                    <td><%= ingredient.uom %></td>
-                    <td><%= ingredient.ingredient_item_type %></td>
-                    <td><%= ingredient.opening_balance_quantity %></td>
-                    <!-- <td> <form action="/edit_view_ingredients_master/<%=ingredient.id%>" method="GET">
-                        <button type="submit" class="btn btn-primary">Edit</button></td> -->
+                    <td><%= inwardIngredient.supplier_code %></td>
+                    <td><%= inwardIngredient.supplier_name %></td>
+                    <td><%= inwardIngredient.bill_number %></td>
+                    <td><%= new Date(inwardIngredient.bill_date).toLocaleDateString('en-GB') %></td>
+                    <td><%= inwardIngredient.ingredient_item_code %></td>
+                    <td><%= inwardIngredient.ingredient_item_description %></td>
+                    <td><%= inwardIngredient.received_quantity %></td>
+                    <td><%= inwardIngredient.rate %></td>
+                    <td><%= inwardIngredient.amount %></td>
+                    <td><%= inwardIngredient.total_cost %></td>
+
                     
-                    <td>
-                        <form action="/delete_view_ingredients_master/<%=ingredient.id%>?_method=DELETE" method="POST">
-                           <button type="submit" class="btn btn-danger">Delete</button>
-                        </form>
-                    </td>
                 </tr>
                 <% } %>
             </tbody>

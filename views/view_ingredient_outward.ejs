@@ -87,7 +87,7 @@
         />
         Sangam India Limited
       </a>
-   
+      
   </nav>
 
   <div class="sidebar">
@@ -113,35 +113,29 @@
 </div>
 <div class="main-content">
     <div class="container">
-        <h3 style="font-family: Georgia, 'Times New Roman', Times, serif; font-size:xx-large; font-weight:bolder;" >Ingredients Master List</h3>
+        <h3 style="font-family: Georgia, 'Times New Roman', Times, serif; font-size:xx-large; font-weight:bolder;" >Ingredients Inwards</h3>
         <table class="table table-bordered table custom-table" id="viewMenu">
             <thead>
                 <tr>
+                    <th>Issued To</th>
+                    <th>Issue Date  </th>
                     <th>Ingredient Item Code</th>
-                    <th>Ingredient Description</th>
-                    <th>UOM</th>
-                    <th>Ingredient Type</th>
-                    <th>Opening Balance Qty(in KG)</th>
-                    <!-- <th>Edit</th> -->
-                    <th>Delete</th>
+                    <th>Ingredient Item Description</th>
+                    <th>Issue Quantity(in kg)</th>
+                    
                 </tr>
             </thead>
             <tbody>
-                <% for (ingredient of ingredients){ %>
+                <% for (outwardIngredient of outwardIngredients){ %>
                 <tr>
-                    <td><%= ingredient.ingredient_item_code %></td>
-                    <td><%= ingredient.ingredient_item_description %></td>
-                    <td><%= ingredient.uom %></td>
-                    <td><%= ingredient.ingredient_item_type %></td>
-                    <td><%= ingredient.opening_balance_quantity %></td>
-                    <!-- <td> <form action="/edit_view_ingredients_master/<%=ingredient.id%>" method="GET">
-                        <button type="submit" class="btn btn-primary">Edit</button></td> -->
+                    <td><%= outwardIngredient.issued_to %></td>
+                    <td><%= new Date(outwardIngredient.issue_date).toLocaleDateString('en-GB') %></td>
+                    <td><%= outwardIngredient.ingredient_item_code %></td>
+                    <td><%= outwardIngredient.ingredient_item_description %></td>
+                    <td><%= outwardIngredient.issued_quantity %></td>
                     
-                    <td>
-                        <form action="/delete_view_ingredients_master/<%=ingredient.id%>?_method=DELETE" method="POST">
-                           <button type="submit" class="btn btn-danger">Delete</button>
-                        </form>
-                    </td>
+
+                    
                 </tr>
                 <% } %>
             </tbody>

@@ -1591,6 +1591,33 @@ app.post('/get-total-cost', (req, res) => {
     });
 });
 
+
+app.get("/view_ingredient_inward",(req,res)=>{
+    let q = `SELECT * FROM ingredients_inward`
+    pool.query(q, (err, results) => {
+        if (err) {
+            console.error('Error retrieving data from database:', err);
+            return res.status(500).send('Internal Server Error');
+        }
+       
+        res.render('view_ingredient_inward.ejs', { inwardIngredients: results });
+    });
+    
+})
+
+app.get("/view_ingredient_outward",(req,res)=>{
+    let q = `SELECT * FROM ingredient_outward`
+    pool.query(q, (err, results) => {
+        if (err) {
+            console.error('Error retrieving data from database:', err);
+            return res.status(500).send('Internal Server Error');
+        }
+       
+        res.render('view_ingredient_outward.ejs', { outwardIngredients: results });
+    });
+    
+})
+
 app.get("/test",(req,res)=>{
     res.render('test.ejs');
 })
