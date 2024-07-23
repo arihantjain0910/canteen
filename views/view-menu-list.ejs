@@ -137,11 +137,11 @@
                     <td><%= list.std_price %></td>
                     <td><%= list.mrp %></td>
                     <td> <form action="/edit-view-item-form/<%=list.id%>" method="GET">
-                        <button type="submit" class="btn btn-primary">Edit</button></td>
+                        <button type="submit" class="btn btn-primary btn-sm">Edit</button></td>
                     </form>
                     <td>
                         <form action="/delete-menu-item/<%=list.id%>?_method=DELETE" method="POST">
-                           <button type="submit" class="btn btn-danger">Delete</button>
+                           <button type="submit" class="btn btn-danger btn-sm">Delete</button>
                         </form>
                     </td>
                 </tr>
@@ -149,41 +149,7 @@
             </tbody>
         </table>
     </div>
-    <footer class="bg-light text-center text-lg-start mt-5">
-        <div class="container p-4">
-          <div class="row justify-content-center mb-4">
-            <div>
-              <a class="navbar-brand" href="#">
-                <img src="https://sangamgroup.com/wp-content/uploads/2023/01/sangam_group_logo.png" alt="Logo" width="40" height="30" class="d-inline-block align-text-top">
-                Sangam India Limited
-              </a>
-            </div>
-          </div>
-          <div class="row justify-content-center">
-            <div class="col-auto">
-              <h5 class="text-uppercase mb-3">Follow Us</h5>
-              <ul class="list-unstyled d-flex justify-content-center">
-                <li class="mx-2">
-                  <a href="https://www.facebook.com/SangamGroupBhilwara/" class="text-dark"><i class="fab fa-facebook-f fa-lg"></i></a>
-                </li>
-                <!-- <li class="mx-2">
-                  <a href="#" class="text-dark"><i class="fab fa-twitter fa-lg"></i></a>
-                </li> -->
-                <li class="mx-2">
-                  <a href="https://www.instagram.com/sangamgroup_/?hl=en" class="text-dark"><i class="fab fa-instagram fa-lg"></i></a>
-                </li>
-                <li class="mx-2">
-                  <a href="https://www.linkedin.com/company/sangam-india-ltd-bhilwara/" class="text-dark"><i class="fab fa-linkedin-in fa-lg"></i></a>
-                </li>
-              </ul>
-            </div>
-          </div>
-        </div>
-        <div class="text-center p-3" style="background-color: rgba(0, 0, 0, 0.2);">
-          © 2024 Sangam India Limited:
-          <a class="text-dark" href="https://sangamgroup.com/">sangamgroup.com</a>
-        </div>
-      </footer>
+   
     </div>      
     <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>

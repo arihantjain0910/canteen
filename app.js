@@ -20,7 +20,8 @@ const pool = mysql.createPool({
     database: 'canteen',
     waitForConnections: true,
     connectionLimit: 10,
-    queueLimit: 0
+    queueLimit: 0,
+    
   });
 
   pool.getConnection((err, connection) => {
