@@ -113,11 +113,11 @@ passport.use('admin', new LocalStrategy({
 
         // Compare plain text passwords
         if (password !== user.password) {
-           // console.log('Admin login: Incorrect password.');
+           console.log('Admin login: Incorrect password.');
             return done(null, false, { message: 'Incorrect password.' });
         }
 
-     //   console.log('Admin login: Success.');
+      console.log('Admin login: Success.');
         return done(null, user);
     });
 }));
